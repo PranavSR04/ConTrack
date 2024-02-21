@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('time_and_material_contracts', function (Blueprint $table) {
+        Schema::create('tm_contracts', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
         });
