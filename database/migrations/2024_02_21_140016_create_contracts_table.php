@@ -13,6 +13,17 @@ return new class extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('msa_ref_id')->constrained('msas');
+            $table->foreignId('added_by')->constrained('users');
+            $table->string('contract_ref_id',25);
+            $table->string('contract_type',25);
+            $table->date('date_of_signature');
+            $table->string('comments')->nullable();
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->string('du');
+            $table->string('contract_doclink');
+            $table->boolean('is_active');
             $table->timestamps();
         });
     }
