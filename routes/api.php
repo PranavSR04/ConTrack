@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MsaController;
 use App\Http\Controllers\AddendumController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -20,7 +21,8 @@ use App\Http\Controllers\ExperionEmployeeController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
+Route::get('/msalist', [MSAController::class, 'MSAList']);
 Route::post('/insertUser',[UserController::class,'create']);
 Route::post('/insert/ExperionData', [ExperionEmployeeController::class,'store']);
 Route::post('/generate/ExperionData', [ExperionEmployeeController::class,'generateRandomData']);
