@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AddendumController;
+use App\Http\Controllers\RolesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExperionEmployeeController;
@@ -26,3 +27,6 @@ Route::post('/generate/ExperionData', [ExperionEmployeeController::class,'genera
 Route::get('/display/ExperionData/{id}',[ExperionEmployeeController::class,'show']);
 
 Route::post('/insert/AddendumData', [AddendumController::class,'generateData']);
+
+Route::post('/insertRole', [RolesController::class, 'insertRole']);
+Route::get('/role/details', [RolesController::class, 'getRole']);
