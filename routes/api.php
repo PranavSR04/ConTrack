@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\AddendumController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ExperionEmployeeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,4 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/insertUser',[UserController::class,'create']);
-
+Route::post('/insert/ExperionData', [ExperionEmployeeController::class,'store']);
+Route::post('/generate/ExperionData', [ExperionEmployeeController::class,'generateRandomData']);
+Route::get('/display/ExperionData/{id}',[ExperionEmployeeController::class,'show']);
+Route::post('/insert/AddendumData', [AddendumController::class,'generateData']);
