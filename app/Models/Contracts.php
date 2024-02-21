@@ -8,4 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Contracts extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'contract_ref_id',
+        'msa_ref_id',
+        'added_by',
+        'contract_type',
+        'date_of_signature',
+        'comments',
+        'start_date',
+        'end_date',
+        'du',
+        'contract_doclink',
+        'is_active',
+    ];
 }
