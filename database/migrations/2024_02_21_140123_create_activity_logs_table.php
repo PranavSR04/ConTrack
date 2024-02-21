@@ -6,20 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    
     public function up(): void
     {
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('contract_id')->constrained('contracts')->nullable();
+            $table->foreignId('msa_id')->constrained('msas')->nullable();
+            $table->foreignId('performed_by')->constrained('users')->nullable();
+            $table->string('action',25);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
         Schema::dropIfExists('activity_logs');
