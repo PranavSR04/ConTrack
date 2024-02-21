@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('ff_contracts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('contract_id')->constrained('contracts');
+            $table->text('milestone_desc');
+            $table->date('milestone_enddate');
+            $table->decimal('percentage');
+            $table->decimal('amount');
             $table->timestamps();
         });
     }
