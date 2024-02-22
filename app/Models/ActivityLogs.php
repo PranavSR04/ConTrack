@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class ActivityLogs extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        "contract_id",
+        "msa_id",
+        "performed_by",
+        "action",
+    ] ;
 }
