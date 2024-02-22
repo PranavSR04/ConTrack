@@ -11,11 +11,14 @@ return new class extends Migration
     {
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('contract_id')->constrained('contracts')->nullable();
-            $table->foreignId('msa_id')->constrained('msas')->nullable();
-            $table->foreignId('performed_by')->constrained('users')->nullable();
+            $table->foreignId('contract_id')->nullable();
+            $table->foreignId('msa_id')->nullable();
+            $table->foreignId('performed_by')->nullable();
             $table->string('action',25);
             $table->timestamps();
+            $table->foreign('contract_id')->references('id')->on('contracts');
+            $table->foreign('msa_id')->references('id')->on('msas');
+            $table->foreign('performed_by')->references('id')->on('users');
         });
     }
 
