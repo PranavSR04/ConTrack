@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('tm_contracts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('contract_id')->constrained('contracts');
+            $table->text('milestone_desc');
+            $table->date('milestone_enddate');
+            $table->decimal('amount');
             $table->timestamps();
         });
     }
@@ -23,5 +27,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('tm_contracts');
+        
     }
 };

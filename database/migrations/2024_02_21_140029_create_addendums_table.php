@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('addendums', function (Blueprint $table) {
             $table->id();
             $table->foreignId('contract_id')->constrained('contracts');
-            $table->string('addendum_doclink',255)->nullable();
+            $table->string('addendum_doclink',255);
             $table->timestamps();
         });
     }
