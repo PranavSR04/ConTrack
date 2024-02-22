@@ -20,7 +20,7 @@ class ContractController extends Controller
                 'start_date' => now(),
                 'end_date' => now()->addMonths(12),
                 'du' => 'DU1',
-                'estimated_amount'=>200000.00,
+                'estimated_amount' => 200000.00,
                 'contract_doclink' => "link.doc",
                 'is_active' => true
             ],
@@ -34,7 +34,7 @@ class ContractController extends Controller
                 'start_date' => now(),
                 'end_date' => now()->addMonths(11),
                 'du' => 'DU1',
-                'estimated_amount'=>250000,
+                'estimated_amount' => 250000,
                 'contract_doclink' => "doc/link.doc",
                 'is_active' => true
             ],
@@ -48,7 +48,7 @@ class ContractController extends Controller
                 'start_date' => now(),
                 'end_date' => now()->addMonths(10),
                 'du' => 'DU1',
-                'estimated_amount'=>800000,
+                'estimated_amount' => 800000,
                 'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=1&web=1&e=pNA6Qx",
                 'is_active' => true
             ],
@@ -62,7 +62,7 @@ class ContractController extends Controller
                 'start_date' => now(),
                 'end_date' => now()->addMonths(12),
                 'du' => 'DU1',
-                'estimated_amount'=>2500000,
+                'estimated_amount' => 2500000,
                 'contract_doclink' => "link.doc",
                 'is_active' => true
             ],
@@ -76,7 +76,7 @@ class ContractController extends Controller
                 'start_date' => now(),
                 'end_date' => now()->addMonths(9),
                 'du' => 'DU1',
-                'estimated_amount'=>1200000,
+                'estimated_amount' => 1200000,
                 'contract_doclink' => "liiink.doc",
                 'is_active' => false
             ],
@@ -90,7 +90,7 @@ class ContractController extends Controller
                 'start_date' => now(),
                 'end_date' => now()->addMonths(9),
                 'du' => 'DU1',
-                'estimated_amount'=>2200000,
+                'estimated_amount' => 2200000,
                 'contract_doclink' => "liiink.doc",
                 'is_active' => false
             ],
@@ -104,7 +104,7 @@ class ContractController extends Controller
                 'start_date' => now(),
                 'end_date' => now()->addMonths(9),
                 'du' => 'DU1',
-                'estimated_amount'=>2400000,
+                'estimated_amount' => 2400000,
                 'contract_doclink' => "liiink.doc",
                 'is_active' => false
             ],
@@ -118,7 +118,7 @@ class ContractController extends Controller
                 'start_date' => now(),
                 'end_date' => now()->addMonths(9),
                 'du' => 'DU1',
-                'estimated_amount'=>600000,
+                'estimated_amount' => 600000,
                 'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=1&web=1&e=pNA6Qx",
                 'is_active' => false
             ],
@@ -132,37 +132,35 @@ class ContractController extends Controller
                 'start_date' => now(),
                 'end_date' => now()->addMonths(10),
                 'du' => 'DU1',
-                'estimated_amount'=>11200000,
+                'estimated_amount' => 11200000,
                 'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=1&web=1&e=pNA6Qx",
                 'is_active' => false
             ],
-            
+
         ];
-        
+
         foreach ($contractsDataArray as $contractData) {
             $contractsData = new Contracts($contractData);
             $contractsData->save();
+        }
+        return response()->json(['Data inserted']);
     }
-    return response()->json(['Data inserted']);
-}
-public function getContractData(Request $request)
+    public function getContractData(Request $request)
     {
         $individualContract = $request->all();
-        $querydata=Contracts::join('msas', 'contracts.msa_ref_id', '=', 'msas.id')
-        ->join('users', 'contracts.contract_added_by', '=', 'users.id')
-        ->select('contracts.*', 'msas.client_name', 'users.username');
+        $querydata = Contracts::join('msas', 'contracts.msa_ref_id', '=', 'msas.id')
+            ->join('users', 'contracts.contract_added_by', '=', 'users.id')
+            ->select('contracts.*', 'msas.client_name', 'users.username');
         if (empty($individualContract)) {
             return $querydata->get();
-        }
-        else {  
+        } else {
             foreach ($individualContract as $key => $value) {
-                if(in_array($key, ['id','name','date','contract_type','status'])){
-                    $querydata->where('contracts.'.$key, $value);
+                if (in_array($key, ['id', 'name', 'date', 'contract_type', 'status'])) {
+                    $querydata->where('contracts.' . $key, $value);
                 }
-            return $querydata->get();
-                    }       
-        
+                return $querydata->get();
             }
+
+        }
     }
-public function 
 }
