@@ -12,7 +12,7 @@ class ContractController extends Controller
         $contractsDataArray = [
             [
                 'contract_ref_id' => 'AGF7',
-                'msa_ref_id' => 1,
+                'msa_id' => 1,
                 'contract_added_by' => 2,
                 'contract_type' => "FF",
                 'date_of_signature' => now()->subMonths(2),
@@ -26,7 +26,7 @@ class ContractController extends Controller
             ],
             [
                 'contract_ref_id' => 'A166',
-                'msa_ref_id' => 1,
+                'msa_id' => 1,
                 'contract_added_by' => 1,
                 'contract_type' => "FF",
                 'date_of_signature' => now()->subMonths(2),
@@ -40,7 +40,7 @@ class ContractController extends Controller
             ],
             [
                 'contract_ref_id' => 'ABC1',
-                'msa_ref_id' => 1,
+                'msa_id' => 1,
                 'contract_added_by' => 2,
                 'contract_type' => "FF",
                 'date_of_signature' => now()->subMonths(3),
@@ -54,7 +54,7 @@ class ContractController extends Controller
             ],
             [
                 'contract_ref_id' => 'A097',
-                'msa_ref_id' => 3,
+                'msa_id' => 3,
                 'contract_added_by' => 2,
                 'contract_type' => "FF",
                 'date_of_signature' => now()->subMonths(2),
@@ -68,7 +68,7 @@ class ContractController extends Controller
             ],
             [
                 'contract_ref_id' => 'A921',
-                'msa_ref_id' => 5,
+                'msa_id' => 5,
                 'contract_added_by' => 4,
                 'contract_type' => "FF",
                 'date_of_signature' => now()->subMonths(2),
@@ -82,7 +82,7 @@ class ContractController extends Controller
             ],
             [
                 'contract_ref_id' => 'AN21',
-                'msa_ref_id' => 2,
+                'msa_id' => 2,
                 'contract_added_by' => 1,
                 'contract_type' => "TandM",
                 'date_of_signature' => now()->subMonths(2),
@@ -96,7 +96,7 @@ class ContractController extends Controller
             ],
             [
                 'contract_ref_id' => 'N621',
-                'msa_ref_id' => 5,
+                'msa_id' => 5,
                 'contract_added_by' => 1,
                 'contract_type' => "TandM",
                 'date_of_signature' => now()->subMonths(2),
@@ -110,7 +110,7 @@ class ContractController extends Controller
             ],
             [
                 'contract_ref_id' => 'A091',
-                'msa_ref_id' => 1,
+                'msa_id' => 1,
                 'contract_added_by' => 1,
                 'contract_type' => "TandM",
                 'date_of_signature' => now()->subMonths(2),
@@ -124,7 +124,7 @@ class ContractController extends Controller
             ],
             [
                 'contract_ref_id' => 'M921',
-                'msa_ref_id' => 4,
+                'msa_id' => 4,
                 'contract_added_by' => 4,
                 'contract_type' => "TandM",
                 'date_of_signature' => now()->subMonths(2),
@@ -148,19 +148,22 @@ class ContractController extends Controller
 public function getContractData(Request $request)
     {
         $individualContract = $request->all();
-        $querydata=Contracts::join('msas', 'contracts.msa_ref_id', '=', 'msas.id')
+        $querydata=Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
         ->join('users', 'contracts.contract_added_by', '=', 'users.id')
-        ->select('contracts.*', 'msas.client_name', 'users.username');
+        ->select('contracts.*', 'msas.client_name', 'users.user_name');
         if (empty($individualContract)) {
             return $querydata->get();
         }
         else {  
             foreach ($individualContract as $key => $value) {
-                if(in_array($key, ['id','name','date','contract_type','status'])){
-                    $querydata->where('contracts.'.$key, $value);
+                if(in_array($key, ['contract_ref_id','client_name','du','contract_type','msa_ref_id'])){
+                    $querydata->where($key, $value);
                 }
-            return $querydata->get();
         }
+        if ($querydata->count() == 0) {
+            return response()->json(['error' => 'No data Found'], 404);
+        }  
+            return $querydata->get();
         
     }
     }
