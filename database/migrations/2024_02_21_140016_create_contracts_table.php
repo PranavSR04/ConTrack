@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('msa_ref_id')->constrained('msas');
+            $table->foreignId('msa_id')->constrained('msas');
             $table->foreignId('contract_added_by')->constrained('users');
             $table->string('contract_ref_id',25);
             $table->string('contract_type',25);
