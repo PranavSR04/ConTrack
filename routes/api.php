@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/getContractData', [ContractController::class, 'getContractData']);
-Route::get('/insertContractsData', [ContractController::class, 'insertContractsData']);
+Route::post('/insertContractsData', [ContractController::class, 'insertContractsData']);
 Route::get('/insertFixedFeeData', [FixedFeeController::class, 'insertFixedFeeData']);
 Route::get('/insertTandMData', [TandMController::class, 'insertTandMData']);
 Route::post('/msa/insertData', [MsaController::class, 'insertValues']);

@@ -82,14 +82,14 @@ class FixedFeeController extends Controller
                 'amount' => 15000,
             ],
             [
-                'contract_id' => 5,
+                'contract_id' => 2,
                 'milestone_desc' => 'User Testing and Feedback',
                 'milestone_enddate' => '2024-06-30',
                 'percentage' => 30,
                 'amount' => 21000,
             ],
             [
-                'contract_id' => 5,
+                'contract_id' => 4,
                 'milestone_desc' => 'Final Product Refinement',
                 'milestone_enddate' => '2024-08-15',
                 'percentage' => 25,
@@ -136,21 +136,7 @@ class FixedFeeController extends Controller
                 'milestone_enddate' => '2024-06-15',
                 'percentage' => 50,
                 'amount' => 20000,
-            ],
-            [
-                'contract_id' => 6,
-                'milestone_desc' => 'Prototype Testing and Feedback',
-                'milestone_enddate' => '2024-08-01',
-                'percentage' => 15,
-                'amount' => 30000,
-            ],
-            [
-                'contract_id' => 6,
-                'milestone_desc' => 'Final Product Refinement',
-                'milestone_enddate' => '2024-03-30',
-                'percentage' => 10,
-                'amount' => 40000,
-            ],
+            ], 
         ];
         foreach ($dummydata_ff as $ffData) {
             $ffData = new FixedFeeContracts($ffData);

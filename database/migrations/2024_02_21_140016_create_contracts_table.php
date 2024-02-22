@@ -23,6 +23,7 @@ return new class extends Migration
             $table->date('end_date');
             $table->string('du');
             $table->string('contract_doclink');
+            $table->decimal('estimated_amount');
             $table->boolean('is_active');
             $table->timestamps();
         });

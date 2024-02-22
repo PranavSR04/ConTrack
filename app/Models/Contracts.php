@@ -18,6 +18,7 @@ class Contracts extends Model
         'start_date',
         'end_date',
         'du',
+        'estimated_amount',
         'contract_doclink',
         'is_active',
     ];
