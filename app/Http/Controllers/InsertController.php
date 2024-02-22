@@ -11,48 +11,48 @@ class InsertController extends Controller
         $activityLogDataArray=[
             [
                 "contract_id"=> 1,
-                "msa_id"=>null,
+                
                 "performed_by"=>1,
                 "action"=>"added"
             ],
             [
                 "contract_id"=> 1,
-                "msa_id"=>null,
+                
                 "performed_by"=>1,
                 "action"=>"edited"
             ],
             [
-                "contract_id"=>null,
+            
                 "msa_id"=>1,
                 "performed_by"=>1,
                 "action"=>"added"
             ],
             [
                 "contract_id"=> 2,
-                "msa_id"=>null,
+                
                 "performed_by"=>1,
                 "action"=>"edited"
             ],
             [
                 "contract_id"=> 1,
-                "msa_id"=>null,
+                
                 "performed_by"=>2,
                 "action"=>"edited"
             ],
             [
                 "contract_id"=> 2,
-                "msa_id"=>null,
+                
                 "performed_by"=>2,
                 "action"=>"added"
             ],
             [
-                "contract_id"=> null,
+                
                 "msa_id"=>1,
                 "performed_by"=>1,
                 "action"=>"edited"
             ],
             [
-                "contract_id"=> null,
+                
                 "msa_id"=>2,
                 "performed_by"=>2,
                 "action"=>"added"

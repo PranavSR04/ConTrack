@@ -142,5 +142,6 @@ class FixedFeeController extends Controller
             $ffData = new FixedFeeContracts($ffData);
             $ffData->save();
     }
+    return response()->json(['Data inserted']);
     }
 }

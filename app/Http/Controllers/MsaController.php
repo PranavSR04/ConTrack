@@ -10,7 +10,7 @@ class MsaController extends Controller
     public function insertValues(){
         $data = [
             [
-                'msa_id' => 'MSA001',
+                'msa_ref_id' => 'MSA001',
                 'added_by'=>1,
                 'client_name' => 'Microsoft Corporation',
                 'region' => 'America',
@@ -21,7 +21,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa001-document'
             ],
             [
-                'msa_id' => 'MSA002',
+                'msa_ref_id' => 'MSA002',
                 'added_by'=>1,
                 'client_name' => 'Apple Inc.',
                 'region' => 'Europe',
@@ -32,7 +32,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa002-document'
             ],
             [
-                'msa_id' => 'MSA003',             
+                'msa_ref_id' => 'MSA003',             
                 'added_by'=>5,
                 'client_name' => 'Amazon.com Inc.',
                 'region' => 'Asia',
@@ -43,7 +43,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa003-document'
             ],
             [
-                'msa_id' => 'MSA004',
+                'msa_ref_id' => 'MSA004',
                 'added_by'=>2,
                 'client_name' => 'Alphabet Inc.',
                 'region' => 'America',
@@ -54,7 +54,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa004-document'
             ],
             [
-                'msa_id' => 'MSA005',
+                'msa_ref_id' => 'MSA005',
                 'added_by'=>2,
                 'client_name' => 'Facebook Inc.',
                 'region' => 'Europe',
@@ -65,8 +65,8 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa005-document'
             ],
             [
-                'msa_id' => 'MSA006',
-                'added_by'=>2,
+                'msa_ref_id' => 'MSA006',
+                'added_by'=> 2,
                 'client_name' => 'Samsung Electronics Co., Ltd.',
                 'region' => 'China',
                 'start_date' => '2023-07-10',
@@ -76,7 +76,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa006-document'
             ],
             [
-                'msa_id' => 'MSA007',
+                'msa_ref_id' => 'MSA007',
                 'added_by'=>5,
                 'client_name' => 'Walmart Inc.',
                 'region' => 'America',
@@ -87,7 +87,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa007-document'
             ],
             [
-                'msa_id' => 'MSA008',
+                'msa_ref_id' => 'MSA008',
                 'added_by'=>3,
                 'client_name' => 'Toyota Motor Corporation',
                 'region' => 'India',
@@ -98,8 +98,8 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa008-document'
             ],
             [
-                'msa_id' => 9,
-                'added_by'=>'US004',
+                'msa_ref_id' => 'MSA009',
+                'added_by'=>4,
                 'client_name' => 'Sony Corporation',
                 'region' => 'Europe',
                 'start_date' => '2020-10-10',
@@ -109,7 +109,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa009-document'
             ],
             [
-                'msa_id' => 'MSA010',
+                'msa_ref_id' => 'MSA010',
                 'added_by'=>3,
                 'client_name' => 'McDonald\'s Corporation',
                 'region' => 'America',
@@ -120,7 +120,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa010-document'
             ],
             [
-                'msa_id' => 'MSA011',
+                'msa_ref_id' => 'MSA011',
                 'added_by'=>1,
                 'client_name' => 'Tata Consultancy Services Ltd.',
                 'region' => 'India',
@@ -131,7 +131,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa011-document'
             ],
             [
-                'msa_id' => 'MSA012',
+                'msa_ref_id' => 'MSA012',
                 'added_by'=>3,
                 'client_name' => 'Reliance Industries Limited',
                 'region' => 'India',
@@ -142,7 +142,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa012-document'
             ],
             [
-                'msa_id' => 'MSA013',
+                'msa_ref_id' => 'MSA013',
                 'added_by'=>5,
                 'client_name' => 'Infosys Limited',
                 'region' => 'India',
@@ -153,7 +153,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa013-document'
             ],
             [
-                'msa_id' => 'MSA014',
+                'msa_ref_id' => 'MSA014',
                  'added_by'=>2,
                 'client_name' => 'HDFC Bank Limited',
                 'region' => 'India',
@@ -164,7 +164,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa014-document'
             ],
             [
-                'msa_id' => 'MSA015',
+                'msa_ref_id' => 'MSA015',
                 'added_by'=>5,
                 'client_name' => 'Mahindra & Mahindra Limited',
                 'region' => 'India',
@@ -175,7 +175,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa015-document'
             ],
             [
-                'msa_id' => 'MSA016',
+                'msa_ref_id' => 'MSA016',
                 'added_by'=>2,
                 'client_name' => 'State Bank of India',
                 'region' => 'India',
@@ -186,7 +186,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa016-document'
             ],
             [
-                'msa_id' => 'MSA017',
+                'msa_ref_id' => 'MSA017',
                 'added_by'=>4,
                 'client_name' => 'Bharat Petroleum Corporation Limited',
                 'region' => 'India',
@@ -197,7 +197,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa017-document'
             ],
             [
-                'msa_id' => 'MSA018',
+                'msa_ref_id' => 'MSA018',
                 'added_by'=>2,
                 'client_name' => 'Wipro Limited',
                 'region' => 'India',
@@ -208,7 +208,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa018-document'
             ],
             [
-                'msa_id' => 'MSA019',
+                'msa_ref_id' => 'MSA019',
                 'added_by'=>1,
                 'client_name' => 'Indian Oil Corporation Limited',
                 'region' => 'India',
@@ -219,7 +219,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa019-document'
             ],
             [
-                'msa_id' => 'MSA020',
+                'msa_ref_id' => 'MSA020',
                 'added_by'=>2,
                 'client_name' => 'Bajaj Auto Limited',
                 'region' => 'India',

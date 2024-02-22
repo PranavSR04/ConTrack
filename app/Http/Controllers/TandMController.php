@@ -125,5 +125,6 @@ class TandMController extends Controller
         $tmData = new TimeAndMaterialContracts($tmData);
         $tmData->save();
 }
+return response()->json(['Data inserted']);
 }
 }
