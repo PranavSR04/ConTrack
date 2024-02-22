@@ -163,6 +163,5 @@ public function getContractData(Request $request)
                     }       
         
             }
-    }
-public function 
+    } 
 }
