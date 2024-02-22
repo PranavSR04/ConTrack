@@ -8,7 +8,7 @@ use App\Http\Controllers\FixedFeeController;
 use App\Http\Controllers\TandMController;
 use App\Http\Controllers\InsertController;
 use App\Models\UserNotifications;
-use App\Http\Controllers\RolesController;
+use App\Http\Controllers\RoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExperionEmployeeController;
@@ -41,5 +41,5 @@ Route::post('/insert/ExperionData', [ExperionEmployeeController::class,'store'])
 Route::post('/generate/ExperionData', [ExperionEmployeeController::class,'generateRandomData']);
 Route::get('/display/ExperionData/{id}',[ExperionEmployeeController::class,'show']);
 Route::post('/insert/AddendumData', [AddendumController::class,'generateData']);
-Route::post('/insertRole', [RolesController::class, 'insertRole']);
-Route::get('/role/details', [RolesController::class, 'getRole']);
+Route::post('/insertRole', [RoleController::class, 'insertRole']);
+Route::get('/role/details', [RoleController::class, 'getRole']);

@@ -98,8 +98,9 @@ public function getContractData(Request $request)
                     $querydata->where('contracts.'.$key, $value);
                 }
             return $querydata->get();
-        }
+                    }       
         
+            }
     }
-    }
+public function 
 }
