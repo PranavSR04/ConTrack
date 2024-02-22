@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\ExperionEmployees;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 
 class ExperionEmployeeController extends Controller
 {
@@ -30,21 +32,21 @@ class ExperionEmployeeController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "email_id"=> "required|email",
-            "password"=> "required|min:6|max:30|string",
-            "first_name"=>"required|string|min:3|max:20",
-            "middle_name"=>"string|max:20",
-            "last_name"=>"string|max:20",
+            "email_id" => "required|email",
+            "password" => "required|min:6|max:30|string",
+            "first_name" => "required|string|min:3|max:20",
+            "middle_name" => "string|max:20",
+            "last_name" => "string|max:20",
         ]);
         if ($validator->fails()) {
             return $validator->errors();
         }
         ExperionEmployees::create([
-            "email_id"=> $request->get("email_id"),
-            "password"=> $request->get("password"),
-            "first_name"=> $request->get("first_name"),
-            "middle_name"=> $request->get("middle_name"),
-            "last_name"=> $request->get("last_name"),
+            "email_id" => $request->get("email_id"),
+            "password" => $request->get("password"),
+            "first_name" => $request->get("first_name"),
+            "middle_name" => $request->get("middle_name"),
+            "last_name" => $request->get("last_name"),
         ]);
 
         return "Data inserted successfully for Experion table";
@@ -106,20 +108,47 @@ class ExperionEmployeeController extends Controller
                 "last_name" => "Miller",
             ],
         ];
-        
+
         foreach ($dataArray as $data) {
             ExperionEmployees::create($data);
-        }        
+        }
 
         return "Data inserted successfully for Experion table";
     }
 
     /**
-     * Display the specified resource.
+     * Function to display employees from experion table
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
-        //
+        try {
+            // Validate the request
+            $request->validate([
+                'name' => 'required|string',
+            ]);
+        
+            $users = ExperionEmployees::where(function ($query) use ($request) {
+                $query->where('first_name', 'like', $request->name . '%')
+                    ->orWhere('middle_name', 'like', $request->name . '%')
+                    ->orWhere('last_name', 'like', $request->name . '%');
+            })->get();
+
+            if ($users->isEmpty()) {
+                // 404 Not Found: No records found
+                return response()->json(['error' => 'No records found.'], 404);
+            }
+
+            return response()->json($users);
+        } catch (ValidationException $e) {
+            // 422 Unprocessable Entity: Validation error
+            return response()->json(['error' => $e->validator->errors()], 422);
+        } catch (ModelNotFoundException $e) {
+            // 404 Not Found: Model not found exception
+            return response()->json(['error' => 'Record not found.'], 404);
+        } catch (\Exception $e) {
+            // 500 Internal Server Error: Other exceptions
+            return response()->json(['error' => 'Internal Server Error.'], 500);
+        }
     }
 
     /**
