@@ -1,87 +1,43 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Roles;
-use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+ public function insertRole()
+{
+    try {
+        $role2 = new Roles([
+            "role_name" => "Admin",
+            "role_access" => "Can edit and view contracts",
+            "is_active" => true,
+        ]);
+        $role = new Roles([
+            "role_name" => "Reader",
+            "role_access" => "Can view contracts",
+            "is_active" => true,
+        ]);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        
+        $role->save();
+        $role2->save();
+        
+        return "Role created successfully!!";
+    } catch (\Exception $e) {
+        return "Error occurred: " . $e->getMessage();
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
-
- public function insertRole()   
- {
-    $role2=new Roles([
-        "role_name"=>"Admin",
-        "role_access"=>"Can edit and view contracts",
-        "is_active"=>true,
-    ]);
-    $role=new Roles([
-       "role_name"=>"Reader",
-        "role_access"=>"Can view contracts",
-        "is_active"=>false,   
-    ]);
-    $role->save();
-    $role2->save();
-    return "Role created successfully!!";
- }
- public function getRole()
- {
-    $role_data=Roles::all();
-    return response()->json($role_data);
- }
 }
+
+public function getRole()
+{
+    try {
+        $role_data = Roles::all();
+        return response()->json($role_data);
+    } catch (\Exception $e) {
+        return response()->json(["error" => "Error occurred: " . $e->getMessage()], 500);
+    }
+}
+
+}
+ 

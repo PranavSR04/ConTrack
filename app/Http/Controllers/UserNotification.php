@@ -25,11 +25,11 @@ class UserNotification extends Controller
         if($validator->fails()){
             return response()->json(['message'=> $validator->errors()],422);
         }
-        $user_id = $request->get('user_id');
-        $activeNotificationsCount = UserNotifications::where('user_id', $user_id)
+        $user_id = $request->get('sendto_id');
+        $activeNotificationsCount = UserNotifications::where('sendto_id', $user_id)
         ->where('status', 1)
         ->count();
-        $notifications=UserNotifications::where("user_id",$user_id)
+        $notifications=UserNotifications::where("sendto_id",$user_id)
         ->orderByDesc("created_at")
         ->get();
         if(!$notifications)
@@ -65,6 +65,6 @@ class UserNotification extends Controller
             return response()->json(['message'=> $validator->errors()],422);
         }
         $user_id = $request->get('user_id');
-        UserNotifications::where('user_id',$user_id)->update(['status'=>0]);
+        UserNotifications::where('sendto_id',$user_id)->update(['status'=>0]);
     }
 }
