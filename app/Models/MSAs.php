@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class MSAs extends Model
 {
     use HasFactory;
+    protected $table='msas';
+    
     protected $fillable = [
         'msa_ref_id',
         'added_by',

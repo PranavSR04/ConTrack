@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\MSAs;
+use App\Models\UserNotifications;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class MsaController extends Controller
 {
     public function insertValues(){
         $data = [
             [
-                'msa_id' => 'MSA001',
+                'msa_ref_id' => 'MSA001',
                 'added_by'=>1,
                 'client_name' => 'Microsoft Corporation',
                 'region' => 'America',
@@ -21,7 +23,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa001-document'
             ],
             [
-                'msa_id' => 'MSA002',
+                'msa_ref_id' => 'MSA002',
                 'added_by'=>1,
                 'client_name' => 'Apple Inc.',
                 'region' => 'Europe',
@@ -32,7 +34,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa002-document'
             ],
             [
-                'msa_id' => 'MSA003',             
+                'msa_ref_id' => 'MSA003',             
                 'added_by'=>5,
                 'client_name' => 'Amazon.com Inc.',
                 'region' => 'Asia',
@@ -43,7 +45,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa003-document'
             ],
             [
-                'msa_id' => 'MSA004',
+                'msa_ref_id' => 'MSA004',
                 'added_by'=>2,
                 'client_name' => 'Alphabet Inc.',
                 'region' => 'America',
@@ -54,7 +56,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa004-document'
             ],
             [
-                'msa_id' => 'MSA005',
+                'msa_ref_id' => 'MSA005',
                 'added_by'=>2,
                 'client_name' => 'Facebook Inc.',
                 'region' => 'Europe',
@@ -65,7 +67,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa005-document'
             ],
             [
-                'msa_id' => 'MSA006',
+                'msa_ref_id' => 'MSA006',
                 'added_by'=>2,
                 'client_name' => 'Samsung Electronics Co., Ltd.',
                 'region' => 'China',
@@ -76,7 +78,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa006-document'
             ],
             [
-                'msa_id' => 'MSA007',
+                'msa_ref_id' => 'MSA007',
                 'added_by'=>5,
                 'client_name' => 'Walmart Inc.',
                 'region' => 'America',
@@ -87,7 +89,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa007-document'
             ],
             [
-                'msa_id' => 'MSA008',
+                'msa_ref_id' => 'MSA008',
                 'added_by'=>3,
                 'client_name' => 'Toyota Motor Corporation',
                 'region' => 'India',
@@ -98,8 +100,8 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa008-document'
             ],
             [
-                'msa_id' => 9,
-                'added_by'=>'US004',
+                'msa_ref_id' => 'MSA009',
+                'added_by'=>3,
                 'client_name' => 'Sony Corporation',
                 'region' => 'Europe',
                 'start_date' => '2020-10-10',
@@ -109,7 +111,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa009-document'
             ],
             [
-                'msa_id' => 'MSA010',
+                'msa_ref_id' => 'MSA010',
                 'added_by'=>3,
                 'client_name' => 'McDonald\'s Corporation',
                 'region' => 'America',
@@ -120,7 +122,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa010-document'
             ],
             [
-                'msa_id' => 'MSA011',
+                'msa_ref_id' => 'MSA011',
                 'added_by'=>1,
                 'client_name' => 'Tata Consultancy Services Ltd.',
                 'region' => 'India',
@@ -131,7 +133,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa011-document'
             ],
             [
-                'msa_id' => 'MSA012',
+                'msa_ref_id' => 'MSA012',
                 'added_by'=>3,
                 'client_name' => 'Reliance Industries Limited',
                 'region' => 'India',
@@ -142,7 +144,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa012-document'
             ],
             [
-                'msa_id' => 'MSA013',
+                'msa_ref_id' => 'MSA013',
                 'added_by'=>5,
                 'client_name' => 'Infosys Limited',
                 'region' => 'India',
@@ -153,7 +155,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa013-document'
             ],
             [
-                'msa_id' => 'MSA014',
+                'msa_ref_id' => 'MSA014',
                  'added_by'=>2,
                 'client_name' => 'HDFC Bank Limited',
                 'region' => 'India',
@@ -164,7 +166,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa014-document'
             ],
             [
-                'msa_id' => 'MSA015',
+                'msa_ref_id' => 'MSA015',
                 'added_by'=>5,
                 'client_name' => 'Mahindra & Mahindra Limited',
                 'region' => 'India',
@@ -175,7 +177,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa015-document'
             ],
             [
-                'msa_id' => 'MSA016',
+                'msa_ref_id' => 'MSA016',
                 'added_by'=>2,
                 'client_name' => 'State Bank of India',
                 'region' => 'India',
@@ -186,7 +188,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa016-document'
             ],
             [
-                'msa_id' => 'MSA017',
+                'msa_ref_id' => 'MSA017',
                 'added_by'=>4,
                 'client_name' => 'Bharat Petroleum Corporation Limited',
                 'region' => 'India',
@@ -197,7 +199,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa017-document'
             ],
             [
-                'msa_id' => 'MSA018',
+                'msa_ref_id' => 'MSA018',
                 'added_by'=>2,
                 'client_name' => 'Wipro Limited',
                 'region' => 'India',
@@ -208,7 +210,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa018-document'
             ],
             [
-                'msa_id' => 'MSA019',
+                'msa_ref_id' => 'MSA019',
                 'added_by'=>1,
                 'client_name' => 'Indian Oil Corporation Limited',
                 'region' => 'India',
@@ -219,7 +221,7 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa019-document'
             ],
             [
-                'msa_id' => 'MSA020',
+                'msa_ref_id' => 'MSA020',
                 'added_by'=>2,
                 'client_name' => 'Bajaj Auto Limited',
                 'region' => 'India',
@@ -239,17 +241,194 @@ class MsaController extends Controller
 
     return 'Values inserted';
   }
+
 /**
- * Retrieve a list of all MSAs.
+ * Retrieve a list of MSAs based on specified filters or sorting criteria.
  *
- * Fetches all MSAs from the database and returns them as a JSON response.
- *
+ * @param  \Illuminate\Http\Request  $request
  * @return \Illuminate\Http\JsonResponse
  */
- public function MSAList()
-{
-    $msas = MSAs::all();
+    public function MSAList(Request $request)
+    {
+        $params = $request->all();
+        
+        $msas_query = MSAs::query();
 
-    return response()->json($msas);
-}
+        // Iterate through each request parameter
+        foreach ($params as $key => $value) {
+            // Check if the parameter is a filtering or sorting criterion
+            switch ($key) {
+                case 'msa_ref_id':
+                case 'client_name':
+                case 'region':
+                case 'start_date':
+                case 'end_date':
+                case 'added_by':
+                    $msas_query->where($key,'like','%'.$value.'%');
+                    break;
+                case 'sort_by':
+                    // Extract sort order 
+                    $sort_order = isset($params['sort_order']) && strtolower($params['sort_order']) === 'desc' ? 'desc' : 'asc';
+                    $msas_query->orderBy($value, $sort_order);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        $msas = $msas_query->where('is_active', true)->get();
+
+        return response()->json($msas);
+    }
+
+/**
+ * Add a new MSA (Master Service Agreement).
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\JsonResponse
+ */
+
+    public function addMsa(Request $request)
+    {   
+        // Validate the incoming request data
+        $validator=Validator::make($request->all(),[
+            'msa_ref_id' => 'required|string|max:25',
+            'client_name' => 'required|string',
+            'region' => 'required|string|max:100',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'comments' => 'string',
+            'msa_doclink' => 'required|string',
+           ]);
+
+        // Check if validation fails
+        if($validator->fails()){
+
+            // Return validation errors if validation fails
+            return $validator->errors();
+        }
+
+        // Get the validated data
+        $validated=$validator->validated();
+        
+         try {
+
+            $existingMSA = MSAs::where('msa_ref_id', $request->msa_ref_id)->exists();
+
+            if ($existingMSA) {
+            
+              return response()->json(['error' => 'Failed to create MSA', 'message' => 'MSA with  ' . $request->msa_ref_id . ' already exists.'], 400);
+            }
+
+            $added_by=4;//session()->get(user_id)
+            $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
+                     ->select('users.user_name as added_by_user')
+                     ->first();
+
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
+             if ($end_date <= $start_date) 
+             {
+               $response = [
+                         'error' => 'End date must be greater than '.$start_date
+                         ];
+               return response()->json($response, 400);
+             } else {
+            
+            $msa = MSAs::create([
+                'msa_ref_id' => $request->msa_ref_id,
+                'added_by' => $added_by,//session()->get(user_id)
+                'client_name' =>$request->client_name,
+                'region' =>$request->region,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'comments' => $request->comments,
+                'msa_doclink' =>$request->msa_doclink,
+            ]);
+            $msa->added_by_user=$added_by_user->added_by_user;
+            
+            return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 201);
+        }
+       
+     } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to create MSA', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+/**
+ * Update an existing MSA.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @param  int  $id
+ * @return \Illuminate\Http\JsonResponse
+ */
+    public function updateMsa(Request $request,$id){
+        
+       $msa = MSAs::find($id);
+   
+       
+       if (!$msa) {
+           return response()->json(['error' => 'MSA not found'], 404);
+       }
+        // Validate the incoming request data
+        $validator=Validator::make($request->all(),[
+           'client_name' => 'string|min:5|max:100',
+           'region' => 'string|max:100',
+           'start_date' => 'date',
+           'end_date' => 'date',
+           'comments' => 'string',
+           'msa_doclink' => 'string',
+            ]);
+   
+        // Check if validation fails
+       if($validator->fails()){
+   
+           // Return validation errors if validation fails
+           return $validator->errors();
+       }
+   
+        // Get the validated data
+       $validated=$validator->validated();
+       
+            try{
+                 // Check if both start_date and end_date are provided
+                    if (isset($validated['start_date']) && isset($validated['end_date'])) 
+                    {
+                        if ($validated['start_date'] >= $validated['end_date'])
+                        {
+                            return response()->json(['error' => 'Start date must be less than end date'], 400);
+                        }
+                    } 
+                   elseif (isset($validated['start_date'])) 
+                    {
+                        // Check with end_date in the database
+                        if ($msa->end_date && $validated['start_date'] >= $msa->end_date) 
+                        {
+                            return response()->json(['error' => 'Start date must be less than '. $msa->end_date], 400);
+                        }
+                    }
+                elseif (isset($validated['end_date'])) 
+                    {
+                        // Check with start_date in the database
+                        if ($msa->start_date && $validated['end_date'] <= $msa->start_date) 
+                        {
+                            return response()->json(['error' => 'End date must be greater than '. $msa->start_date], 400);
+                        }
+                    }
+                  
+                    $added_by=4;//session()->get(user_id)
+                    $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
+                             ->select('users.user_name as added_by_user')
+                             ->first();
+
+               $msa->update($validated);
+                $msa->added_by_user=$added_by_user->added_by_user;
+                
+                    // Return success response
+                  return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
+
+            }catch(\Exception $e){
+                return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
+            }
+       }
 }
