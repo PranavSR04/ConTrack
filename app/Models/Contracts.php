@@ -10,7 +10,7 @@ class Contracts extends Model
     use HasFactory;
     protected $fillable = [
         'contract_ref_id',
-        'msa_ref_id',
+        'msa_id',
         'contract_added_by',
         'contract_type',
         'date_of_signature',
