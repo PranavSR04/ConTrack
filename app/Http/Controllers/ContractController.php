@@ -90,7 +90,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'AN21',
                 'msa_ref_id' => 2,
                 'contract_added_by' => 1,
-                'contract_type' => "TandM",
+                'contract_type' => "tm",
                 'date_of_signature' => now()->subMonths(2),
                 'comments' => "File also available in sharepoint",
                 'start_date' => now(),
@@ -104,7 +104,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'N621',
                 'msa_ref_id' => 5,
                 'contract_added_by' => 1,
-                'contract_type' => "TandM",
+                'contract_type' => "tm",
                 'date_of_signature' => now()->subMonths(2),
                 'comments' => "Fixed fee with tight schedule",
                 'start_date' => now(),
@@ -118,7 +118,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'A091',
                 'msa_ref_id' => 19,
                 'contract_added_by' => 1,
-                'contract_type' => "TandM",
+                'contract_type' => "tm",
                 'date_of_signature' => now()->subMonths(2),
                 'comments' => "Updated contract on harleys",
                 'start_date' => now(),
@@ -132,7 +132,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'M921',
                 'msa_ref_id' => 4,
                 'contract_added_by' => 4,
-                'contract_type' => "TandM",
+                'contract_type' => "tm",
                 'date_of_signature' => now()->subMonths(2),
                 'comments' => "Contact me if it further requires change",
                 'start_date' => now(),
@@ -258,6 +258,7 @@ class ContractController extends Controller
                     throw new Exception('Error');
                 }
             }
+            
             return response()->json(['message' => 'Contract created successfully', 'contract' => $contractId], 201);
         } catch (Exception $e) {
             return response()->json(['error' => 'Failed to create contract', 'message' => $e->getMessage()], 500);
