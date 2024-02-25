@@ -45,3 +45,9 @@ Route::post('/insert/AddendumData', [AddendumController::class,'generateData']);
 Route::post('/insertRole', [RoleController::class, 'insertRole']);
 Route::get('/role/details', [RoleController::class, 'getRole']);
 Route::GET('/send-email', [SendEmailController::class,'sendEmail']);
+Route::get('/getUsers',[UserController::class,'getUsers']);  //Get User List
+Route::post('/addUser', [UserController::class,'addUser']);  //Add New User
+Route::put('/updateUser/{user_id}', [UserController::class,'updateUser']);  //Add New User
+
+
+

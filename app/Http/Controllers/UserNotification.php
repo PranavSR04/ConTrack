@@ -6,6 +6,7 @@ use App\Models\ActivityLogs;
 use App\Models\UserNotifications;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 class UserNotification extends Controller
 {
  
@@ -58,14 +59,22 @@ class UserNotification extends Controller
         return response()->json(['notification'=> $finalnotifications ] ,200);
     }
     public function notificationStatusUpdate(Request $request){
+        try{ 
         $validator=Validator::make($request->all(),[
-            "user_id"=> "required",
+            "user_id"=> "required|numeric",
         ]);
         if($validator->fails()){
-            return response()->json(['message'=> $validator->errors()],422);
+            return response()->json(['message'=> $validator->errors()],422);//unprocessable
         }
         $user_id = $request->get('user_id');
-        UserNotifications::where('sendto_id',$user_id)->update(['status'=>0]);
-        return response()->json(["message"=> "updated"] ,200);
+        $user = UserNotifications::where('sendto_id', $user_id)->first();
+        if (!$user) {
+            return response()->json(['error' => 'User ID not found.'], 404);//not found
+        }
+       UserNotifications::where('sendto_id',$user_id)->update(['status'=>0]);
+        return response()->json(["message"=> "updated"] ,200);//ok
+    }catch(Exception $e){
+        return response()->json(["message"=> $e->getMessage()],500);//internal server error
+    }
     }
 }

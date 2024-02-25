@@ -20,6 +20,7 @@ class InsertController extends Controller
             $logData = new ActivityLogs($logData);
             $logData->save();
         }
+        return response()->json(['message' => 'Data entered'], 200);
        
     }
 }

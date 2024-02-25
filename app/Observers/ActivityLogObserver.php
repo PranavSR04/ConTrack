@@ -6,18 +6,35 @@ use App\Mail\SendMailNotification;
 use App\Models\ActivityLogs;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
-
+use Exception;
+use Illuminate\Support\Facades\Log;
 class ActivityLogObserver
 {
     /**
      * Handle the ActivityLogs "created" event.
      */
-    public function created(ActivityLogs $activityLogs): void
+    public function created(ActivityLogs $activityLogs)
     {
         $users=User::all();
+        $failedEmails = [];
         foreach ($users as $user) {
-            Mail::to($user->user_mail)->send(new SendMailNotification($activityLogs));
+            try{
+                Mail::to($user->user_mail)->send(new SendMailNotification($activityLogs));
+                Log::info('Email sent successfully to: ' . $user->user_mail);
+            }
+            catch (Exception $e) {
+                $failedEmails[] = $user->user_mail;
+                Log::error('Failed to send email to: ' . $user->user_mail . '. Error: ' . $e->getMessage());
+            }
         }
+            if(!empty($failedEmails)) {
+                
+                Log::warning('Failed to send emails to: ' . implode(', ', $failedEmails));
+            }
+            else{
+                Log::info('All emails sent successfully');
+            }
+           
     }
 
     /**
