@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\MsaController;
 use App\Http\Controllers\AddendumController;
-use App\Http\Controllers\SendEmailController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\FixedFeeController;
@@ -44,10 +43,9 @@ Route::get('/display/ExperionData/{id}',[ExperionEmployeeController::class,'show
 Route::post('/insert/AddendumData', [AddendumController::class,'generateData']);
 Route::post('/insertRole', [RoleController::class, 'insertRole']);
 Route::get('/role/details', [RoleController::class, 'getRole']);
-Route::GET('/send-email', [SendEmailController::class,'sendEmail']);
-Route::get('/getUsers',[UserController::class,'getUsers']);  //Get User List
-Route::post('/addUser', [UserController::class,'addUser']);  //Add New User
-Route::put('/updateUser/{user_id}', [UserController::class,'updateUser']);  //Add New User
+Route::get('/getUsers',[UserController::class,'getUsers']);  
+Route::post('/addUser', [UserController::class,'addUser']);  
+Route::put('/updateUser/{user_id}', [UserController::class,'updateUser']); 
 
 
 
