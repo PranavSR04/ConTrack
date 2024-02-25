@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('du');
             $table->string('contract_doclink');
             $table->double('estimated_amount');
-            $table->boolean('is_active');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

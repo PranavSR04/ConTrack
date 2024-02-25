@@ -44,3 +44,4 @@ Route::get('/display/ExperionData/{id}',[ExperionEmployeeController::class,'show
 Route::post('/insert/AddendumData', [AddendumController::class,'generateData']);
 Route::post('/insertRole', [RoleController::class, 'insertRole']);
 Route::get('/role/details', [RoleController::class, 'getRole']);
+Route::post('/add/contracts', [ContractController::class,'addContract']);
