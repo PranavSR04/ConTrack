@@ -45,9 +45,9 @@ Route::post('/insert/ExperionData', [ExperionEmployeeController::class,'store'])
 Route::post('/generate/ExperionData', [ExperionEmployeeController::class,'generateRandomData']);
 Route::get('/display/ExperionData/{id}',[ExperionEmployeeController::class,'show']);
 Route::post('/insert/AddendumData', [AddendumController::class,'generateData']);
-Route::post('/insertRole', [RoleController::class, 'insertRole']);
-Route::get('/role/details', [RoleController::class, 'getRole']);
-Route::post('/add/contracts', [ContractController::class,'addContract']);
+Route::post('/role/insertRole', [RoleController::class, 'insertRole']);
+Route::get('/role/getRoleDetails', [RoleController::class, 'getRole']);
+Route::post('/contracts/addContracts', [ContractController::class,'addContract']);
 Route::post('updateContractData/{id}', [ContractController::class,'updateContractData']);
 Route::get('/getUsers',[UserController::class,'getUsers']);  
 Route::post('/addUser', [UserController::class,'addUser']);  
