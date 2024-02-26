@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AssociatedUsersController;
 use App\Http\Controllers\MsaController;
 use App\Http\Controllers\AddendumController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\UserCheckController;
 use App\Http\Controllers\RoleController;
@@ -36,7 +36,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::GET('/general/notifications',[UserNotifications::class,'getUserNotification']);
 Route::PUT('/notification/statusupdate',[UserNotifications::class,'notificationStatusUpdate']);
 Route::POST('/insert/logdata',[InsertController::class,'insertData']);
-Route::get('/getContractData', [ContractController::class, 'getContractData']);
+Route::get('/getContractData/{id?}', [ContractController::class, 'getContractData']);
 Route::post('/insertContractsData', [ContractController::class, 'insertContractsData']);
 Route::post('/insertFixedFeeData', [FixedFeeController::class, 'insertFixedFeeData']);
 Route::post('/insertTandMData', [TandMController::class, 'insertTandMData']);
@@ -61,7 +61,7 @@ Route::put('/updateUser/{user_id}', [UserController::class,'updateUser']);
 
 
 
-Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
+//Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
 Route::get('/notAuth',[UserCheckController::class,'notauth'])->name('notauth');
 
 
