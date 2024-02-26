@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class AssociatedUsers extends Model
 {
     use HasFactory;
+    protected $table = 'associated_users';
     protected $fillable = [
         'contract_id',
-        'user_id'
+        'user_id',
     ];
+
 }
