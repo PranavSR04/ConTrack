@@ -21,7 +21,7 @@ class ContractController extends Controller
                 'end_date' => now()->addMonths(12),
                 'du' => 'DU1',
                 'estimated_amount' => 200000.00,
-                'contract_doclink' => "link.doc",
+                'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=1&web=1&e=pNA6Qx",
                 'is_active' => true
             ],
             [
@@ -35,7 +35,7 @@ class ContractController extends Controller
                 'end_date' => now()->addMonths(11),
                 'du' => 'DU1',
                 'estimated_amount' => 250000,
-                'contract_doclink' => "doc/link.doc",
+                'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=sdfsfd1&web=1&e=pNA6Qx",
                 'is_active' => true
             ],
             [
@@ -63,7 +63,7 @@ class ContractController extends Controller
                 'end_date' => now()->addMonths(12),
                 'du' => 'DU1',
                 'estimated_amount' => 2500000,
-                'contract_doclink' => "link.doc",
+                'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=adas1&web=1&e=pNA6Qx",
                 'is_active' => true
             ],
             [
@@ -77,42 +77,42 @@ class ContractController extends Controller
                 'end_date' => now()->addMonths(9),
                 'du' => 'DU1',
                 'estimated_amount' => 1200000,
-                'contract_doclink' => "liiink.doc",
+                'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=1&web=1&e=pNA6Qxasdasd",
                 'is_active' => false
             ],
             [
                 'contract_ref_id' => 'AN21',
                 'msa_id' => 2,
                 'contract_added_by' => 1,
-                'contract_type' => "TandM",
+                'contract_type' => "TM",
                 'date_of_signature' => now()->subMonths(2),
                 'comments' => "File also available in sharepoint",
                 'start_date' => now(),
                 'end_date' => now()->addMonths(9),
                 'du' => 'DU1',
                 'estimated_amount' => 2200000,
-                'contract_doclink' => "liiink.doc",
+                'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=1&web=1&e=pNA6Qxsda",
                 'is_active' => false
             ],
             [
                 'contract_ref_id' => 'N621',
                 'msa_id' => 5,
                 'contract_added_by' => 1,
-                'contract_type' => "TandM",
+                'contract_type' => "TM",
                 'date_of_signature' => now()->subMonths(2),
                 'comments' => "Fixed fee with tight schedule",
                 'start_date' => now(),
                 'end_date' => now()->addMonths(9),
                 'du' => 'DU1',
                 'estimated_amount' => 2400000,
-                'contract_doclink' => "liiink.doc",
+                'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=1&web=1&e=pNA6Qxasdasdw",
                 'is_active' => false
             ],
             [
                 'contract_ref_id' => 'A091',
                 'msa_id' => 1,
                 'contract_added_by' => 1,
-                'contract_type' => "TandM",
+                'contract_type' => "TM",
                 'date_of_signature' => now()->subMonths(2),
                 'comments' => "Updated contract on harleys",
                 'start_date' => now(),
@@ -126,7 +126,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'M921',
                 'msa_id' => 4,
                 'contract_added_by' => 4,
-                'contract_type' => "TandM",
+                'contract_type' => "TM",
                 'date_of_signature' => now()->subMonths(2),
                 'comments' => "Contact me if it further requires change",
                 'start_date' => now(),

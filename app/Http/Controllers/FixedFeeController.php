@@ -16,127 +16,88 @@ class FixedFeeController extends Controller
                 'milestone_desc' => 'Product Design and Planning',
                 'milestone_enddate' => '2024-05-20',
                 'percentage' => 20,
-                'amount' => 10000,
+                'amount' => 40000.00, // 20% of $200,000
             ],
             [
                 'contract_id' => 1,
                 'milestone_desc' => 'Prototype Development',
                 'milestone_enddate' => '2024-06-30',
                 'percentage' => 30,
-                'amount' => 15000,
+                'amount' => 60000.00, // 30% of $200,000
             ],
             [
                 'contract_id' => 1,
                 'milestone_desc' => 'Prototype Testing and Feedback',
                 'milestone_enddate' => '2024-08-15',
                 'percentage' => 40,
-                'amount' => 20000,
+                'amount' => 80000.00, // 40% of $200,000
             ],
             [
                 'contract_id' => 1,
                 'milestone_desc' => 'Manufacturing Setup',
                 'milestone_enddate' => '2024-09-30',
                 'percentage' => 10,
-                'amount' => 25000,
+                'amount' => 20000.00, // 10% of $200,000
             ],
             [
                 'contract_id' => 2,
-                'milestone_desc' => 'Market Research and Analysis',
-                'milestone_enddate' => '2024-04-15',
-                'percentage' => 10,
-                'amount' => 6000,
-            ],
-            [
-                'contract_id' => 2,
-                'milestone_desc' => 'Product Packaging Design',
-                'milestone_enddate' => '2024-06-01',
-                'percentage' => 20,
-                'amount' => 12000,
-            ],
-            [
-                'contract_id' => 3,
-                'milestone_desc' => 'Marketing Strategy Development',
-                'milestone_enddate' => '2024-07-10',
-                'percentage' => 30,
-                'amount' => 18000,
-            ],
-            [
-                'contract_id' => 3,
-                'milestone_desc' => 'Product Launch',
-                'milestone_enddate' => '2024-09-30',
-                'percentage' => 40,
-                'amount' => 22000,
-            ],
-            [
-                'contract_id' => 4,
-                'milestone_desc' => 'Product Ideation',
-                'milestone_enddate' => '2024-04-20',
-                'percentage' => 15,
-                'amount' => 8000,
-            ],
-            [
-                'contract_id' => 4,
-                'milestone_desc' => 'Prototype Development',
-                'milestone_enddate' => '2024-05-15',
-                'percentage' => 30,
-                'amount' => 15000,
-            ],
-            [
-                'contract_id' => 2,
-                'milestone_desc' => 'User Testing and Feedback',
-                'milestone_enddate' => '2024-06-30',
-                'percentage' => 30,
-                'amount' => 21000,
-            ],
-            [
-                'contract_id' => 4,
-                'milestone_desc' => 'Final Product Refinement',
-                'milestone_enddate' => '2024-08-15',
-                'percentage' => 25,
-                'amount' => 27000,
-            ],
-            [
-                'contract_id' => 5,
-                'milestone_desc' => 'Product Research and Development',
-                'milestone_enddate' => '2024-04-25',
-                'percentage' => 10,
-                'amount' => 9000,
-            ],
-            [
-                'contract_id' => 5,
-                'milestone_desc' => 'Product Testing and Quality Assurance',
+                'milestone_desc' => 'Product Design and Planning',
                 'milestone_enddate' => '2024-05-20',
                 'percentage' => 20,
-                'amount' => 18000,
+                'amount' => 50000.00, // 20% of $250,000
             ],
             [
-                'contract_id' => 4,
-                'milestone_desc' => 'Product Packaging Design',
-                'milestone_enddate' => '2024-07-10',
-                'percentage' => 40,
-                'amount' => 27000,
-            ],
-            [
-                'contract_id' => 1,
-                'milestone_desc' => 'Marketing Strategy Development',
-                'milestone_enddate' => '2024-04-30',
+                'contract_id' => 2,
+                'milestone_desc' => 'Prototype Development',
+                'milestone_enddate' => '2024-06-30',
                 'percentage' => 30,
-                'amount' => 36000,
+                'amount' => 75000.00, // 30% of $250,000
+            ],
+            [
+                'contract_id' => 2,
+                'milestone_desc' => 'Prototype Testing and Feedback',
+                'milestone_enddate' => '2024-08-15',
+                'percentage' => 40,
+                'amount' => 100000.00, // 40% of $250,000
+            ],
+            [
+                'contract_id' => 2,
+                'milestone_desc' => 'Manufacturing Setup',
+                'milestone_enddate' => '2024-09-30',
+                'percentage' => 10,
+                'amount' => 25000.00, // 10% of $250,000
             ],
             [
                 'contract_id' => 3,
-                'milestone_desc' => 'Conceptualization and Planning',
-                'milestone_enddate' => '2024-04-30',
-                'percentage' => 25,
-                'amount' => 10000,
-            ],
-            [
-                'contract_id' => 3,
-                'milestone_desc' => 'Product Design and Development',
+                'milestone_desc' => 'Requirements Analysis and Planning',
                 'milestone_enddate' => '2024-06-15',
-                'percentage' => 50,
-                'amount' => 20000,
-            ], 
+                'percentage' => 20,
+                'amount' => 160000.00, // 20% of $800,000
+            ],
+            [
+                'contract_id' => 3,
+                'milestone_desc' => 'Software Design and Architecture',
+                'milestone_enddate' => '2024-07-30',
+                'percentage' => 20,
+                'amount' => 160000.00, // 20% of $800,000
+            ],
+            [
+                'contract_id' => 3,
+                'milestone_desc' => 'Coding and Implementation',
+                'milestone_enddate' => '2024-09-15',
+                'percentage' => 20,
+                'amount' => 160000.00, // 20% of $800,000
+            ],
+            [
+                'contract_id' => 3,
+                'milestone_desc' => 'Testing and Quality Assurance',
+                'milestone_enddate' => '2024-10-30',
+                'percentage' => 20,
+                'amount' => 160000.00, // 20% of $800,000
+            ],
+
+
+
         ];
         foreach ($dummydata_ff as $ffData) {
             $ffData = new FixedFeeContracts($ffData);

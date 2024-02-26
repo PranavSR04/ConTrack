@@ -8,5 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class AssociatedUsers extends Model
 {
     use HasFactory;
-    protected $fillable = [''];
+    protected $fillable = [
+        'contract_id',
+        'user_id'
+        ]
+        ;
 }

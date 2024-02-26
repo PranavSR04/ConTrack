@@ -175,7 +175,7 @@ class UserController extends Controller
             ],
             [
                 'experion_id' => 3,
-                'role_id' => 1,
+                'role_id' => 3,
                 'user_name' => 'Michael Brown',
                 'user_mail' => 'michael.brown@experionglobal.com',
                 'user_designation' => 'Project Manager',
@@ -184,7 +184,7 @@ class UserController extends Controller
             ],
             [
                 'experion_id' => 4,
-                'role_id' => 2,
+                'role_id' => 3,
                 'user_name' => 'Emily Grace Taylor',
                 'user_mail' => 'emily.taylor@experionglobal.com',
                 'user_designation' => 'Quality Assurance',

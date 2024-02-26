@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('milestone_desc');
             $table->date('milestone_enddate');
             $table->decimal('percentage');
-            $table->decimal('amount');
+            $table->double('amount');
             $table->timestamps();
         });
     }
