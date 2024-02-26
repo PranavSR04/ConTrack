@@ -61,7 +61,7 @@ Route::put('/updateUser/{user_id}', [UserController::class,'updateUser']);
 
 
 
-//Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
+Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
 Route::get('/notAuth',[UserCheckController::class,'notauth'])->name('notauth');
 
 
