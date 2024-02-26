@@ -18,11 +18,18 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'experion_id',
+        'role_id',
+        'user_name',
+        'user_mail',
+        'user_designation',
+        'group_name',
+        'is_active'
     ];
-
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLogs::class, 'performed_by');
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

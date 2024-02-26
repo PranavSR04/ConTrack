@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Roles extends Model
+class AssociatedUsers extends Model
 {
     use HasFactory;
-    protected $fillable=[
-        'role_name',
-        'role_access',
-        'is_active'
+    protected $table = 'associated_users';
+    protected $fillable = [
+        'contract_id',
+        'user_id',
     ];
+
 }
