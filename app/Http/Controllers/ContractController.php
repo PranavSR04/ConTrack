@@ -195,7 +195,8 @@ class ContractController extends Controller
             $requestData = $request->all();
             $querydata=Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
             ->join('users', 'contracts.contract_added_by', '=', 'users.id')
-            ->select('msas.client_name', 'users.user_name','contracts.*');
+            ->select('msas.client_name', 'users.user_name','contracts.contract_type','contracts.date_of_signature',
+            'contracts.contract_ref_id','contracts.comments','contracts.start_date','contracts.end_date','du','estimated_amount','contract_doclink','contracts.status');
             if (empty($requestData)) {
                 return $querydata->paginate('10');
             } else {
