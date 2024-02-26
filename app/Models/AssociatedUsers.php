@@ -11,6 +11,11 @@ class AssociatedUsers extends Model
     protected $fillable = [
         'contract_id',
         'user_id'
+<<<<<<< HEAD
         ]
         ;
 }
+=======
+    ];
+}
+>>>>>>> 38d2c478d73a3407093fb305e6525659b692beaf
