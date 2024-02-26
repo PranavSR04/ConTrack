@@ -8,6 +8,7 @@ use App\Models\UserNotifications;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -353,7 +354,9 @@ class MsaController extends Controller
                          ];
                return response()->json($response, 400);
              } else {
-            
+
+         
+
             $msa = MSAs::create([
                 'msa_ref_id' => $request->msa_ref_id,
                 'added_by' => $added_by,//session()->get(user_id)
@@ -362,7 +365,7 @@ class MsaController extends Controller
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
                 'comments' => $request->comments,
-                'msa_doclink' =>$request->msa_doclink,
+                'msa_doclink' =>$request->msa_doclink
             ]);
 
             $msa->added_by_user=$added_by_user->added_by_user;
@@ -451,10 +454,21 @@ class MsaController extends Controller
                     $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
                              ->select('users.user_name as added_by_user')
                              ->first();
-
-               $msa->update($validated);
-                $msa->added_by_user=$added_by_user->added_by_user;
+             if ($msa->is_active == 1) {
                 $action="Updated ";
+               $msa->update($validated);
+             }else{
+                $msa->update([
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                    'msa_doclink' => $request->msa_doclink,
+                    'is_active' => 1,
+                ]);
+            
+                $action = "Renewed";
+             }
+                $msa->added_by_user=$added_by_user->added_by_user;
+                
                 ActivityLogs::create([
                'msa_id' => $msa->id,
                'performed_by' => $added_by,
