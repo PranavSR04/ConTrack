@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AssociatedUsers;
 use App\Models\Contracts;
 use App\Models\FixedFeeContracts;
 use App\Models\TimeAndMaterialContracts;
+use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
+use SebastianBergmann\CodeCoverage\Util\Percentage;
 use Spatie\FlareClient\Http\Exceptions\NotFound;
 
 class ContractController extends Controller
@@ -89,7 +95,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'AN21',
                 'msa_id' => 2,
                 'contract_added_by' => 1,
-                'contract_type' => "T&M",
+                'contract_type' => "TM",
                 'date_of_signature' => now()->subMonths(2),
                 'comments' => "File also available in sharepoint",
                 'start_date' => now(),
@@ -103,7 +109,8 @@ class ContractController extends Controller
                 'contract_ref_id' => 'N621',
                 'msa_id' => 5,
                 'contract_added_by' => 1,
-                'contract_type' => "T&M",
+                
+                'contract_type' => "TM",
                 'date_of_signature' => now()->subMonths(2),
                 'comments' => "Fixed fee with tight schedule",
                 'start_date' => now(),
@@ -117,7 +124,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'A091',
                 'msa_id' => 1,
                 'contract_added_by' => 1,
-                'contract_type' => "T&M",
+                'contract_type' => "TM",
                 'date_of_signature' => now()->subMonths(2),
                 'comments' => "Updated contract on harleys",
                 'start_date' => now(),
@@ -131,7 +138,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'M921',
                 'msa_id' => 4,
                 'contract_added_by' => 4,
-                'contract_type' => "T&M",
+                'contract_type' => "TM",
                 'date_of_signature' => now()->subMonths(2),
                 'comments' => "Contact me if it requires further change",
                 'start_date' => now(),
