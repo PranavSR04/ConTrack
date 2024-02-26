@@ -17,9 +17,9 @@ use App\Models\User;
 class UserController extends Controller
 {
    
-
+ 
     public function addUser(Request $request){
-
+ 
     try {
         // Validate the request data
         $request->validate([
@@ -39,7 +39,7 @@ class UserController extends Controller
                 throw new Exception('User already exists');
             }
         }
-    
+        
         // Get the experion employee data
         $experionEmployee = ExperionEmployees::where('id', $request->experion_id)->first();
 
@@ -78,7 +78,7 @@ class UserController extends Controller
         $searchTerm = $request->input('search', '');
         $sortColumn = $request->input('sort', 'user_name');
         $sortOrder = $request->input('sort_order', 'asc');
-
+        
         $users = User::leftJoin('contracts', 'users.id', '=', 'contracts.contract_added_by')
                     ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
                     ->select('users.user_name', 'roles.role_access', \DB::raw('COUNT(contracts.id) as contracts_count'))
