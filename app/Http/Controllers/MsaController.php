@@ -454,7 +454,12 @@ class MsaController extends Controller
 
                $msa->update($validated);
                 $msa->added_by_user=$added_by_user->added_by_user;
-                
+                $action="Updated ";
+                ActivityLogs::create([
+               'msa_id' => $msa->id,
+               'performed_by' => $added_by,
+               'action' =>$action,
+                 ]);
                     // Return success response
                   return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
                 } catch (ValidationException $e) {
