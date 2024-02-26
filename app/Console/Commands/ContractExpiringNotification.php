@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class ContractExpiringNotification extends Command
 {
-    protected $signature = 'check-contract-end-dates';
+    protected $signature = 'contract-expiring-notification';
     protected $description = 'Check contract end dates and send notifications for contracts expiring within 2 weeks.';
 
     public function handle()

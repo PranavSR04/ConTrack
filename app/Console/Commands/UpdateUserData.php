@@ -35,8 +35,8 @@ class UpdateUserData extends Command
       
         foreach ($allEmployees as $employee) {
             $user = User::where('experion_id', $employee->id)->first();
-            $fullName = $employee->first_name . ' ' . $employee->middle_name . ' ' . $employee->last_name;
             if ($user) {
+                $fullName = $employee->first_name . ' ' . $employee->middle_name . ' ' . $employee->last_name;
                 $user->update([
                     'user_name' => $fullName,
                     'user_mail' => $employee->email_id
