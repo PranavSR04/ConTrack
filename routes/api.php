@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MsaController;
 use App\Http\Controllers\AddendumController;
 use App\Http\Controllers\RevenueController;
+use App\Http\Controllers\UserCheckController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\FixedFeeController;
@@ -53,7 +54,8 @@ Route::put('/updateUser/{user_id}', [UserController::class,'updateUser']);
 
 
 
-Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection']);
+Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
+Route::get('/notAuth',[UserCheckController::class,'notauth'])->name('notauth');
 
 
 Route::group([
