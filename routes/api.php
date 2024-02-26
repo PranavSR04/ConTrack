@@ -36,7 +36,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::GET('/general/notifications',[UserNotifications::class,'getUserNotification']);
 Route::PUT('/notification/statusupdate',[UserNotifications::class,'notificationStatusUpdate']);
 Route::POST('/insert/logdata',[InsertController::class,'insertData']);
-Route::get('/getContractData/{id?}', [ContractController::class, 'getContractData']);
+Route::get('/contract/getlist/{id?}', [ContractController::class, 'getContractData']);
 Route::post('/insertContractsData', [ContractController::class, 'insertContractsData']);
 Route::post('/insertFixedFeeData', [FixedFeeController::class, 'insertFixedFeeData']);
 Route::post('/insertTandMData', [TandMController::class, 'insertTandMData']);
