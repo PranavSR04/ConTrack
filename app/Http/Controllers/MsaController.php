@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLogs;
 use App\Models\MSAs;
 use App\Models\UserNotifications;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class MsaController extends Controller
 {
@@ -250,6 +254,12 @@ class MsaController extends Controller
  */
     public function MSAList(Request $request)
     {
+        try{
+        $added_by=4;//session()->get(user_id)
+        $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
+                     ->select('users.user_name as added_by_user')
+                     ->first();
+
         $params = $request->all();
         
         $msas_query = MSAs::query();
@@ -263,7 +273,7 @@ class MsaController extends Controller
                 case 'region':
                 case 'start_date':
                 case 'end_date':
-                case 'added_by':
+                case 'added_by_user':
                     $msas_query->where($key,'like','%'.$value.'%');
                     break;
                 case 'sort_by':
@@ -275,10 +285,19 @@ class MsaController extends Controller
                     break;
             }
         }
-
-        $msas = $msas_query->where('is_active', true)->get();
-
+        
+        $msas = $msas_query->where('is_active', true)->paginate(20);
+        $msas->added_by_user=$added_by_user->added_by_user;
         return response()->json($msas);
+    } catch (QueryException $e) {
+        return response()->json(['error' => 'Database error'], 500);
+    } catch (ValidationException $e) {
+        return response()->json(['error' => $e->getMessage()], 422);
+    } catch (ModelNotFoundException $e) {
+        return response()->json(['error' => 'MSA not found'], 404);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Something went wrong'], 500);
+    }
     }
 
 /**
@@ -290,6 +309,7 @@ class MsaController extends Controller
 
     public function addMsa(Request $request)
     {   
+        try{
         // Validate the incoming request data
         $validator=Validator::make($request->all(),[
             'msa_ref_id' => 'required|string|max:25',
@@ -311,7 +331,6 @@ class MsaController extends Controller
         // Get the validated data
         $validated=$validator->validated();
         
-         try {
 
             $existingMSA = MSAs::where('msa_ref_id', $request->msa_ref_id)->exists();
 
@@ -345,12 +364,25 @@ class MsaController extends Controller
                 'comments' => $request->comments,
                 'msa_doclink' =>$request->msa_doclink,
             ]);
+
             $msa->added_by_user=$added_by_user->added_by_user;
+            $action="Added ";
+             ActivityLogs::create([
+            'msa_id' => $msa->id,
+            'performed_by' => $added_by,
+            'action' =>$action,
+              ]);
             
             return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 201);
         }
-       
-     } catch (\Exception $e) {
+    } catch (ValidationException $e) {
+        return response()->json(['error' => 'Validation failed', 'message' => $e->validator->errors()], 422);
+    } catch (QueryException $e) {
+        return response()->json(['error' => 'Database error', 'message' => $e->getMessage()], 500);
+    } catch (ModelNotFoundException $e) {
+        return response()->json(['error' => 'Model not found', 'message' => $e->getMessage()], 404);
+    }
+     catch (\Exception $e) {
             return response()->json(['error' => 'Failed to create MSA', 'message' => $e->getMessage()], 500);
         }
     }
@@ -363,7 +395,7 @@ class MsaController extends Controller
  * @return \Illuminate\Http\JsonResponse
  */
     public function updateMsa(Request $request,$id){
-        
+        try{
        $msa = MSAs::find($id);
    
        
@@ -389,8 +421,7 @@ class MsaController extends Controller
    
         // Get the validated data
        $validated=$validator->validated();
-       
-            try{
+
                  // Check if both start_date and end_date are provided
                     if (isset($validated['start_date']) && isset($validated['end_date'])) 
                     {
@@ -426,9 +457,15 @@ class MsaController extends Controller
                 
                     // Return success response
                   return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
-
+                } catch (ValidationException $e) {
+                    return response()->json(['error' => 'Validation failed', 'message' => $e->validator->errors()], 422);
+                } catch (ModelNotFoundException $e) {
+                    return response()->json(['error' => 'MSA not found'], 404);
+                } catch (QueryException $e) {
+                    return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
             }catch(\Exception $e){
                 return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
             }
        }
+       
 }
