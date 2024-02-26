@@ -26,7 +26,10 @@ class User extends Authenticatable
         'group_name',
         'is_active'
     ];
-
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLogs::class, 'performed_by');
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

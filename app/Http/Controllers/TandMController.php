@@ -13,114 +13,89 @@ class TandMController extends Controller
     $dummyData = [
         [
             'contract_id' => 6,
-            'milestone_desc' => 'Initial Consultation',
-            'milestone_enddate' => '2024-03-15',
-            'amount' => 5000,
-        ],
-        [
-            'contract_id' => 6,
             'milestone_desc' => 'Project Kickoff',
-            'milestone_enddate' => '2024-04-10',
-            'amount' => 10000,
-        ],
-        [
-            'contract_id' => 7,
-            'milestone_desc' => 'Design Completion',
-            'milestone_enddate' => '2024-05-20',
-            'amount' => 15000,
-        ],
-        [
-            'contract_id' => 7,
-            'milestone_desc' => 'Back-end Development',
-            'milestone_enddate' => '2024-06-30',
-            'amount' => 20000,
-        ],
-        [
-            'contract_id' => 7,
-            'milestone_desc' => 'Front-end Development',
-            'milestone_enddate' => '2024-08-15',
-            'amount' => 25000,
-        ],
-        [
-            'contract_id' => 7,
-            'milestone_desc' => 'Testing and QA',
-            'milestone_enddate' => '2024-09-30',
-            'amount' => 30000,
-        ],
-        [
-            'contract_id' => 8,
-            'milestone_desc' => 'Final Delivery',
-            'milestone_enddate' => '2024-11-10',
-            'amount' => 35000,
-        ],
-    [
-            'contract_id' => 8,
-            'milestone_desc' => 'Requirement Gathering',
-            'milestone_enddate' => '2024-03-15',
-            'amount' => 5000,
-        ],
-        [
-            'contract_id' => 8,
-            'milestone_desc' => 'Prototype Development',
-            'milestone_enddate' => '2024-04-10',
-            'amount' => 10000,
-        ],
-        [
-            'contract_id' => 9,
-            'milestone_desc' => 'User Acceptance Testing',
-            'milestone_enddate' => '2024-05-20',
-            'amount' => 15000,
-        ],
-        [
-            'contract_id' => 9,
-            'milestone_desc' => 'Beta Release',
-            'milestone_enddate' => '2024-06-30',
-            'amount' => 20000,
+            'milestone_enddate' => now()->addDays(15),
+            'amount' => 550000.00, // Adjusted amount to ensure the sum equals $2,200,000
         ],
         [
             'contract_id' => 6,
-            'milestone_desc' => 'Product Launch',
-            'milestone_enddate' => '2024-08-15',
-            'amount' => 25000,
+            'milestone_desc' => 'Phase 1 Completion',
+            'milestone_enddate' => now()->addMonths(2),
+            'amount' => 550000.00, // Adjusted amount to ensure the sum equals $2,200,000
+        ],
+        [
+            'contract_id' => 6,
+            'milestone_desc' => 'Midway Progress',
+            'milestone_enddate' => now()->addMonths(5),
+            'amount' => 550000.00, // Adjusted amount to ensure the sum equals $2,200,000
+        ],
+        [
+            'contract_id' => 6,
+            'milestone_desc' => 'Project Completion',
+            'milestone_enddate' => now()->addMonths(8),
+            'amount' => 550000.00, // Adjusted amount to ensure the sum equals $2,200,000
         ],
         [
             'contract_id' => 7,
-            'milestone_desc' => 'Market Research',
-            'milestone_enddate' => '2024-03-20',
-            'amount' => 6000,
+            'milestone_desc' => 'Project Initiation',
+            'milestone_enddate' => now()->addDays(10),
+            'amount' => 700000.00,
+        ],
+        [
+            'contract_id' => 7,
+            'milestone_desc' => 'Design and Planning',
+            'milestone_enddate' => now()->addMonths(2),
+            'amount' => 900000.00,
+        ],
+        [
+            'contract_id' => 7,
+            'milestone_desc' => 'Development Milestone',
+            'milestone_enddate' => now()->addMonths(5),
+            'amount' => 800000.00,
         ],
         [
             'contract_id' => 8,
-            'milestone_desc' => 'Product Design',
-            'milestone_enddate' => '2024-04-15',
-            'amount' => 12000,
+            'milestone_desc' => 'Project Initiation',
+            'milestone_enddate' => now()->addDays(10),
+            'amount' => 100000.00,
         ],
         [
             'contract_id' => 8,
-            'milestone_desc' => 'Manufacturing Setup',
-            'milestone_enddate' => '2024-06-01',
-            'amount' => 18000,
+            'milestone_desc' => 'Requirements Analysis',
+            'milestone_enddate' => now()->addMonths(2),
+            'amount' => 150000.00,
         ],
         [
             'contract_id' => 8,
-            'milestone_desc' => 'Prototyping and Testing',
-            'milestone_enddate' => '2024-05-15',
-            'amount' => 12000,
+            'milestone_desc' => 'Design and Planning',
+            'milestone_enddate' => now()->addMonths(3),
+            'amount' => 75000.00,
         ],
         [
-            'contract_id' => 9,
-            'milestone_desc' => 'Manufacturing Setup',
-            'milestone_enddate' => '2024-06-30',
-            'amount' => 20000,
+            'contract_id' => 8,
+            'milestone_desc' => 'Development Milestone 1',
+            'milestone_enddate' => now()->addMonths(5),
+            'amount' => 125000.00,
         ],
         [
-            'contract_id' => 9,
-            'milestone_desc' => 'Product Launch',
-            'milestone_enddate' => '2024-08-15',
-            'amount' => 25000,
+            'contract_id' => 8,
+            'milestone_desc' => 'Testing and QA',
+            'milestone_enddate' => now()->addMonths(7),
+            'amount' => 100000.00,
         ],
-     
+        [
+            'contract_id' => 8,
+            'milestone_desc' => 'Project Completion',
+            'milestone_enddate' => now()->addMonths(8),
+            'amount' => 50000.00,
+        ]
+
     ];
+
+
+
+     
+    
     foreach ($dummyData as $tmData) {
         $tmData = new TimeAndMaterialContracts($tmData);
         $tmData->save();
