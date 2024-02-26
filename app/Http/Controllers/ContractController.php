@@ -161,7 +161,6 @@ class ContractController extends Controller
     }
     public function getContractData(Request $request, $id=null)
     {
-        
         if($id!=null){
             try {
             $contractData = Contracts::find($id);
@@ -188,9 +187,7 @@ class ContractController extends Controller
                 $combinedData = $singleContract->map(function ($contract) use ($data) {
                     $contract['milestones'] = $data->where('contract_id', $contract['id'])->values()->all();
                     return $contract;
-                });
-
-                
+                }); 
                 return response()->json($combinedData); 
             }
         }
@@ -198,7 +195,6 @@ class ContractController extends Controller
             return response()->json(['error'=> $e->getMessage()]);
         }
     } 
-    
         try{
             //get data in request parameter
             $requestData = $request->all();
@@ -219,15 +215,13 @@ class ContractController extends Controller
                     }
                     if(in_array($key, ['start_date', 'end_date'])){
                         $querydata->where('contracts.'.$key, 'LIKE', '%' . $value . '%');
-                    }
-                    
+                    }       
             }
             if ($querydata->count() == 0) {
                 return response()->json(['error' => 'Data not found'], 404);
             }  
             
                 return $querydata->paginate('10');
-
         } 
     }
     catch (Exception $e) {
