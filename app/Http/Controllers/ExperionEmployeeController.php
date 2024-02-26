@@ -27,7 +27,21 @@ class ExperionEmployeeController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new record in the ExperionEmployees table.
+     *
+     * Validates and processes the incoming request data to create a new record
+     * in the ExperionEmployees table. Requires the following parameters in the request:
+     *
+     * - email_id (string, required, valid email format)
+     * - password (string, required, 6 to 30 characters)
+     * - first_name (string, required, 3 to 20 characters)
+     * - middle_name (string, optional, up to 20 characters)
+     * - last_name (string, optional, up to 20 characters)
+     *
+     * Returns a success message upon successful data insertion or validation errors.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return string|array
      */
     public function store(Request $request)
     {
@@ -53,7 +67,7 @@ class ExperionEmployeeController extends Controller
     }
 
     /**
-     * Store generated data
+     * Store generated data to fill into the table
      */
     public function generateRandomData()
     {
@@ -117,7 +131,15 @@ class ExperionEmployeeController extends Controller
     }
 
     /**
-     * Function to display employees from experion table
+     * Display a listing of users based on the provided name.
+     *
+     * This function retrieves a list of users from the ExperionEmployees model
+     * whose first_name, middle_name, or last_name partially match the provided name.
+     * The request must include a 'name' parameter. Returns a JSON response
+     * with the list of matching users or appropriate error messages.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Request $request)
     {
@@ -126,7 +148,7 @@ class ExperionEmployeeController extends Controller
             $request->validate([
                 'name' => 'required|string',
             ]);
-        
+
             $users = ExperionEmployees::where(function ($query) use ($request) {
                 $query->where('first_name', 'like', $request->name . '%')
                     ->orWhere('middle_name', 'like', $request->name . '%')
