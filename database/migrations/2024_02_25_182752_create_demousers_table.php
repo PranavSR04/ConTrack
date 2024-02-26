@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('associated_users', function (Blueprint $table) {
+        Schema::create('demousers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('contract_id')->constrained('contracts');
-            $table->foreignId('user_id')->constrained('users');
+            $table->string('username')->unique();
+            $table->string('email')->unique();
+            $table->string('password');
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('associated_users');
+        Schema::dropIfExists('demousers');
     }
 };
