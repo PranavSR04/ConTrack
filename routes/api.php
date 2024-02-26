@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\AssociatedUsersController;
 use App\Http\Controllers\MsaController;
 use App\Http\Controllers\AddendumController;
 use App\Http\Controllers\AuthController;
