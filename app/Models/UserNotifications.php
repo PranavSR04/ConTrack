@@ -13,4 +13,12 @@ class UserNotifications extends Model
         "sendto_id",
         "status",
     ] ;
+    public function activityLog()
+    {
+        return $this->belongsTo(ActivityLogs::class.'log_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

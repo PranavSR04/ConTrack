@@ -12,7 +12,7 @@ class ContractController extends Controller
         $contractsDataArray = [
             [
                 'contract_ref_id' => 'AGF7',
-                'msa_id' => 1,
+                'msa_id' => 2,
                 'contract_added_by' => 2,
                 'contract_type' => "FF",
                 'date_of_signature' => now()->subMonths(2),
@@ -26,7 +26,7 @@ class ContractController extends Controller
             ],
             [
                 'contract_ref_id' => 'A166',
-                'msa_id' => 1,
+                'msa_id' => 2,
                 'contract_added_by' => 1,
                 'contract_type' => "FF",
                 'date_of_signature' => now()->subMonths(2),
@@ -40,7 +40,7 @@ class ContractController extends Controller
             ],
             [
                 'contract_ref_id' => 'ABC1',
-                'msa_id' => 1,
+                'msa_id' => 2,
                 'contract_added_by' => 2,
                 'contract_type' => "FF",
                 'date_of_signature' => now()->subMonths(3),
@@ -110,7 +110,7 @@ class ContractController extends Controller
             ],
             [
                 'contract_ref_id' => 'A091',
-                'msa_id' => 1,
+                'msa_id' => 2,
                 'contract_added_by' => 1,
                 'contract_type' => "TandM",
                 'date_of_signature' => now()->subMonths(2),
