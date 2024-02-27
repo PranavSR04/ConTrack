@@ -33,8 +33,11 @@ use App\Http\Controllers\ExperionEmployeeController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::GET('/general/notifications',[UserNotifications::class,'getUserNotification']);
-Route::PUT('/notification/statusupdate',[UserNotifications::class,'notificationStatusUpdate']);
+
+Route::middleware('auth')->group(function () {
+
+Route::GET('/general/notifications',[UserNotification::class,'getUserNotification']);
+Route::PUT('/notification/statusupdate',[UserNotification::class,'notificationStatusUpdate']);
 Route::POST('/insert/logdata',[InsertController::class,'insertData']);
 Route::get('/contract/getlist/{id?}', [ContractController::class, 'getContractData']);
 Route::post('/insertContractsData', [ContractController::class, 'insertContractsData']);
@@ -47,18 +50,18 @@ Route::put('/update/msa/{id}', [MSAController::class, 'updateMsa']);
 Route::post('/insertUser',[UserController::class,'create']);
 Route::post('/insert/ExperionData', [ExperionEmployeeController::class,'store']);
 Route::post('/generate/ExperionData', [ExperionEmployeeController::class,'generateRandomData']);
-Route::get('/display/ExperionData/{id}',[ExperionEmployeeController::class,'show']);
+Route::get('/display/ExperionData',[ExperionEmployeeController::class,'show']);
 Route::post('/insert/AddendumData', [AddendumController::class,'generateData']);
 Route::post('/insertRole', [RoleController::class, 'insertRole']);
 Route::get('/role/details', [RoleController::class, 'getRole']);
 Route::post('/add/contracts', [ContractController::class,'addContract']);
-Route::post('updateContractData/{id}', [ContractController::class,'updateContractData']);
+Route::put('/updateContractData/{id}', [ContractController::class,'updateContractData']);
 Route::get('/getUsers',[UserController::class,'getUsers']);  
 Route::post('/addUser', [UserController::class,'addUser']);  
 Route::put('/updateUser/{user_id}', [UserController::class,'updateUser']); 
 
 
-
+});
 
 
 Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
@@ -70,7 +73,6 @@ Route::group([
     'prefix' => 'auth'
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/register', [AuthController::class, 'register']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/user-profile', [AuthController::class, 'userProfile']);    
