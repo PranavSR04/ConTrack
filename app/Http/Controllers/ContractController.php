@@ -143,6 +143,7 @@ class ContractController extends Controller
             $contractsData = new Contracts($contractData);
             $contractsData->save();
         }
+        
         return response()->json(['Data inserted']);
     }
     public function getContractData(Request $request)

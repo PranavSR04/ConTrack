@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 use App\Models\ActivityLogs;
-use App\Models\UserNotifications;
 use Illuminate\Http\Request;
 
 class InsertController extends Controller

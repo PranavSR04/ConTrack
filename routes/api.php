@@ -2,13 +2,13 @@
 
 use App\Http\Controllers\MsaController;
 use App\Http\Controllers\AddendumController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\FixedFeeController;
 use App\Http\Controllers\TandMController;
 use App\Http\Controllers\InsertController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExperionEmployeeController;
@@ -27,9 +27,8 @@ use App\Http\Controllers\ExperionEmployeeController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::GET('/general/notifications',[UserNotification::class,'getUserNotification']);
-Route::PUT('/notification/statusupdate',[UserNotification::class,'notificationStatusUpdate']);
-Route::POST('/insert/logdata',[InsertController::class,'insertData']);
+Route::GET('/notification/general',[NotificationController::class,'getUserNotification']);
+Route::PUT('/notification/statusupdate',[NotificationController::class,'notificationStatusUpdate']);
 Route::get('/getContractData', [ContractController::class, 'getContractData']);
 Route::post('/insertContractsData', [ContractController::class, 'insertContractsData']);
 Route::post('/insertFixedFeeData', [FixedFeeController::class, 'insertFixedFeeData']);
