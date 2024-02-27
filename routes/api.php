@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AssociatedUsersController;
 use App\Http\Controllers\MsaController;
 use App\Http\Controllers\AddendumController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\UserCheckController;
 use App\Http\Controllers\RoleController;
@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function () {
 Route::GET('/general/notifications',[UserNotification::class,'getUserNotification']);
 Route::PUT('/notification/statusupdate',[UserNotification::class,'notificationStatusUpdate']);
 Route::POST('/insert/logdata',[InsertController::class,'insertData']);
-Route::get('/getContractData', [ContractController::class, 'getContractData']);
+Route::get('/contract/getlist/{id?}', [ContractController::class, 'getContractData']);
 Route::post('/insertContractsData', [ContractController::class, 'insertContractsData']);
 Route::post('/insertFixedFeeData', [FixedFeeController::class, 'insertFixedFeeData']);
 Route::post('/insertTandMData', [TandMController::class, 'insertTandMData']);
