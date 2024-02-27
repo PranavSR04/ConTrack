@@ -240,7 +240,7 @@ class ContractController extends Controller
 
                 $associatedUsers = [];
                 foreach ($validated_ff['associated_users'] as $assignee) {
-                    if (User::where('id', $assignee['id'])->exists()) {
+                    if (User::where('id', $assignee['user_id'])->exists()) {
                         $associatedUsers[] = [
                             'user_id' => $assignee['user_id'],
                         ];
@@ -266,6 +266,10 @@ class ContractController extends Controller
                 if ($sumPercentages == 100) {
                     if ($sumAmounts == $validated_ff['estimated_amount']) {
                         $result = Contracts::where('id', $contractId)->update($contractUpdateData);
+                        if ($associatedUsers) {
+                            AssociatedUsers::where('contract_id', $contractId)->update(['user_id' => $associatedUsers]);
+                        }
+
                         foreach ($milestonesUpdateData as $milestoneData) {
                             FixedFeeContracts::updateOrCreate(
                                 [
@@ -343,7 +347,8 @@ class ContractController extends Controller
 
                 $associatedUsers = [];
                 foreach ($validated_tm['associated_users'] as $assignee) {
-                    if (User::where('id', $assignee['id'])->exists()) {
+
+                    if (User::where('id', $assignee['user_id'])->exists()) {
                         $associatedUsers[] = [
                             'user_id' => $assignee['user_id'],
                         ];
@@ -355,8 +360,9 @@ class ContractController extends Controller
 
                 if ($sumAmounts == $validated_tm['estimated_amount']) {
                     $result = Contracts::where('id', $contractId)->update($contractUpdateData);
+
                     if ($associatedUsers) {
-                        AssociatedUsers::where('contract_id', $contractId)->update($associatedUsers);
+                        AssociatedUsers::where('contract_id', $contractId)->update(['user_id' => $associatedUsers]);
                     }
 
                     foreach ($milestonesUpdateData as $milestoneData) {
@@ -385,6 +391,13 @@ class ContractController extends Controller
 
     }
 
+    /**
+     * Add a new contract.
+     *
+     * @param \Illuminate\Http\Request $request The HTTP request object containing contract data
+     * @return \Illuminate\Http\JsonResponse Response indicating success or failure of contract creation
+     */
+
     public function addContract(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -398,6 +411,8 @@ class ContractController extends Controller
             'estimated_amount' => 'required|numeric|min:0',
             'comments' => 'string',
             'contract_doclink' => 'required|string',
+            'associated_users' => ['array', 'exists:users,id'],
+            'associated_users.*.user_id' => 'required|numeric',
         ]);
 
         if ($validator->fails()) {
@@ -456,6 +471,10 @@ class ContractController extends Controller
             if (!empty($request->assoc)) {
                 foreach ($request->assoc as $users) {
                     // return response()->json([$users['user_id']]);
+                    // if (!User::find($users->user_id)) {
+                    //     throw new Exception("User not Found");
+                    //     // return response()->json(["User doesn't exist"], 404);
+                    // }
                     AssociatedUsers::create([
                         'contract_id' => $contractId,
                         'user_id' => $users['user_id'],
@@ -486,7 +505,14 @@ class ContractController extends Controller
 
             return response()->json(['message' => 'Contract created successfully', 'contract' => $contractId], 201);
         } catch (Exception $e) {
-            return response()->json(['error' => 'Failed to create contract', 'message' => $e->getMessage()], 500);
+            if (strpos($e->getMessage(), 'foreign key constraint fails') !== false) {
+                return response()->json(['error' => 'User not valid'], 500);
+
+            } else {
+                return response()->json(['error' => 'Failed to create contract', 'message' => $e->getMessage()], 500);
+
+            }
+
         }
     }
 

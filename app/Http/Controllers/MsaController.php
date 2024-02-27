@@ -273,7 +273,7 @@ class MsaController extends Controller
                 case 'region':
                 case 'start_date':
                 case 'end_date':
-                case 'added_by_user':
+                case 'added_by':
                     $msas_query->where($key,'like','%'.$value.'%');
                     break;
                 case 'sort_by':
@@ -286,7 +286,7 @@ class MsaController extends Controller
             }
         }
         
-        $msas = $msas_query->where('is_active', true)->paginate(20);
+        $msas = $msas_query->where('is_active', true)->paginate(10);
         $msas->added_by_user=$added_by_user->added_by_user;
         return response()->json($msas);
     } catch (QueryException $e) {
@@ -372,6 +372,8 @@ class MsaController extends Controller
             'performed_by' => $added_by,
             'action' =>$action,
               ]);
+
+              
             
             return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 201);
         }
