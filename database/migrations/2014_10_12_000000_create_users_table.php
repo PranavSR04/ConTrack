@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('role_id')->constrained('roles');
             $table->string('user_name',100);
             $table->string('user_mail',100);
-            $table->string('user_designation',100);
+            $table->string('user_designation',100)->nullable();
             $table->string('group_name',100)->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();

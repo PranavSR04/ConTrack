@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,10 +12,10 @@ return new class extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('msa_id')->constrained('msas');
+            $table->foreignId('msa_id');
             $table->foreignId('contract_added_by')->constrained('users');
-            $table->string('contract_ref_id',25);
-            $table->string('contract_type',25);
+            $table->string('contract_ref_id', 25);
+            $table->string('contract_type', 25);
             $table->date('date_of_signature');
             $table->string('comments')->nullable();
             $table->date('start_date');
@@ -24,8 +23,9 @@ return new class extends Migration
             $table->string('du');
             $table->string('contract_doclink');
             $table->double('estimated_amount');
-            $table->boolean('is_active');
+            $table->string('contract_status')->default('Active');
             $table->timestamps();
+            $table->foreign('msa_id')->references('id')->on('msas');
         });
     }
 

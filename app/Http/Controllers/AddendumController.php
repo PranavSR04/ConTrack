@@ -41,13 +41,25 @@ class AddendumController extends Controller
                 "addendum_doclink"=>"https://example.com/document1"
             ],
             [
+                "contract_id"=>1,
+                "addendum_doclink"=>"https://example.com/document12"
+            ],
+            [
+                "contract_id"=>1,
+                "addendum_doclink"=>"https://example.com/document13"
+            ],
+            [
                 "contract_id"=>2,
-                "addendum_doclink"=>"https://example.com/document2"
+                "addendum_doclink"=>"https://example.com/document20"
+            ],
+            [
+                "contract_id"=>2,
+                "addendum_doclink"=>"https://example.com/document21"
             ],
             [
                 "contract_id"=>3,
-                "addendum_doclink"=>"https://example.com/document3"
-            ],
+                "addendum_doclink"=>"https://example.com/document30"
+            ]
         ];
         foreach ($addendumData as $data) {
             Addendums::create($data);

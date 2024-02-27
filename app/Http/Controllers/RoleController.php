@@ -13,15 +13,21 @@ class RoleController extends Controller
             "role_access" => "Can edit and view contracts",
             "is_active" => true,
         ]);
-        $role = new Roles([
+        $role3 = new Roles([
             "role_name" => "Reader",
             "role_access" => "Can view contracts",
             "is_active" => true,
         ]);
+        $role1 = new Roles([
+            "role_name" => "Super Admin",
+            "role_access" => "Full Access",
+            "is_active" => true,
+        ]);
 
-        
-        $role->save();
+        $role1->save();
         $role2->save();
+        $role3->save();
+
         
         return "Role created successfully!!";
     } catch (\Exception $e) {

@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ff_contracts', function (Blueprint $table) {
+        Schema::create('demousers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('contract_id')->constrained('contracts');
-            $table->text('milestone_desc');
-            $table->date('milestone_enddate');
-            $table->decimal('percentage');
-            $table->double('amount');
+            $table->string('username')->unique();
+            $table->string('email')->unique();
+            $table->string('password');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ff_contracts');
+        Schema::dropIfExists('demousers');
     }
 };

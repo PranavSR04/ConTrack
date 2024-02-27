@@ -22,4 +22,23 @@ class Contracts extends Model
         'contract_doclink',
         'is_active',
     ];
+    // public function tmContract()
+    // {
+    //     return $this->hasMany(TimeAndMaterialContracts::class, 'contract_id');
+    // }
+
+    // public function ffContract()
+    // {
+    //     return $this->hasMany(FixedFeeContracts::class, 'contract_id');
+    // }
+    // public function userList()
+    // {
+    //     return $this->belongsTo(User::class, 'added_by'); 
+    // }
+
+    // public function msaList()
+    // {
+    //     return $this->belongsTo(MSAs::class, 'msa_id'); 
+    // }
+
 }
