@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Addendums;
 use App\Models\AssociatedUsers;
 use App\Models\Contracts;
 use App\Models\FixedFeeContracts;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
+use app\Models\ActivityLogs;
 
 class ContractController extends Controller
 {
@@ -189,13 +191,14 @@ class ContractController extends Controller
     {
         try {
             $contract = Contracts::find($contractId);
+            // return response()->json([$contract]);
             if (!$contract) {
                 return response()->json(['error' => 'Contract not found'], 404);
             }
 
             if ($request->is_active === false) {
                 $result = Contracts::where('id', $contractId)->update('is_active', false);
-                return response()->json('Contract Closed');
+                return response()->json(['message' => 'Contract Closed']);
             }
 
             $contract_type = Contracts::where('id', $contractId)->value('contract_type');
@@ -218,9 +221,10 @@ class ContractController extends Controller
                     'milestones.*.milestone_enddate' => 'required|date',
                     'milestones.*.percentage' => 'required|numeric',
                     'milestones.*.amount' => 'required|numeric',
+                    'addendum_doclink' => 'string',
                 ]);
                 if ($validator_ff->fails()) {
-                    throw new ValidationException($validator_ff);
+                    return response()->json(['error' => $validator_ff->errors()], 422);
                 }
 
 
@@ -240,7 +244,7 @@ class ContractController extends Controller
 
                 $associatedUsers = [];
                 foreach ($validated_ff['associated_users'] as $assignee) {
-                    if (User::where('id', $assignee['id'])->exists()) {
+                    if (User::where('id', $assignee['user_id'])->exists()) {
                         $associatedUsers[] = [
                             'user_id' => $assignee['user_id'],
                         ];
@@ -265,9 +269,13 @@ class ContractController extends Controller
 
                 if ($sumPercentages == 100) {
                     if ($sumAmounts == $validated_ff['estimated_amount']) {
-                        $result = Contracts::where('id', $contractId)->update($contractUpdateData);
+                        $contractResult = Contracts::where('id', $contractId)->update($contractUpdateData);
+                        if ($associatedUsers) {
+                            $associatedResult = AssociatedUsers::where('contract_id', $contractId)->update(['user_id' => $associatedUsers]);
+                        }
+
                         foreach ($milestonesUpdateData as $milestoneData) {
-                            FixedFeeContracts::updateOrCreate(
+                            $ffResult = FixedFeeContracts::updateOrCreate(
                                 [
                                     'contract_id' => $contractId,
                                     'milestone_desc' => $milestoneData['milestone_desc'],
@@ -279,12 +287,29 @@ class ContractController extends Controller
                                 ]
                             );
                         }
-                        return response()->json("Contract table updated along with ff milestones");
+
+                        $addendumsResult = Addendums::where('contract_id', $contractId)->updateOrCreate(['addendum_doclink' => $validated_ff['addendums_doclink']]);
+
+                        $activityResult = ActivityLogs::create([
+                            'contract_id' => $contractId,
+                            'performed_by' => $validated_ff['contract_added_by'],
+                            'action' => "Updated",
+                        ]);
+
+                        return response()->json(["message"=> "Contract edited successfully",
+                            "data" => [
+                                'contract_result' => $contractResult,
+                                'associated_users_result' => $associatedResult,
+                                'milestones_result' => $ffResult,
+                                'addendums_result' => $addendumsResult,
+                                'activity_result' => $activityResult
+                            ]
+                        ]);
                     } else {
-                        return response()->json("Sum of amount not equal to estimated amount");
+                        return response()->json(['error' => "Sum of amount not equal to estimated amount"], 422);
                     }
                 } else {
-                    return response()->json("Sum of percentages not equals 100%");
+                    return response()->json(['error' => "Sum of percentage not equal to 100"], 422);
                 }
 
 
@@ -308,9 +333,10 @@ class ContractController extends Controller
                     'milestones.*.amount' => 'required|numeric',
                     'associated_users' => 'array',
                     'associated_users.*.user_id' => 'numeric',
+                    'addendum_doclink' => 'string',
                 ]);
                 if ($validator_tm->fails()) {
-                    throw new ValidationException($validator_tm);
+                    return response()->json(['error' => $validator_tm->errors()], 422);
                 }
 
                 $validated_tm = $validator_tm->validated();
@@ -343,7 +369,7 @@ class ContractController extends Controller
 
                 $associatedUsers = [];
                 foreach ($validated_tm['associated_users'] as $assignee) {
-                    if (User::where('id', $assignee['id'])->exists()) {
+                    if (User::where('id', $assignee['user_id'])->exists()) {
                         $associatedUsers[] = [
                             'user_id' => $assignee['user_id'],
                         ];
@@ -354,13 +380,13 @@ class ContractController extends Controller
                 }
 
                 if ($sumAmounts == $validated_tm['estimated_amount']) {
-                    $result = Contracts::where('id', $contractId)->update($contractUpdateData);
+                    $contractResult = Contracts::where('id', $contractId)->update($contractUpdateData);
                     if ($associatedUsers) {
-                        AssociatedUsers::where('contract_id', $contractId)->update($associatedUsers);
+                        $associatedResult = AssociatedUsers::where('contract_id', $contractId)->update(['user_id' => $associatedUsers]);
                     }
 
                     foreach ($milestonesUpdateData as $milestoneData) {
-                        TimeAndMaterialContracts::updateOrCreate(
+                        $tmResult = TimeAndMaterialContracts::updateOrCreate(
                             [
                                 'contract_id' => $contractId,
                                 'milestone_desc' => $milestoneData['milestone_desc'],
@@ -371,16 +397,33 @@ class ContractController extends Controller
                             ]
                         );
                     }
-                    return response()->json("Contract table updated along with tm milestones");
+
+                    $addendumsResult = Addendums::where('contract_id', $contractId)->updateOrCreate(['addendum_doclink' => $validated_tm['addendums_doclink']]);
+
+                    $activityResult = ActivityLogs::create([
+                        'contract_id' => $contractId,
+                        'performed_by' => $validated_tm['contract_added_by'],
+                        'action' => "Updated",
+                    ]);
+
+                    return response()->json([ "message"=> "Contract edited successfully",
+                        "data" => [
+                            'contract_result' => $contractResult,
+                            'associated_users_result' => $associatedResult,
+                            'milestones_result' => $tmResult,
+                            'addendums_result' => $addendumsResult,
+                            'activity_result' => $activityResult
+                        ]
+                    ]);
                 } else {
-                    return response()->json("Amount not equal to estimated amount");
+                    return response()->json(['error' => "Sum of amount not equal to estimated amount"], 422);
                 }
 
             } else {
-                return response()->json("Invalid Contract Type");
+                return response()->json(["error" => "Invalid Contract Type"], 422);
             }
-        } catch (\Exception $e) {
-            return response()->json(['Contract Not Found' => $e->getMessage()], 500);
+        } catch (Exception $e) {
+            return response()->json(['error' => "Failed to edit contract"], 500);
         }
 
     }
