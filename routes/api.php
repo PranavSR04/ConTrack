@@ -60,6 +60,8 @@ Route::post('/users/adduser', [UserController::class,'addUser']);
 Route::put('/users/updateuser/{user_id}', [UserController::class,'updateUser']); 
 Route::post('/add/msa', [MSAController::class, 'addMsa']);
 Route::put('/update/msa/{id}', [MSAController::class, 'updateMsa']);
+Route::get('/contracts/myContracts/{id}', [UserController::class,'myContracts']);  
+
 });
 
 Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
