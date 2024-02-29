@@ -17,26 +17,26 @@ class ContractExpiringNotification extends Command
     public function handle()
     {
         try {
-        // Get contracts ending within 2 weeks
-        $contracts = Contracts::where('end_date', '=', today()->addDays(14))
+        // Get contracts ending in 2 weeks
+        $contracts = Contracts::where('end_date', '=', today()->addDays(14)) 
             ->get();
         if (!$contracts->isEmpty()) {
         foreach ($contracts as $contract) {
             ActivityLogs::create([
                 'contract_id' => $contract->id,
+                'action' => 'Expiring ',
                 'msa_id' => $contract->msa_id,
-                'action' => 'Expiring '
             ]);
         }
     }
-        $contracts = Contracts::where('end_date', '=', today()->subDays(1))
+        $contracts = Contracts::where('end_date', '=', today()->subDays(1)) //if ended yesterday
             ->get();
         if (!$contracts->isEmpty()) {
         foreach ($contracts as $contract) {
             ActivityLogs::create([
                 'contract_id' => $contract->id,
+                'action' => 'Expired',
                 'msa_id' => $contract->msa_id,
-                'action' => 'Expired'
             ]);
         }
     }
