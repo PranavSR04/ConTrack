@@ -54,7 +54,7 @@ Route::post('/addeddum/insertdata', [AddendumController::class,'generateData']);
 Route::post('/role/insertrole', [RoleController::class, 'insertRole']);
 Route::get('/role/details', [RoleController::class, 'getRole']);
 Route::post('/contracts/addcontracts', [ContractController::class,'addContract']);
-// Route::put('/contracts/editcontract/{id}', [ContractController::class,'updateContractData']);
+Route::put('/contracts/editcontract/{id}', [ContractController::class,'updateContractData']);
 Route::get('/users/getusers',[UserController::class,'getUsers']);  
 Route::post('/users/adduser', [UserController::class,'addUser']);  
 Route::put('/users/updateuser/{user_id}', [UserController::class,'updateUser']); 
@@ -79,4 +79,4 @@ Route::group([
 });
 
 
-Route::put('/contracts/editcontract/{id}', [ContractController::class,'updateContractData']);
+// Route::put('/contracts/editcontract/{id}', [ContractController::class,'updateContractData']);
