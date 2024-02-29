@@ -81,7 +81,7 @@ class AddendumController extends Controller
 
             $uploadedFile = new Addendums;
             $uploadedFile->contract_id = $request->contract_id;
-            // $uploadedFile->file_id = $file_id;
+            $uploadedFile->file_id = $file_id;
             $fileLink = "https://drive.google.com/file/d/{$file_id}";
             $uploadedFile->addendum_doclink = $fileLink;
             $uploadedFile->save();
