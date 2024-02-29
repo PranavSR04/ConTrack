@@ -189,24 +189,22 @@ class ContractController extends Controller
                 $addendum=Addendums::where('contract_id','=',$id)
                 ->select('*')
                 ->get();
-                if(!$addendum->count() == 0){
                     //join the data
                     $combinedData = $combinedData->map(function ($contract) use ($addendum) {
                         $contract['addendum'] = $addendum->where('contract_id', $contract['id'])->values()->all();
                         return $contract;
                     }); 
-                }
+                
               //get all associated users
-              $associatedUsers=AssociatedUsers::where('contract_id','=',$id)
-                ->select('*')
+              $associatedUsers=AssociatedUsers::join('users','associated_users.user_id','=','users.id')
+              ->where('contract_id','=',$id)
+                ->select('associated_users.id','contract_id','user_name','user_mail')
                 ->get();
-                if(!$associatedUsers->count() == 0){
                     //join the data
                     $combinedData = $combinedData->map(function ($contract) use ($associatedUsers) {
                         $contract['associated_users'] = $associatedUsers->where('contract_id', $contract['id'])->values()->all();
                         return $contract;
                     }); 
-                }
                 return response()->json($combinedData); 
             }
         }

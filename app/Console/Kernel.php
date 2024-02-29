@@ -13,9 +13,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('app:update-user-data')->dailyAt('6:48'); //daily 12:18pm 
-        $schedule->command('contract-expiring-notification')->dailyAt('6:48');
-        $schedule->command('app:contract-status-update')->dailyAt('6:48');
+        $schedule->command('app:update-user-data')->everyFiveMinutes(); //daily 12:18pm 
+        $schedule->command('contract-expiring-notification')->everyFiveMinutes();
+        $schedule->command('app:contract-status-update')->everyFiveMinutes();
     }
     protected $commands = [
         // Other commands...
