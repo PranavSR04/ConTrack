@@ -4,9 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Models\Addendums;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class AddendumController extends Controller
 {
+    /**
+     * Generate a google api token.
+     */
+    public function token()
+    {
+        $client_id = \Config('services.google.client_id');
+        $client_secret = \Config('services.google.client_secret');
+        $refresh_token = \Config('services.google.refresh_token');
+        $folder_id = \Config('services.google.folder_id');
+
+        $response = Http::post('https://oauth2.googleapis.com/token', [
+
+            'client_id' => $client_id,
+            'client_secret' => $client_secret,
+            'refresh_token' => $refresh_token,
+            'grant_type' => 'refresh_token',
+
+        ]);
+        // dd($response);
+        $accessToken = json_decode((string) $response->getBody(), true)['access_token'];
+
+        return $accessToken;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -28,7 +54,44 @@ class AddendumController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validation = $request->validate([
+            'file' => 'file|required',
+            'contract_id' => 'required',
+        ]);
+
+        $accessToken = $this->token();
+        // dd($accessToken);
+        $name = $request->file->getClientOriginalName();
+        //$mime=$request->file->getClientMimeType();
+
+        $path = $request->file->getRealPath();
+
+        $response = Http::withToken($accessToken)
+            ->attach('data', file_get_contents($path), $name)
+            ->withHeaders([
+                'Content-Type' => 'application/pdf',
+            ])
+            ->post('https://www.googleapis.com/upload/drive/v3/files', [
+                'name' => $name,
+            ]);
+
+
+        if ($response->successful()) {
+            $file_id = json_decode($response->body())->id;
+
+            $uploadedFile = new Addendums;
+            $uploadedFile->contract_id = $request->contract_id;
+            // $uploadedFile->file_id = $file_id;
+            $fileLink = "https://drive.google.com/file/d/{$file_id}";
+            $uploadedFile->addendum_doclink = $fileLink;
+            $uploadedFile->save();
+
+            // return $response->json(["message"=>"File Uploaded to Google Drive"]);
+            return response("File Uploaded to Google Drive");
+        } else {
+            // return $response->json(["error"=>"Couldn't upload to Google Drive"]);
+            return response("Couldn't upload to Google Drive");
+        }
     }
 
     /**

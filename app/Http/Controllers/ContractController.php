@@ -283,8 +283,8 @@ class ContractController extends Controller
                     'start_date' => 'required|date|before:end_date',
                     'end_date' => 'required|date|after:start_date',
                     'date_of_signature' => 'date|before:start_date',
-                    'is_active' => 'required',
                     'comments' => 'string',
+                    'du'=>'string|required',
                     'contract_doclink' => 'string',
                     'contract_status' => 'string',
                     'estimated_amount' => 'required|numeric',
@@ -293,7 +293,6 @@ class ContractController extends Controller
                     'milestones.*.milestone_enddate' => 'required|date',
                     'milestones.*.percentage' => 'required|numeric',
                     'milestones.*.amount' => 'required|numeric',
-                    'addendum_doclink' => 'string',
                 ]);
                 if ($validator_ff->fails()) {
                     return response()->json(['error' => $validator_ff->errors()], 422);
@@ -310,6 +309,7 @@ class ContractController extends Controller
                         'date_of_signature' => $validated_ff['date_of_signature'],
                         'contract_status' => $validated_ff['contract_status'],
                         'comments' => $validated_ff['comments'],
+                        'du'=> $validated_ff['du'],
                         'contract_doclink' => $validated_ff['contract_doclink'],
                         'estimated_amount' => $validated_ff['estimated_amount'],
                     ];
@@ -396,8 +396,8 @@ class ContractController extends Controller
                     'start_date' => 'required|date|before:end_date',
                     'end_date' => 'required|date|after:start_date',
                     'date_of_signature' => 'date|before:start_date',
-                    'is_active' => 'required',
                     'comments' => 'string',
+                    'du'=>'string|required',
                     'contract_status' => 'string',
                     'contract_doclink' => 'string',
                     'estimated_amount' => 'required|numeric',
@@ -407,7 +407,6 @@ class ContractController extends Controller
                     'milestones.*.amount' => 'required|numeric',
                     'associated_users' => 'array',
                     'associated_users.*.user_id' => 'numeric',
-                    'addendum_doclink' => 'string',
                 ]);
                 if ($validator_tm->fails()) {
                     return response()->json(['error' => $validator_tm->errors()], 422);
@@ -423,6 +422,7 @@ class ContractController extends Controller
                         'date_of_signature' => $validated_tm['date_of_signature'],
                         'contract_status' => $validated_tm['contract_status'],
                         'comments' => $validated_tm['comments'],
+                        'du'=> $validated_tm['du'],
                         'contract_doclink' => $validated_tm['contract_doclink'],
                         'estimated_amount' => $validated_tm['estimated_amount'],
                     ];
@@ -473,7 +473,9 @@ class ContractController extends Controller
                         }
     
                         // $addendumsResult = Addendums::where('contract_id', $contractId)->updateOrCreate(['addendum_doclink' => $validated_tm['addendums_doclink']]);
-    
+                        // $addendumController = new AddendumController();
+                        // $addendumController->show($contractId);
+
                         $activityResult = ActivityLogs::create([
                             'contract_id' => $contractId,
                             'performed_by' => $validated_tm['contract_added_by'],
