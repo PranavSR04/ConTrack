@@ -57,6 +57,8 @@ Route::get('/getUsers',[UserController::class,'getUsers']);
 Route::post('/addUser', [UserController::class,'addUser']);  
 Route::put('/updateUser/{user_id}', [UserController::class,'updateUser']); 
 
+Route::get('/Contracts/myContracts/{id}', [UserController::class,'myContracts']);  
+
 
 
 
