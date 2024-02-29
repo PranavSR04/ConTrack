@@ -286,6 +286,7 @@ class ContractController extends Controller
                     'is_active' => 'required',
                     'comments' => 'string',
                     'contract_doclink' => 'string',
+                    'contract_status' => 'string',
                     'estimated_amount' => 'required|numeric',
                     'milestones' => 'required|array',
                     'milestones.*.milestone_desc' => 'required|string',
@@ -300,89 +301,90 @@ class ContractController extends Controller
 
 
                 $validated_ff = $validator_ff->validated();
-
-                $contractUpdateData = [
-                    'msa_id' => $validated_ff['msa_id'],
-                    'contract_added_by' => $validated_ff['contract_added_by'],
-                    'start_date' => $validated_ff['start_date'],
-                    'end_date' => $validated_ff['end_date'],
-                    'date_of_signature' => $validated_ff['date_of_signature'],
-                    'is_active' => $validated_ff['is_active'],
-                    'comments' => $validated_ff['comments'],
-                    'contract_doclink' => $validated_ff['contract_doclink'],
-                    'estimated_amount' => $validated_ff['estimated_amount'],
-                ];
-
-                $associatedUsers = [];
-                foreach ($validated_ff['associated_users'] as $assignee) {
-                    if (User::where('id', $assignee['user_id'])->exists()) {
-                        $associatedUsers[] = [
-                            'user_id' => $assignee['user_id'],
-                        ];
-                    } else {
-                        return response()->json(["User doesn't exist"], 404);
-                    }
-
-                }
-
-                $milestonesUpdateData = [];
-
-                foreach ($validated_ff['milestones'] as $milestone) {
-                    $milestonesUpdateData[] = [
-                        'milestone_desc' => $milestone['milestone_desc'],
-                        'milestone_enddate' => $milestone['milestone_enddate'],
-                        'percentage' => $milestone['percentage'],
-                        'amount' => $milestone['amount'],
+                if($validated_ff['contract_status']!=="Closed"||['contract_status']!=="closed"||['contract_status']!=="CLOSED"){
+                    $contractUpdateData = [
+                        'msa_id' => $validated_ff['msa_id'],
+                        'contract_added_by' => $validated_ff['contract_added_by'],
+                        'start_date' => $validated_ff['start_date'],
+                        'end_date' => $validated_ff['end_date'],
+                        'date_of_signature' => $validated_ff['date_of_signature'],
+                        'contract_status' => $validated_ff['contract_status'],
+                        'comments' => $validated_ff['comments'],
+                        'contract_doclink' => $validated_ff['contract_doclink'],
+                        'estimated_amount' => $validated_ff['estimated_amount'],
                     ];
-                }
-                $sumPercentages = array_sum(array_column($milestonesUpdateData, 'percentage'));
-                $sumAmounts = array_sum(array_column($milestonesUpdateData, 'amount'));
-
-                if ($sumPercentages == 100) {
-                    if ($sumAmounts == $validated_ff['estimated_amount']) {
-                        $contractResult = Contracts::where('id', $contractId)->update($contractUpdateData);
-                        if ($associatedUsers) {
-                            $associatedResult = AssociatedUsers::where('contract_id', $contractId)->update(['user_id' => $associatedUsers]);
+    
+                    $associatedUsers = [];
+                    foreach ($validated_ff['associated_users'] as $assignee) {
+                        if (User::where('id', $assignee['user_id'])->exists()) {
+                            $associatedUsers[] = [
+                                'user_id' => $assignee['user_id'],
+                            ];
+                        } else {
+                            return response()->json(["User doesn't exist"], 404);
                         }
-
-                        foreach ($milestonesUpdateData as $milestoneData) {
-                            $ffResult = FixedFeeContracts::updateOrCreate(
-                                [
-                                    'contract_id' => $contractId,
-                                    'milestone_desc' => $milestoneData['milestone_desc'],
-                                ],
-                                [
-                                    'milestone_enddate' => $milestoneData['milestone_enddate'],
-                                    'percentage' => $milestoneData['percentage'],
-                                    'amount' => $milestoneData['amount'],
-                                ]
-                            );
-                        }
-
-                        $addendumsResult = Addendums::where('contract_id', $contractId)->updateOrCreate(['addendum_doclink' => $validated_ff['addendums_doclink']]);
-
-                        $activityResult = ActivityLogs::create([
-                            'contract_id' => $contractId,
-                            'performed_by' => $validated_ff['contract_added_by'],
-                            'action' => "Updated",
-                        ]);
-
-                        return response()->json(["message"=> "Contract edited successfully",
-                            "data" => [
-                                'contract_result' => $contractResult,
-                                'associated_users_result' => $associatedResult,
-                                'milestones_result' => $ffResult,
-                                'addendums_result' => $addendumsResult,
-                                'activity_result' => $activityResult
-                            ]
-                        ]);
-                    } else {
-                        return response()->json(['error' => "Sum of amount not equal to estimated amount"], 422);
+    
                     }
-                } else {
-                    return response()->json(['error' => "Sum of percentage not equal to 100"], 422);
+    
+                    $milestonesUpdateData = [];
+    
+                    foreach ($validated_ff['milestones'] as $milestone) {
+                        $milestonesUpdateData[] = [
+                            'milestone_desc' => $milestone['milestone_desc'],
+                            'milestone_enddate' => $milestone['milestone_enddate'],
+                            'percentage' => $milestone['percentage'],
+                            'amount' => $milestone['amount'],
+                        ];
+                    }
+                    $sumPercentages = array_sum(array_column($milestonesUpdateData, 'percentage'));
+                    $sumAmounts = array_sum(array_column($milestonesUpdateData, 'amount'));
+    
+                    if ($sumPercentages == 100) {
+                        if ($sumAmounts == $validated_ff['estimated_amount']) {
+                            $contractResult = Contracts::where('id', $contractId)->update($contractUpdateData);
+                            if ($associatedUsers) {
+                                $associatedResult = AssociatedUsers::where('contract_id', $contractId)->update(['user_id' => $associatedUsers]);
+                            }
+    
+                            foreach ($milestonesUpdateData as $milestoneData) {
+                                $ffResult = FixedFeeContracts::updateOrCreate(
+                                    [
+                                        'contract_id' => $contractId,
+                                        'milestone_desc' => $milestoneData['milestone_desc'],
+                                    ],
+                                    [
+                                        'milestone_enddate' => $milestoneData['milestone_enddate'],
+                                        'percentage' => $milestoneData['percentage'],
+                                        'amount' => $milestoneData['amount'],
+                                    ]
+                                );
+                            }
+    
+                            // $addendumsResult = Addendums::where('contract_id', $contractId)->updateOrCreate(['addendum_doclink' => $validated_ff['addendums_doclink']]);
+    
+                            $activityResult = ActivityLogs::create([
+                                'contract_id' => $contractId,
+                                'performed_by' => $validated_ff['contract_added_by'],
+                                'action' => "Updated",
+                            ]);
+    
+                            return response()->json(["message"=> "Contract edited successfully",
+                                "data" => [
+                                    'contract_result' => $contractResult,
+                                    'associated_users_result' => $associatedResult,
+                                    'milestones_result' => $ffResult,
+                                    'activity_result' => $activityResult
+                                ]
+                            ]);
+                        } else {
+                            return response()->json(['error' => "Sum of amount not equal to estimated amount"], 422);
+                        }
+                    } else {
+                        return response()->json(['error' => "Sum of percentage not equal to 100"], 422);
+                    }
+    
                 }
-
+                
 
             } else if ($contract_type === 'TM') {
                 // Validate the incoming request data
@@ -396,6 +398,7 @@ class ContractController extends Controller
                     'date_of_signature' => 'date|before:start_date',
                     'is_active' => 'required',
                     'comments' => 'string',
+                    'contract_status' => 'string',
                     'contract_doclink' => 'string',
                     'estimated_amount' => 'required|numeric',
                     'milestones' => 'required|array',
@@ -411,88 +414,89 @@ class ContractController extends Controller
                 }
 
                 $validated_tm = $validator_tm->validated();
-
-                $contractUpdateData = [
-                    'msa_id' => $validated_tm['msa_id'],
-                    'contract_added_by' => $validated_tm['contract_added_by'],
-                    'start_date' => $validated_tm['start_date'],
-                    'end_date' => $validated_tm['end_date'],
-                    'date_of_signature' => $validated_tm['date_of_signature'],
-                    'is_active' => $validated_tm['is_active'],
-                    'comments' => $validated_tm['comments'],
-                    'contract_doclink' => $validated_tm['contract_doclink'],
-                    'estimated_amount' => $validated_tm['estimated_amount'],
-                ];
-
-                // $result = Contracts::where('id', $contractId)->update($contractUpdateData);
-
-                $milestonesUpdateData = [];
-
-                foreach ($validated_tm['milestones'] as $milestone) {
-                    $milestonesUpdateData[] = [
-                        'milestone_desc' => $milestone['milestone_desc'],
-                        'milestone_enddate' => $milestone['milestone_enddate'],
-                        'amount' => $milestone['amount'],
+                if ($validated_tm['contract_status'] !== "Closed"||$validated_tm['contract_status'] !== "closed"||$validated_tm['contract_status'] !== "CLOSED") {
+                    $contractUpdateData = [
+                        'msa_id' => $validated_tm['msa_id'],
+                        'contract_added_by' => $validated_tm['contract_added_by'],
+                        'start_date' => $validated_tm['start_date'],
+                        'end_date' => $validated_tm['end_date'],
+                        'date_of_signature' => $validated_tm['date_of_signature'],
+                        'contract_status' => $validated_tm['contract_status'],
+                        'comments' => $validated_tm['comments'],
+                        'contract_doclink' => $validated_tm['contract_doclink'],
+                        'estimated_amount' => $validated_tm['estimated_amount'],
                     ];
-                }
-
-                $sumAmounts = array_sum(array_column($milestonesUpdateData, 'amount'));
-
-                $associatedUsers = [];
-                foreach ($validated_tm['associated_users'] as $assignee) {
-                    if (User::where('id', $assignee['user_id'])->exists()) {
-                        $associatedUsers[] = [
-                            'user_id' => $assignee['user_id'],
+    
+                    // $result = Contracts::where('id', $contractId)->update($contractUpdateData);
+    
+                    $milestonesUpdateData = [];
+    
+                    foreach ($validated_tm['milestones'] as $milestone) {
+                        $milestonesUpdateData[] = [
+                            'milestone_desc' => $milestone['milestone_desc'],
+                            'milestone_enddate' => $milestone['milestone_enddate'],
+                            'amount' => $milestone['amount'],
                         ];
-                    } else {
-                        return response()->json(["User doesn't exist"], 404);
                     }
-
-                }
-
-                if ($sumAmounts == $validated_tm['estimated_amount']) {
-                    $contractResult = Contracts::where('id', $contractId)->update($contractUpdateData);
-                    if ($associatedUsers) {
-                        $associatedResult = AssociatedUsers::where('contract_id', $contractId)->update(['user_id' => $associatedUsers]);
+    
+                    $sumAmounts = array_sum(array_column($milestonesUpdateData, 'amount'));
+    
+                    $associatedUsers = [];
+                    foreach ($validated_tm['associated_users'] as $assignee) {
+                        if (User::where('id', $assignee['user_id'])->exists()) {
+                            $associatedUsers[] = [
+                                'user_id' => $assignee['user_id'],
+                            ];
+                        } else {
+                            return response()->json(["User doesn't exist"], 404);
+                        }
+    
                     }
-
-                    foreach ($milestonesUpdateData as $milestoneData) {
-                        $tmResult = TimeAndMaterialContracts::updateOrCreate(
-                            [
-                                'contract_id' => $contractId,
-                                'milestone_desc' => $milestoneData['milestone_desc'],
-                            ],
-                            [
-                                'milestone_enddate' => $milestoneData['milestone_enddate'],
-                                'amount' => $milestoneData['amount'],
+    
+                    if ($sumAmounts == $validated_tm['estimated_amount']) {
+                        $contractResult = Contracts::where('id', $contractId)->update($contractUpdateData);
+                        if ($associatedUsers) {
+                            $associatedResult = AssociatedUsers::where('contract_id', $contractId)->update(['user_id' => $associatedUsers]);
+                        }
+    
+                        foreach ($milestonesUpdateData as $milestoneData) {
+                            $tmResult = TimeAndMaterialContracts::updateOrCreate(
+                                [
+                                    'contract_id' => $contractId,
+                                    'milestone_desc' => $milestoneData['milestone_desc'],
+                                ],
+                                [
+                                    'milestone_enddate' => $milestoneData['milestone_enddate'],
+                                    'amount' => $milestoneData['amount'],
+                                ]
+                            );
+                        }
+    
+                        // $addendumsResult = Addendums::where('contract_id', $contractId)->updateOrCreate(['addendum_doclink' => $validated_tm['addendums_doclink']]);
+    
+                        $activityResult = ActivityLogs::create([
+                            'contract_id' => $contractId,
+                            'performed_by' => $validated_tm['contract_added_by'],
+                            'action' => "Updated",
+                        ]);
+    
+                        return response()->json([ "message"=> "Contract edited successfully",
+                            "data" => [
+                                'contract_result' => $contractResult,
+                                'associated_users_result' => $associatedResult,
+                                'milestones_result' => $tmResult,
+                                'activity_result' => $activityResult
                             ]
-                        );
+                        ]);
+                    } else {
+                        return response()->json(['error' => "Sum of amount not equal to estimated amount"], 422);
                     }
-
-                    $addendumsResult = Addendums::where('contract_id', $contractId)->updateOrCreate(['addendum_doclink' => $validated_tm['addendums_doclink']]);
-
-                    $activityResult = ActivityLogs::create([
-                        'contract_id' => $contractId,
-                        'performed_by' => $validated_tm['contract_added_by'],
-                        'action' => "Updated",
-                    ]);
-
-                    return response()->json([ "message"=> "Contract edited successfully",
-                        "data" => [
-                            'contract_result' => $contractResult,
-                            'associated_users_result' => $associatedResult,
-                            'milestones_result' => $tmResult,
-                            'addendums_result' => $addendumsResult,
-                            'activity_result' => $activityResult
-                        ]
-                    ]);
+    
                 } else {
-                    return response()->json(['error' => "Sum of amount not equal to estimated amount"], 422);
+                    return response()->json(["error" => "Invalid Contract Type"], 422);
                 }
-
-            } else {
-                return response()->json(["error" => "Invalid Contract Type"], 422);
-            }
+                }
+                
         } catch (Exception $e) {
             return response()->json(['error' => "Failed to edit contract"], 500);
         }
