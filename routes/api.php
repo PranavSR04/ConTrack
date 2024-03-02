@@ -41,9 +41,9 @@ Route::post('/insertContractsData', [ContractController::class, 'insertContracts
 Route::post('/insertFixedFeeData', [FixedFeeController::class, 'insertFixedFeeData']);
 Route::post('/insertTandMData', [TandMController::class, 'insertTandMData']);
 Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
-Route::get('/get/msalist', [MSAController::class, 'MSAList']);
-Route::post('/add/msa', [MSAController::class, 'addMsa']);
-Route::put('/update/msa/{id}', [MSAController::class, 'updateMsa']);
+Route::get('/msa/getlist', [MSAController::class, 'MSAList']);
+Route::post('/msa/add/{user_id}', [MSAController::class, 'addMsa']);
+Route::put('/msa/update/{user_id}', [MSAController::class, 'updateMsa']);
 Route::post('/insertUser',[UserController::class,'create']);
 Route::post('/insert/ExperionData', [ExperionEmployeeController::class,'store']);
 Route::post('/generate/ExperionData', [ExperionEmployeeController::class,'generateRandomData']);
