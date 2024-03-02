@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
 Route::GET('/general/notifications',[UserNotification::class,'getUserNotification']);
 Route::PUT('/notification/statusupdate',[UserNotification::class,'notificationStatusUpdate']);
 Route::POST('/insert/logdata',[InsertController::class,'insertData']);
-Route::get('/contract/getlist/{id?}', [ContractController::class, 'getContractData']);
+
 Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
 Route::post('/ff/insertFixedFeeData', [FixedFeeController::class, 'insertFixedFeeData']);
 Route::post('/tm/insertTandMData', [TandMController::class, 'insertTandMData']);
@@ -60,9 +60,11 @@ Route::post('/users/adduser', [UserController::class,'addUser']);
 Route::put('/users/updateuser/{user_id}', [UserController::class,'updateUser']); 
 Route::post('/add/msa', [MSAController::class, 'addMsa']);
 Route::put('/update/msa/{id}', [MSAController::class, 'updateMsa']);
-Route::get('/contracts/myContracts/{id}', [UserController::class,'myContracts']);  
+ 
 
 });
+Route::get('/contract/getlist/{id?}', [ContractController::class, 'getContractData']);
+Route::get('/contracts/myContracts/{id}', [UserController::class,'myContracts']); 
 
 Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
 Route::get('/notAuth',[UserCheckController::class,'notauth'])->name('notauth');
