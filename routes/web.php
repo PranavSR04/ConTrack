@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AddendumController;
 
+use App\Http\Controllers\GoogleDriveController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,4 +20,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('/files',AddendumController::class);//upload addendum to drive
+// Route::resource('/files',AddendumController::class);//upload addendum to drive
+Route::resource('/files',GoogleDriveController::class);
