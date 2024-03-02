@@ -63,6 +63,15 @@ Route::put('/updateUser/{user_id}', [UserController::class,'updateUser']);
 
 });
 
+Route::middleware(['auth', 'role:super_admin'])->group(function () {
+    // Routes accessible only to super admins
+
+});
+Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
+    // Routes accessible only to admins or superadmins
+
+});
+
 
 Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
 Route::get('/notAuth',[UserCheckController::class,'notauth'])->name('notauth');
