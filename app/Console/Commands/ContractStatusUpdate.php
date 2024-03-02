@@ -31,14 +31,14 @@ class ContractStatusUpdate extends Command
         try {
     // Update status to "On Progress" for contracts starting today
     Contracts::where('start_date', today())
-    ->where('status', '!=', 'Closed') // Only update if status isn't closed
-    ->update(['status' => 'On Progress']);
+    ->where('contract_status', '!=', 'Closed') // Only update if status isn't closed
+    ->update(['contract_status' => 'On Progress']);
 
     //Update status to "Expired" for contracts where end date has passed
     Contracts::whereDate('end_date', '<', today())
-        ->where('status', '!=', 'Closed')
-        ->where('status', '!=', 'Expired')
-        ->update(['status' => 'Expired']);
+        ->where('contract_status', '!=', 'Closed')
+        ->where('contract_status', '!=', 'Expired')
+        ->update(['contract_status' => 'Expired']);
 
         $this->info('Contract status updated succesfully.');
         Log::info('Contract status updated succesfully.');
