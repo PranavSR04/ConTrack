@@ -256,8 +256,8 @@ class ContractController extends Controller
                 return response()->json(['error' => 'Contract not found'], 404);
             }
 
-            if ($request->is_active === false) {
-                $result = Contracts::where('id', $contractId)->update('is_active', false);
+            if ($request->contract_status === "Closed") {
+                $result = Contracts::where('id', $contractId)->update('contract_status', "Closed");
                 return response()->json(['message' => 'Contract Closed']);
             }
 
