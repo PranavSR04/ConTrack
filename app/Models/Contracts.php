@@ -20,7 +20,7 @@ class Contracts extends Model
         'du',
         'estimated_amount',
         'contract_doclink',
-        'is_active',
+        'contract_status',
     ];
     // public function tmContract()
     // {
