@@ -6,8 +6,6 @@ use App\Models\AssociatedUsers;
 use App\Models\Contracts;
 use App\Models\FixedFeeContracts;
 use App\Models\TimeAndMaterialContracts;
-use App\Models\FixedFeeContracts;
-use App\Models\TimeAndMaterialContracts;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
@@ -16,7 +14,7 @@ use Exception;
 use Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Validator;
+// use Illuminate\Support\Facades\Validator;
 use SebastianBergmann\CodeCoverage\Util\Percentage;
 
 class ContractController extends Controller
@@ -420,7 +418,7 @@ class ContractController extends Controller
                         $totalAmount += $milestone['amount'];
                     }
                 } else {
-                    throw new Exception('No milestones provided for Fixed Fee contract.');
+                    return response()->json(['error' => 'No milestones provided for Fixed fee contract.'], 422);
                 }
             } else {
                 if (!empty($request->tm_milestones)) {
@@ -428,16 +426,17 @@ class ContractController extends Controller
                         $totalAmount += $milestone['amount'];
                     }
                 } else {
-                    throw new Exception('No milestones provided for Time and Material contract.');
+                    return response()->json(['error' => 'No milestones provided for Time and Material contract.'], 422);
+
                 }
             }
 
             if ($request->contract_type === 'FF' && ($totalPercentage !== 100 || $totalAmount !== $request->estimated_amount)) {
-                return response()->json(['error' => 'Invalid milestones for Fixed Fee contract.'], 400);
+                return response()->json(['error' => 'Invalid milestones for Fixed Fee contract.'], 422);
             }
 
             if ($request->contract_type === 'TM' && $totalAmount !== $request->estimated_amount) {
-                return response()->json(['error' => 'Invalid milestones for Time and Material contract.'], 400);
+                return response()->json(['error' => 'Invalid milestones for Time and Material contract.'], 422);
             }
 
             $contract = Contracts::create([
@@ -459,7 +458,7 @@ class ContractController extends Controller
             if (!empty($request->assoc)) {
                 foreach ($request->assoc as $users) {
                     // return response()->json([$users['user_id']]);
-                    AssociatedUsers::create([
+                    $assoc_users = AssociatedUsers::create([
                         'contract_id' => $contractId,
                         'user_id' => $users['user_id'],
                     ]);
@@ -468,7 +467,7 @@ class ContractController extends Controller
 
             if ($request->contract_type === 'FF') {
                 foreach ($request->ff_milestones as $milestone) {
-                    FixedFeeContracts::create([
+                    $ffresult = FixedFeeContracts::create([
                         'contract_id' => $contractId,
                         'milestone_desc' => $milestone['milestone_desc'],
                         'milestone_enddate' => $milestone['milestone_enddate'],
@@ -476,18 +475,28 @@ class ContractController extends Controller
                         'amount' => $milestone['amount'],
                     ]);
                 }
+                return response()->json([
+                    'message' => 'Contract created successfully',
+                    'data' =>
+                        ['contract_result' => $contract, 'associated_users_result' => $assoc_users, "milestone_result" => $ffresult]
+                ], 201);
             } else {
                 foreach ($request->tm_milestones as $milestone) {
-                    TimeAndMaterialContracts::create([
+                    $tmresult = TimeAndMaterialContracts::create([
                         'contract_id' => $contractId,
                         'milestone_desc' => $milestone['milestone_desc'],
                         'milestone_enddate' => $milestone['milestone_enddate'],
                         'amount' => $milestone['amount'],
                     ]);
                 }
+                return response()->json([
+                    'message' => 'Contract created successfully',
+                    'data' =>
+                        ['contract_result' => $contract, 'associated_users_result' => $assoc_users, "milestone_result" => $tmresult]
+                ], 201);
             }
 
-            return response()->json(['message' => 'Contract created successfully', 'contract' => $contractId], 201);
+
         } catch (Exception $e) {
             return response()->json(['error' => 'Failed to create contract', 'message' => $e->getMessage()], 500);
         }
