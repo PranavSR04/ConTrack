@@ -163,38 +163,61 @@ class ContractController extends Controller
     }
     public function getContractData(Request $request, $id = null)
     {
-        if ($id != null) {
+        if($id!=null){ //get individual contracts data if id is passed.
             try {
-                $contractData = Contracts::find($id);
-                if (!$contractData) {
-                    return response()->json(['error' => 'Id not found in the database'], 404);
-                } else {
-                    // Check contract type
-                    $contractType = $contractData->contract_type;
-                    $singleContract = Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
-                        ->join('users', 'contracts.contract_added_by', '=', 'users.id')
-                        ->where('contracts.id', '=', $id)
-                        ->select('contracts.*', 'msas.client_name', 'users.user_name')->get();
-                    if ($contractType == 'T&M') {
-                        $milestones = TimeAndMaterialContracts::where('tm_contracts.contract_id', '=', $id)
-                            ->select('*');
-                    } elseif ($contractType == 'Fixed Fee') {
-                        $milestones = FixedFeeContracts::where('ff_contracts.contract_id', '=', $id)
-                            ->select('*');
-                    }
-                    $data = $milestones->get();
-
-                    //joining with contract data
-                    $combinedData = $singleContract->map(function ($contract) use ($data) {
-                        $contract['milestones'] = $data->where('contract_id', $contract['id'])->values()->all();
+            $contractData = Contracts::find($id);
+            if(!$contractData){
+                return response()->json(['error'=> 'Id not found in the database'],404);
+                }
+            else {
+                // Check contract type
+                $contractType = $contractData->contract_type;
+                $singleContract=Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
+                ->join('users', 'contracts.contract_added_by', '=', 'users.id')
+                ->where('contracts.id','=',$id)
+                ->select('contracts.*', 'msas.client_name', 'users.user_name','msas.region')->get();
+                //get milestone based on contract type  
+                if ($contractType == 'TM') {
+                    $milestones=TimeAndMaterialContracts::where('tm_contracts.contract_id','=',$id)
+                    ->select('*');
+                } elseif ($contractType == 'FF') {
+                    $milestones=FixedFeeContracts::where('ff_contracts.contract_id','=',$id)
+                    ->select('*');
+                }
+                $data=$milestones->get();
+               //joining with contract data
+                $combinedData = $singleContract->map(function ($contract) use ($data) {
+                    $contract['milestones'] = $data->where('contract_id', $contract['id'])->values()->all();
+                    return $contract;
+                });
+ 
+                //get all addendums
+                $addendum=Addendums::where('contract_id','=',$id)
+                ->select('*')
+                ->get();
+                    //join the data
+                    $combinedData = $combinedData->map(function ($contract) use ($addendum) {
+                        $contract['addendum'] = $addendum->where('contract_id', $contract['id'])->values()->all();
                         return $contract;
                     });
-                    return response()->json($combinedData);
-                }
-            } catch (Exception $e) {
-                return response()->json(['error' => $e->getMessage()]);
+               
+              //get all associated users
+              $associatedUsers=AssociatedUsers::join('users','associated_users.user_id','=','users.id')
+              ->where('contract_id','=',$id)
+                ->select('associated_users.id','contract_id','user_name','user_mail')
+                ->get();
+                    //join the data
+                    $combinedData = $combinedData->map(function ($contract) use ($associatedUsers) {
+                        $contract['associated_users'] = $associatedUsers->where('contract_id', $contract['id'])->values()->all();
+                        return $contract;
+                    });
+                return response()->json(["data"=>$combinedData]);
             }
         }
+        catch (Exception $e) {
+            return response()->json(['error'=> $e->getMessage()]);
+        }
+    }
         try {
             //get data in request parameter
             $requestData = $request->all();
@@ -256,6 +279,7 @@ class ContractController extends Controller
                 return response()->json(['error' => 'Contract not found'], 404);
             }
 
+            // Checking whether contract needed to be closed
             if ($request->contract_status === "Closed") {
                 $result = Contracts::where('id', $contractId)->update('contract_status', "Closed");
                 return response()->json(['message' => 'Contract Closed']);
@@ -296,8 +320,10 @@ class ContractController extends Controller
                 $googleDrive = new GoogleDriveController();
 
                 if ($validated_ff['contract_status'] !== "Closed" || $validated_ff['contract_status'] !== "closed" || $validated_ff['contract_status'] !== "CLOSED") {
-                    if ($googleDrive->store($request)) {
-                        $fileLink = $googleDrive->store($request);
+                    // Checking only to update the data of contracts which are not having status as closed
+                    $fileLink = $googleDrive->store($request);
+                    if ($fileLink) {
+                        // If contract file is uploaded it returns a link 
                         $contractUpdateData = [
                             'msa_id' => $validated_ff['msa_id'],
                             'contract_added_by' => $validated_ff['contract_added_by'],
@@ -372,6 +398,7 @@ class ContractController extends Controller
                             }
                             // $addendumsResult = Addendums::where('contract_id', $contractId)->updateOrCreate(['addendum_doclink' => $validated_ff['addendums_doclink']]);
                             if ($validated_ff['addendum_file']) {
+                                // Checking if addendum is present; to be stored in drive
                                 $addendum = new AddendumController();
                                 $addendum->store($request);
                             }
@@ -437,8 +464,8 @@ class ContractController extends Controller
                 $googleDrive = new GoogleDriveController();
 
                 if ($validated_tm['contract_status'] !== "Closed" || $validated_tm['contract_status'] !== "closed" || $validated_tm['contract_status'] !== "CLOSED") {
-                    if ($googleDrive->store($request)) {
-                        $fileLink = $googleDrive->store($request);
+                    $fileLink = $googleDrive->store($request);
+                    if ($fileLink) {
                         $contractUpdateData = [
                             'msa_id' => $validated_tm['msa_id'],
                             'contract_added_by' => $validated_tm['contract_added_by'],
@@ -605,9 +632,9 @@ class ContractController extends Controller
             }
 
             $googleDrive = new GoogleDriveController();
+            $fileLink = $googleDrive->store($request);
 
-            if ($googleDrive->store($request)) {
-                $fileLink = $googleDrive->store($request);
+            if ($fileLink) {
                 $contract = Contracts::create([
                     'msa_id' => $request->msa_id,
                     'contract_added_by' => $request->contract_added_by,

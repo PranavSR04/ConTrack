@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Http;
 
 class GoogleDriveController extends Controller
 {
+    // Function to generate token
     public function token()
     {
         $client_id = \Config('services.google.client_id');
@@ -24,12 +25,12 @@ class GoogleDriveController extends Controller
             'grant_type' => 'refresh_token',
 
         ]);
-        // dd($response);
         $accessToken = json_decode((string) $response->getBody(), true)['access_token'];
 
         return $accessToken;
     }
 
+    // Function to store data in drive and return a link
     public function store(Request $request)
     {
         // $validation = $request->validate([
