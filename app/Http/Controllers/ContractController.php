@@ -219,9 +219,11 @@ class ContractController extends Controller
         try {
             //get data in request parameter
             $requestData = $request->all();
+            $request->pagination ? $paginate = $request->pagination : $paginate = 10; //default pagination 10
             $querydata = Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
                 ->join('users', 'contracts.contract_added_by', '=', 'users.id')
                 ->select(
+                    'contracts.id',
                     'msas.client_name',
                     'users.user_name',
                     'contracts.contract_type',
@@ -233,10 +235,11 @@ class ContractController extends Controller
                     'du',
                     'estimated_amount',
                     'contract_doclink',
-                    'contracts.status'
-                );
+                    'contract_status'
+                )
+                ->where('contract_status', '!=', 'Expired');
             if (empty($requestData)) {
-                return $querydata->paginate('10');
+                return $querydata->paginate($paginate);
             } else {
                 foreach ($requestData as $key => $value) {
 
@@ -254,7 +257,7 @@ class ContractController extends Controller
                     return response()->json(['error' => 'Data not found'], 404);
                 }
 
-                return $querydata->paginate('10');
+                return $querydata->paginate($paginate);
             }
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -305,7 +308,7 @@ class ContractController extends Controller
                     'contract_doclink' => 'string',
                     'file' => 'file',
                     'estimated_amount' => 'required|numeric',
-                    "milestones"=> ['required','array'],
+                    "milestones" => ['required', 'array'],
                     'milestones.*.milestone_desc' => 'required|string',
                     'milestones.*.milestone_enddate' => 'required|date',
                     'milestones.*.percentage' => 'required|numeric',
@@ -321,7 +324,8 @@ class ContractController extends Controller
                         },
                     ],
                     'addendum_doclink' => 'string',
-                    'associated_users' => 'array', 'exists:users,id',
+                    'associated_users' => 'array',
+                    'exists:users,id',
                     'associated_users.*.user_id' => 'required|numeric',
                 ]);
                 if ($validator_ff->fails()) {
@@ -373,10 +377,10 @@ class ContractController extends Controller
                             'amount' => $milestone['amount'],
                         ];
                     }
-                    
+
                     $sumPercentages = array_sum(array_column($milestonesUpdateData, 'percentage'));
                     $sumAmounts = array_sum(array_column($milestonesUpdateData, 'amount'));
-                    
+
                     if ($sumPercentages == 100) {
                         if ($sumAmounts == $validated_ff['estimated_amount']) {
                             // Insertion starts only after all validation finishes
@@ -411,8 +415,8 @@ class ContractController extends Controller
                             if (isset($validated_ff['addendum_file']) && $validated_ff['addendum_file'] !== '') {
                                 $addendum = new AddendumController();
                                 $addendum->store($request, $contractId);
-                            }                            
-                            
+                            }
+
 
                             return response()->json([
                                 "message" => "Contract edited successfully",
@@ -454,11 +458,12 @@ class ContractController extends Controller
                     'contract_doclink' => 'string',
                     'file' => 'file',
                     'estimated_amount' => 'required|numeric',
-                    "milestones"=> ['required','array'],
+                    "milestones" => ['required', 'array'],
                     'milestones.*.milestone_desc' => 'required|string',
                     'milestones.*.milestone_enddate' => 'required|date',
                     'milestones.*.amount' => 'required|numeric',
-                    'associated_users' => 'array', 'exists:users,id',
+                    'associated_users' => 'array',
+                    'exists:users,id',
                     'associated_users.*.user_id' => 'required|numeric',
                     'addendum_file' => [
                         'sometimes',
@@ -472,8 +477,8 @@ class ContractController extends Controller
                     ],
                     'addendum_doclink' => 'string',
                 ]);
-                
-                
+
+
                 if ($validator_tm->fails()) {
                     return response()->json(['error' => $validator_tm->errors()], 422);
                 }
@@ -558,7 +563,7 @@ class ContractController extends Controller
                             $addendum = new AddendumController();
                             $addendum->store($request, $contractId);
                         }
-                        
+
 
 
                         return response()->json([
