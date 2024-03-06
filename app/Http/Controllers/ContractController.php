@@ -161,7 +161,7 @@ class ContractController extends Controller
         }
         return response()->json(['Data inserted']);
     }
-    public function getContractData(Request $request, $id = null)
+    public function getContractData(Request $request, $id=null)
     {
         if ($id != null) { //get individual contracts data if id is passed.
             try {
@@ -240,13 +240,14 @@ class ContractController extends Controller
                 ->where('contract_status', '!=', 'Expired');
             if (empty($requestData)) {
                 return $querydata->paginate($paginate);
+                return $querydata->paginate($paginate);
             } else {
                 foreach ($requestData as $key => $value) {
-
-                    if (in_array($key, ['contract_ref_id', 'client_name', 'du', 'contract_type', 'msa_ref_id', 'status'])) {
+                   
+                    if(in_array($key, ['contract_ref_id','client_name','du','contract_type','msa_ref_id','status'])){
                         $querydata->where($key, 'LIKE', '%' . $value . '%');
                     }
-                    if ($key == 'sort_by') {
+                    if($key =='sort_by'){
                         $querydata->orderBy($value, $request->sort_value);
                     }
                     if (in_array($key, ['start_date', 'end_date'])) {
