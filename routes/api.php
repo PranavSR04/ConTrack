@@ -18,7 +18,6 @@ use App\Models\UserNotifications;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExperionEmployeeController;
-use App\Http\Controllers\OneDriveController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +76,11 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
     // Routes accessible only to admins or superadmins
 
 });
+
+
+Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection']);
+Route::get('/notAuth',[UserCheckController::class,'notauth'])->name('notauth');
+
 
 Route::group([
     'middleware' => 'api',
