@@ -163,61 +163,59 @@ class ContractController extends Controller
     }
     public function getContractData(Request $request, $id = null)
     {
-        if($id!=null){ //get individual contracts data if id is passed.
+        if ($id != null) { //get individual contracts data if id is passed.
             try {
-            $contractData = Contracts::find($id);
-            if(!$contractData){
-                return response()->json(['error'=> 'Id not found in the database'],404);
-                }
-            else {
-                // Check contract type
-                $contractType = $contractData->contract_type;
-                $singleContract=Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
-                ->join('users', 'contracts.contract_added_by', '=', 'users.id')
-                ->where('contracts.id','=',$id)
-                ->select('contracts.*', 'msas.client_name', 'users.user_name','msas.region')->get();
-                //get milestone based on contract type  
-                if ($contractType == 'TM') {
-                    $milestones=TimeAndMaterialContracts::where('tm_contracts.contract_id','=',$id)
-                    ->select('*');
-                } elseif ($contractType == 'FF') {
-                    $milestones=FixedFeeContracts::where('ff_contracts.contract_id','=',$id)
-                    ->select('*');
-                }
-                $data=$milestones->get();
-               //joining with contract data
-                $combinedData = $singleContract->map(function ($contract) use ($data) {
-                    $contract['milestones'] = $data->where('contract_id', $contract['id'])->values()->all();
-                    return $contract;
-                });
- 
-                //get all addendums
-                $addendum=Addendums::where('contract_id','=',$id)
-                ->select('*')
-                ->get();
+                $contractData = Contracts::find($id);
+                if (!$contractData) {
+                    return response()->json(['error' => 'Id not found in the database'], 404);
+                } else {
+                    // Check contract type
+                    $contractType = $contractData->contract_type;
+                    $singleContract = Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
+                        ->join('users', 'contracts.contract_added_by', '=', 'users.id')
+                        ->where('contracts.id', '=', $id)
+                        ->select('contracts.*', 'msas.client_name', 'users.user_name', 'msas.region')->get();
+                    //get milestone based on contract type  
+                    if ($contractType == 'TM') {
+                        $milestones = TimeAndMaterialContracts::where('tm_contracts.contract_id', '=', $id)
+                            ->select('*');
+                    } elseif ($contractType == 'FF') {
+                        $milestones = FixedFeeContracts::where('ff_contracts.contract_id', '=', $id)
+                            ->select('*');
+                    }
+                    $data = $milestones->get();
+                    //joining with contract data
+                    $combinedData = $singleContract->map(function ($contract) use ($data) {
+                        $contract['milestones'] = $data->where('contract_id', $contract['id'])->values()->all();
+                        return $contract;
+                    });
+
+                    //get all addendums
+                    $addendum = Addendums::where('contract_id', '=', $id)
+                        ->select('*')
+                        ->get();
                     //join the data
                     $combinedData = $combinedData->map(function ($contract) use ($addendum) {
                         $contract['addendum'] = $addendum->where('contract_id', $contract['id'])->values()->all();
                         return $contract;
                     });
-               
-              //get all associated users
-              $associatedUsers=AssociatedUsers::join('users','associated_users.user_id','=','users.id')
-              ->where('contract_id','=',$id)
-                ->select('associated_users.id','contract_id','user_name','user_mail')
-                ->get();
+
+                    //get all associated users
+                    $associatedUsers = AssociatedUsers::join('users', 'associated_users.user_id', '=', 'users.id')
+                        ->where('contract_id', '=', $id)
+                        ->select('associated_users.id', 'contract_id', 'user_name', 'user_mail')
+                        ->get();
                     //join the data
                     $combinedData = $combinedData->map(function ($contract) use ($associatedUsers) {
                         $contract['associated_users'] = $associatedUsers->where('contract_id', $contract['id'])->values()->all();
                         return $contract;
                     });
-                return response()->json(["data"=>$combinedData]);
+                    return response()->json(["data" => $combinedData]);
+                }
+            } catch (Exception $e) {
+                return response()->json(['error' => $e->getMessage()]);
             }
         }
-        catch (Exception $e) {
-            return response()->json(['error'=> $e->getMessage()]);
-        }
-    }
         try {
             //get data in request parameter
             $requestData = $request->all();
@@ -286,6 +284,7 @@ class ContractController extends Controller
             }
 
             $contract_type = Contracts::where('id', $contractId)->value('contract_type');
+            // return response()->json([$contract_type]);
             if ($contract_type === 'FF') {
                 // Validate the incoming request data
                 $validator_ff = Validator::make($request->all(), [
@@ -299,16 +298,19 @@ class ContractController extends Controller
                     'contract_status' => 'required|string',
                     'du' => 'required|string',
                     'comments' => 'string',
+                    'contract_doclink' => 'required|string',
                     'file' => 'file',
-                    'contract_doclink' => 'string',
                     'estimated_amount' => 'required|numeric',
                     'milestones' => 'required|array',
                     'milestones.*.milestone_desc' => 'required|string',
                     'milestones.*.milestone_enddate' => 'required|date',
                     'milestones.*.percentage' => 'required|numeric',
                     'milestones.*.amount' => 'required|numeric',
-                    'addendum_file' => 'file',
+                    'addendum_file' => [ 'sometimes', 'nullable','file','string'],
                     'addendum_doclink' => 'string',
+                    'associated_users' => 'array',
+                    'exists:users,id',
+                    'associated_users.*.user_id' => 'required|numeric',
                 ]);
                 if ($validator_ff->fails()) {
                     return response()->json(['error' => $validator_ff->errors()], 422);
@@ -321,6 +323,7 @@ class ContractController extends Controller
 
                 if ($validated_ff['contract_status'] !== "Closed" || $validated_ff['contract_status'] !== "closed" || $validated_ff['contract_status'] !== "CLOSED") {
                     // Checking only to update the data of contracts which are not having status as closed
+
                     $fileLink = $googleDrive->store($request);
                     if ($fileLink) {
                         // If contract file is uploaded it returns a link 
@@ -351,18 +354,6 @@ class ContractController extends Controller
                         ];
                     }
 
-                    $associatedUsers = [];
-                    foreach ($validated_ff['associated_users'] as $assignee) {
-                        if (User::where('id', $assignee['user_id'])->exists()) {
-                            $associatedUsers[] = [
-                                'user_id' => $assignee['user_id'],
-                            ];
-                        } else {
-                            return response()->json(["User doesn't exist"], 404);
-                        }
-
-                    }
-
                     $milestonesUpdateData = [];
 
                     foreach ($validated_ff['milestones'] as $milestone) {
@@ -373,15 +364,24 @@ class ContractController extends Controller
                             'amount' => $milestone['amount'],
                         ];
                     }
+
                     $sumPercentages = array_sum(array_column($milestonesUpdateData, 'percentage'));
                     $sumAmounts = array_sum(array_column($milestonesUpdateData, 'amount'));
 
                     if ($sumPercentages == 100) {
                         if ($sumAmounts == $validated_ff['estimated_amount']) {
                             $contractResult = Contracts::where('id', $contractId)->update($contractUpdateData);
-                            if ($associatedUsers) {
-                                $associatedResult = AssociatedUsers::where('contract_id', $contractId)->update(['user_id' => $associatedUsers]);
+
+                            if (!empty($request->associated_users)) {
+                                foreach ($request->associated_users as $user) {
+
+                                    $userId = $user['user_id'];
+
+                                    AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
+                                    $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
+                                }
                             }
+
 
                             foreach ($milestonesUpdateData as $milestoneData) {
                                 $ffResult = FixedFeeContracts::updateOrCreate(
@@ -396,26 +396,19 @@ class ContractController extends Controller
                                     ]
                                 );
                             }
-                            // $addendumsResult = Addendums::where('contract_id', $contractId)->updateOrCreate(['addendum_doclink' => $validated_ff['addendums_doclink']]);
+
                             if ($validated_ff['addendum_file']) {
-                                // Checking if addendum is present; to be stored in drive
                                 $addendum = new AddendumController();
                                 $addendum->store($request);
                             }
 
-                            $activityResult = ActivityLogs::create([
-                                'contract_id' => $contractId,
-                                'performed_by' => $validated_ff['contract_added_by'],
-                                'action' => "Updated",
-                            ]);
 
                             return response()->json([
                                 "message" => "Contract edited successfully",
                                 "data" => [
                                     'contract_result' => $contractResult,
-                                    'associated_users_result' => $associatedResult,
                                     'milestones_result' => $ffResult,
-                                    'activity_result' => $activityResult
+                                    'associatedusers_result' => $associated_users,
                                 ]
                             ]);
                         } else {
@@ -451,8 +444,10 @@ class ContractController extends Controller
                     'milestones.*.milestone_enddate' => 'required|date',
                     'milestones.*.amount' => 'required|numeric',
                     'associated_users' => 'array',
-                    'associated_users.*.user_id' => 'numeric',
-                    'addendum_file' => 'file',
+                    'exists:users,id',
+                    'associated_users.*.user_id' => 'required|numeric',
+                    // 'addendum_file' => 'file',
+                    'addendum_file' => [ 'sometimes', 'nullable','file','string'],
                     'addendum_doclink' => 'string',
                 ]);
                 if ($validator_tm->fails()) {
@@ -464,36 +459,47 @@ class ContractController extends Controller
                 $googleDrive = new GoogleDriveController();
 
                 if ($validated_tm['contract_status'] !== "Closed" || $validated_tm['contract_status'] !== "closed" || $validated_tm['contract_status'] !== "CLOSED") {
-                    $fileLink = $googleDrive->store($request);
-                    if ($fileLink) {
-                        $contractUpdateData = [
-                            'msa_id' => $validated_tm['msa_id'],
-                            'contract_added_by' => $validated_tm['contract_added_by'],
-                            'start_date' => $validated_tm['start_date'],
-                            'end_date' => $validated_tm['end_date'],
-                            'date_of_signature' => $validated_tm['date_of_signature'],
-                            'du' => $validated_tm['du'],
-                            'contract_status' => $validated_tm['contract_status'],
-                            'comments' => $validated_tm['comments'],
-                            'contract_doclink' => $fileLink,
-                            'estimated_amount' => $validated_tm['estimated_amount'],
-                        ];
-                    } else {
-                        $contractUpdateData = [
-                            'msa_id' => $validated_tm['msa_id'],
-                            'start_date' => $validated_tm['start_date'],
-                            'contract_added_by' => $validated_tm['contract_added_by'],
-                            'end_date' => $validated_tm['end_date'],
-                            'date_of_signature' => $validated_tm['date_of_signature'],
-                            'du' => $validated_tm['du'],
-                            'contract_status' => $validated_tm['contract_status'],
-                            'comments' => $validated_tm['comments'],
-                            'estimated_amount' => $validated_tm['estimated_amount'],
-                            'contract_doclink' => $validated_tm['contract_doclink'],
-                        ];
-                    }
+                    // $fileLink = $googleDrive->store($request);
+                    // if ($fileLink) {
+                    //     $contractUpdateData = [
+                    //         'msa_id' => $validated_tm['msa_id'],
+                    //         'contract_added_by' => $validated_tm['contract_added_by'],
+                    //         'start_date' => $validated_tm['start_date'],
+                    //         'end_date' => $validated_tm['end_date'],
+                    //         'date_of_signature' => $validated_tm['date_of_signature'],
+                    //         'du' => $validated_tm['du'],
+                    //         'contract_status' => $validated_tm['contract_status'],
+                    //         'comments' => $validated_tm['comments'],
+                    //         'contract_doclink' => $fileLink,
+                    //         'estimated_amount' => $validated_tm['estimated_amount'],
+                    //     ];
+                    // } else {
+                    //     $contractUpdateData = [
+                    //         'msa_id' => $validated_tm['msa_id'],
+                    //         'start_date' => $validated_tm['start_date'],
+                    //         'contract_added_by' => $validated_tm['contract_added_by'],
+                    //         'end_date' => $validated_tm['end_date'],
+                    //         'date_of_signature' => $validated_tm['date_of_signature'],
+                    //         'du' => $validated_tm['du'],
+                    //         'contract_status' => $validated_tm['contract_status'],
+                    //         'comments' => $validated_tm['comments'],
+                    //         'estimated_amount' => $validated_tm['estimated_amount'],
+                    //         'contract_doclink' => $validated_tm['contract_doclink'],
+                    //     ];
+                    // }
 
-                    // $result = Contracts::where('id', $contractId)->update($contractUpdateData);
+                    $contractUpdateData = [
+                        'msa_id' => $validated_tm['msa_id'],
+                        'start_date' => $validated_tm['start_date'],
+                        'contract_added_by' => $validated_tm['contract_added_by'],
+                        'end_date' => $validated_tm['end_date'],
+                        'date_of_signature' => $validated_tm['date_of_signature'],
+                        'du' => $validated_tm['du'],
+                        'contract_status' => $validated_tm['contract_status'],
+                        'comments' => $validated_tm['comments'],
+                        'estimated_amount' => $validated_tm['estimated_amount'],
+                        'contract_doclink' => $validated_tm['contract_doclink'],
+                    ];
 
                     $milestonesUpdateData = [];
 
@@ -507,22 +513,17 @@ class ContractController extends Controller
 
                     $sumAmounts = array_sum(array_column($milestonesUpdateData, 'amount'));
 
-                    $associatedUsers = [];
-                    foreach ($validated_tm['associated_users'] as $assignee) {
-                        if (User::where('id', $assignee['user_id'])->exists()) {
-                            $associatedUsers[] = [
-                                'user_id' => $assignee['user_id'],
-                            ];
-                        } else {
-                            return response()->json(["User doesn't exist"], 404);
-                        }
-
-                    }
 
                     if ($sumAmounts == $validated_tm['estimated_amount']) {
                         $contractResult = Contracts::where('id', $contractId)->update($contractUpdateData);
-                        if ($associatedUsers) {
-                            $associatedResult = AssociatedUsers::where('contract_id', $contractId)->update(['user_id' => $associatedUsers]);
+
+                        if (!empty($request->associated_users)) {
+                            foreach ($request->associated_users as $user) {
+                                $userId = $user['user_id'];
+
+                                AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
+                                $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
+                            }
                         }
 
                         foreach ($milestonesUpdateData as $milestoneData) {
@@ -538,31 +539,25 @@ class ContractController extends Controller
                             );
                         }
 
-                        // $addendumsResult = Addendums::where('contract_id', $contractId)->updateOrCreate(['addendum_doclink' => $validated_tm['addendums_doclink']]);
-                        if ($validated_tm['addendum_file']) {
-                            $addendum = new AddendumController();
-                            $addendum->store($request);
-                        }
 
-                        $activityResult = ActivityLogs::create([
-                            'contract_id' => $contractId,
-                            'performed_by' => $validated_tm['contract_added_by'],
-                            'action' => "Updated",
-                        ]);
+                        // if ($validated_tm['addendum_file']) {
+                        //     $addendum = new AddendumController();
+                        //     $addendum->store($request);
+                        // }
+
 
                         return response()->json([
                             "message" => "Contract edited successfully",
                             "data" => [
                                 'contract_result' => $contractResult,
-                                'associated_users_result' => $associatedResult,
                                 'milestones_result' => $tmResult,
-                                'activity_result' => $activityResult
+                                'associatedusers_result' => $associated_users,
                             ]
                         ]);
                     } else {
                         return response()->json(['error' => "Sum of amount not equal to estimated amount"], 422);
                     }
-                } else{
+                } else {
                     return response()->json(['error' => "Contract was closed"], 422);
                 }
 
@@ -571,9 +566,9 @@ class ContractController extends Controller
                 return response()->json(["error" => "Invalid Contract Type"], 422);
             }
         } catch (Exception $e) {
-            return response()->json(['error' => "Failed to edit contract"], 500);
+            // return response()->json(['error' => "Failed to edit contract"], 500);
+            return response()->json(["error" => $e->getMessage()], 400);
         }
-
     }
 
     public function addContract(Request $request)
@@ -589,7 +584,7 @@ class ContractController extends Controller
             'estimated_amount' => 'required|numeric|min:0',
             'comments' => 'string',
             'contract_doclink' => 'string',
-            'file' => 'file',
+            'file' => 'file|required',
             'associated_users' => ['array', 'exists:users,id'],
             'associated_users.*.user_id' => 'required|numeric',
         ]);
@@ -634,37 +629,52 @@ class ContractController extends Controller
             $googleDrive = new GoogleDriveController();
             $fileLink = $googleDrive->store($request);
 
-            if ($fileLink) {
-                $contract = Contracts::create([
-                    'msa_id' => $request->msa_id,
-                    'contract_added_by' => $request->contract_added_by,
-                    'contract_ref_id' => $request->contract_ref_id,
-                    'contract_type' => $request->contract_type,
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'date_of_signature' => $request->date_of_signature,
-                    'du' => $request->du,
-                    'is_active' => true,
-                    'estimated_amount' => $request->estimated_amount,
-                    'comments' => $request->comments,
-                    'contract_doclink' => $fileLink,
-                ]);
-            } else {
-                $contract = Contracts::create([
-                    'msa_id' => $request->msa_id,
-                    'contract_added_by' => $request->contract_added_by,
-                    'contract_ref_id' => $request->contract_ref_id,
-                    'contract_type' => $request->contract_type,
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'date_of_signature' => $request->date_of_signature,
-                    'du' => $request->du,
-                    'is_active' => true,
-                    'estimated_amount' => $request->estimated_amount,
-                    'comments' => $request->comments,
-                    'contract_doclink' => "",
-                ]);
-            }
+            $contract = Contracts::create([
+                'msa_id' => $request->msa_id,
+                'contract_added_by' => $request->contract_added_by,
+                'contract_ref_id' => $request->contract_ref_id,
+                'contract_type' => $request->contract_type,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'date_of_signature' => $request->date_of_signature,
+                'du' => $request->du,
+                'is_active' => true,
+                'estimated_amount' => $request->estimated_amount,
+                'comments' => $request->comments,
+                'contract_doclink' => $fileLink,
+            ]);
+
+            // if ($fileLink) {
+            //     $contract = Contracts::create([
+            //         'msa_id' => $request->msa_id,
+            //         'contract_added_by' => $request->contract_added_by,
+            //         'contract_ref_id' => $request->contract_ref_id,
+            //         'contract_type' => $request->contract_type,
+            //         'start_date' => $request->start_date,
+            //         'end_date' => $request->end_date,
+            //         'date_of_signature' => $request->date_of_signature,
+            //         'du' => $request->du,
+            //         'is_active' => true,
+            //         'estimated_amount' => $request->estimated_amount,
+            //         'comments' => $request->comments,
+            //         'contract_doclink' => $fileLink,
+            //     ]);
+            // } else {
+            //     $contract = Contracts::create([
+            //         'msa_id' => $request->msa_id,
+            //         'contract_added_by' => $request->contract_added_by,
+            //         'contract_ref_id' => $request->contract_ref_id,
+            //         'contract_type' => $request->contract_type,
+            //         'start_date' => $request->start_date,
+            //         'end_date' => $request->end_date,
+            //         'date_of_signature' => $request->date_of_signature,
+            //         'du' => $request->du,
+            //         'is_active' => true,
+            //         'estimated_amount' => $request->estimated_amount,
+            //         'comments' => $request->comments,
+            //         'contract_doclink' => "",
+            //     ]);
+            // }
 
             $contractId = $contract->id;
             // return response ()->json([$request->assoc[0]]);
