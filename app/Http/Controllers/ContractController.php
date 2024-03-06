@@ -286,8 +286,12 @@ class ContractController extends Controller
             $contract_type = Contracts::where('id', $contractId)->value('contract_type');
             // return response()->json([$contract_type]);
             if ($contract_type === 'FF') {
+                // Parsing string data into array    
+                $decodedMilestones = json_decode($request->milestones, true);
+                $decodedAssociatedUsers = json_decode($request->associated_users, true);
+
                 // Validate the incoming request data
-                $validator_ff = Validator::make($request->all(), [
+                $validator_ff = Validator::make(['milestones' => $decodedMilestones] + ['associated_users' => $decodedAssociatedUsers] + $request->all(), [
                     'msa_id' => 'required|numeric',
                     'contract_added_by' => 'required|numeric',
                     'client_name' => 'string|min:5|max:100',
@@ -301,29 +305,35 @@ class ContractController extends Controller
                     'contract_doclink' => 'required|string',
                     'file' => 'file',
                     'estimated_amount' => 'required|numeric',
-                    'milestones' => 'required|array',
+                    "milestones"=> ['required','array'],
                     'milestones.*.milestone_desc' => 'required|string',
                     'milestones.*.milestone_enddate' => 'required|date',
                     'milestones.*.percentage' => 'required|numeric',
                     'milestones.*.amount' => 'required|numeric',
-                    'addendum_file' => [ 'sometimes', 'nullable','file','string'],
+                    'addendum_file' => [
+                        'sometimes',
+                        'nullable',
+                        function ($attribute, $value, $fail) {
+                            // Check if the value is a string or a file
+                            if (!is_string($value) && !is_a($value, \Illuminate\Http\UploadedFile::class)) {
+                                $fail($attribute . ' must be a valid file or a string.');
+                            }
+                        },
+                    ],
                     'addendum_doclink' => 'string',
-                    'associated_users' => 'array',
-                    'exists:users,id',
+                    'associated_users' => 'array', 'exists:users,id',
                     'associated_users.*.user_id' => 'required|numeric',
                 ]);
                 if ($validator_ff->fails()) {
                     return response()->json(['error' => $validator_ff->errors()], 422);
                 }
 
-
                 $validated_ff = $validator_ff->validated();
 
                 $googleDrive = new GoogleDriveController();
 
-                if ($validated_ff['contract_status'] !== "Closed" || $validated_ff['contract_status'] !== "closed" || $validated_ff['contract_status'] !== "CLOSED") {
+                if ($request->contract_status !== "Closed" || $request->contract_status !== "closed" || $request->contract_status !== "CLOSED") {
                     // Checking only to update the data of contracts which are not having status as closed
-
                     $fileLink = $googleDrive->store($request);
                     if ($fileLink) {
                         // If contract file is uploaded it returns a link 
@@ -355,8 +365,9 @@ class ContractController extends Controller
                     }
 
                     $milestonesUpdateData = [];
-
-                    foreach ($validated_ff['milestones'] as $milestone) {
+                
+                    // return $decodedMilestones;
+                    foreach ($decodedMilestones as $milestone) {
                         $milestonesUpdateData[] = [
                             'milestone_desc' => $milestone['milestone_desc'],
                             'milestone_enddate' => $milestone['milestone_enddate'],
@@ -364,17 +375,16 @@ class ContractController extends Controller
                             'amount' => $milestone['amount'],
                         ];
                     }
-
+                    
                     $sumPercentages = array_sum(array_column($milestonesUpdateData, 'percentage'));
                     $sumAmounts = array_sum(array_column($milestonesUpdateData, 'amount'));
-
+                    
                     if ($sumPercentages == 100) {
                         if ($sumAmounts == $validated_ff['estimated_amount']) {
                             $contractResult = Contracts::where('id', $contractId)->update($contractUpdateData);
 
                             if (!empty($request->associated_users)) {
-                                foreach ($request->associated_users as $user) {
-
+                                foreach ($decodedAssociatedUsers as $user) {
                                     $userId = $user['user_id'];
 
                                     AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
@@ -396,12 +406,13 @@ class ContractController extends Controller
                                     ]
                                 );
                             }
+                            // return $contractId;
 
                             if ($validated_ff['addendum_file']) {
                                 $addendum = new AddendumController();
-                                $addendum->store($request);
+                                $addendum->store($request,$contractId);
                             }
-
+                            
 
                             return response()->json([
                                 "message" => "Contract edited successfully",
@@ -447,7 +458,7 @@ class ContractController extends Controller
                     'exists:users,id',
                     'associated_users.*.user_id' => 'required|numeric',
                     // 'addendum_file' => 'file',
-                    'addendum_file' => [ 'sometimes', 'nullable','file','string'],
+                    'addendum_file' => ['sometimes', 'nullable', 'file', 'string'],
                     'addendum_doclink' => 'string',
                 ]);
                 if ($validator_tm->fails()) {
