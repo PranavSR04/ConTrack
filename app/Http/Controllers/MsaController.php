@@ -455,10 +455,10 @@ class MsaController extends Controller
                 $msa->update($validated);
             } else {
                 $googleDrive = new GoogleDriveController();
-                // $fileLink = $googleDrive->store($request);
+                $fileLink = $googleDrive->store($request);
 
-                if($googleDrive->store($request)){
-                    $fileLink = $googleDrive->store($request);
+                if($fileLink){
+                    // $fileLink = $googleDrive->store($request);
                     $msa->update([
                         'start_date' => $request->start_date,
                         'end_date' => $request->end_date,
