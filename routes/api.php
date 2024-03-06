@@ -18,7 +18,6 @@ use App\Models\UserNotifications;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExperionEmployeeController;
-use App\Http\Controllers\OneDriveController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,23 +40,11 @@ Route::GET('/general/notifications',[UserNotification::class,'getUserNotificatio
 Route::PUT('/notification/statusupdate',[UserNotification::class,'notificationStatusUpdate']);
 Route::POST('/insert/logdata',[InsertController::class,'insertData']);
 Route::get('/contract/getlist/{id?}', [ContractController::class, 'getContractData']);
-Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
-Route::post('/ff/insertFixedFeeData', [FixedFeeController::class, 'insertFixedFeeData']);
-Route::post('/tm/insertTandMData', [TandMController::class, 'insertTandMData']);
+Route::post('/insertContractsData', [ContractController::class, 'insertContractsData']);
+Route::post('/insertFixedFeeData', [FixedFeeController::class, 'insertFixedFeeData']);
+Route::post('/insertTandMData', [TandMController::class, 'insertTandMData']);
 Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
-Route::get('/msa/list', [MSAController::class, 'MSAList']);
-Route::post('/user/insertuser',[UserController::class,'create']);
-Route::post('/insert/experiondata', [ExperionEmployeeController::class,'store']);
-Route::post('/experion/generatedata', [ExperionEmployeeController::class,'generateRandomData']);
-Route::get('/experion/getexperionlist',[ExperionEmployeeController::class,'show']);
-Route::post('/addeddum/insertdata', [AddendumController::class,'generateData']);
-Route::post('/role/insertrole', [RoleController::class, 'insertRole']);
-Route::get('/role/details', [RoleController::class, 'getRole']);
-Route::post('/contracts/addcontracts', [ContractController::class,'addContract']);
-Route::put('/contracts/editcontract/{id}', [ContractController::class,'updateContractData']);
-Route::get('/users/getusers',[UserController::class,'getUsers']);  
-Route::post('/users/adduser', [UserController::class,'addUser']);  
-Route::put('/users/updateuser/{user_id}', [UserController::class,'updateUser']); 
+Route::get('/get/msalist', [MSAController::class, 'MSAList']);
 Route::post('/add/msa', [MSAController::class, 'addMsa']);
 Route::put('/update/msa/{id}', [MSAController::class, 'updateMsa']);
 Route::post('/insertUser',[UserController::class,'create']);
@@ -85,8 +72,10 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
 
 });
 
-Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
+
+Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection']);
 Route::get('/notAuth',[UserCheckController::class,'notauth'])->name('notauth');
+
 
 Route::group([
     'middleware' => 'api',

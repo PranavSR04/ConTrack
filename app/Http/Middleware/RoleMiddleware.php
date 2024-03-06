@@ -20,15 +20,11 @@ class RoleMiddleware
         $user = Auth::user();
         $contrackUser = User::where("experion_id", $user->id)->first();
         
-        
-
-
         // Check if the user is authenticated
         if (!$contrackUser) {
             return response()->json(['error' => 'Unauthorized, Access Denied'], 401);
         }
         
-
         // Check if the user has the required role
         switch ($role) {
             case 'super_admin':
