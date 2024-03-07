@@ -65,8 +65,7 @@ Route::put('/update/msa/{id}', [MSAController::class, 'updateMsa']);
 Route::get('/contract/getlist/{id?}', [ContractController::class, 'getContractData']);
 Route::get('/contracts/myContracts/{id}', [UserController::class,'myContracts']); 
 
-Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
-Route::get('/notAuth',[UserCheckController::class,'notauth'])->name('notauth');
+
 
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
     // Routes accessible only to super admins
@@ -78,7 +77,7 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
 });
 
 
-Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection']);
+Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjections']);
 Route::get('/notAuth',[UserCheckController::class,'notauth'])->name('notauth');
 
 
