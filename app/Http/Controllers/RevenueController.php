@@ -14,10 +14,23 @@ class RevenueController extends Controller
         $projectionType = $request->type;
         $revenueProjections = [];
         $totalAmount = 0;
+        $duFilter = $request->du;
 
         if ($contract_id === null) {
 
-            $contracts = Contracts::all();
+            if ($duFilter) {
+                $contracts = Contracts::where('du', $duFilter)->get();
+                if ($contracts->isEmpty()) {
+                    return response()->json(['error' => 'No contracts found for the specified DU'], 404);
+                }
+            } else {
+                $contracts = Contracts::all();
+                if ($contracts->isEmpty()) {
+                    return response()->json(['error' => 'No contracts found'], 404);
+                }
+                // return response()->json([$contracts]);
+
+            }
 
             foreach ($contracts as $contract) {
                 if ($contract->contract_type === 'FF') {
