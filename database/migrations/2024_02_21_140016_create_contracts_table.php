@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->date('start_date');
             $table->date('end_date');
             $table->string('du');
-            $table->string('contract_doclink');
+            $table->longText('contract_doclink');
             $table->double('estimated_amount');
             $table->string('contract_status')->default('Active');
             $table->timestamps();
