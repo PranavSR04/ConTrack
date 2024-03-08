@@ -161,8 +161,8 @@ class UserController extends Controller
                         ->leftJoin('associated_users', 'users.id', '=', 'associated_users.user_id')
                         ->leftJoin('contracts', 'associated_users.contract_id', '=', 'contracts.id')
                         ->leftJoin('msas', 'msas.id', '=', 'contracts.msa_id')
-                        ->select('contracts.contract_ref_id', 'msas.client_name', 'contracts.start_date', 'contracts.end_date', 'contracts.contract_type', 'contracts.contract_status')
-                        ->get();
+                        ->select('contracts.id','contracts.contract_ref_id', 'msas.client_name', 'contracts.start_date', 'contracts.end_date', 'contracts.contract_type', 'contracts.contract_status')
+                        ->get();    
     
             return response()->json(["data" => $myContracts]);
         } catch (QueryException $e) {

@@ -2,8 +2,17 @@
 
 namespace App\Providers;
 
+use App\ServiceInterfaces\ContractInterface;
+use App\ServiceInterfaces\ExperionEmployeesInterface;
+use App\ServiceInterfaces\GoogleDriveInterface;
+use App\ServiceInterfaces\RevenueProjectionInterface;
+use App\Services\ContractService;
+use App\Services\ExperionEmployeesService;
+use App\Services\GoogleDriveService;
+use App\Services\RevenueProjectionService;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -12,7 +21,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            RevenueProjectionInterface::class,
+            RevenueProjectionService::class
+        );
+        $this->app->bind(
+            ContractInterface::class,
+            ContractService::class
+            );
+        $this->app->bind(
+            GoogleDriveInterface::class,
+            GoogleDriveService::class
+        );
+        $this->app->bind(
+            ExperionEmployeesInterface::class,
+            ExperionEmployeesService::class
+        );
+
     }
 
     /**
