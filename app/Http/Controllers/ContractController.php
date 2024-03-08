@@ -201,10 +201,11 @@ class ContractController extends Controller
             'du' => 'required|string',
             'estimated_amount' => 'required|numeric|min:0',
             'comments' => 'string',
-            'contract_doclink' => 'string',
-            'file' => 'file|required',
+            // 'contract_doclink' => 'string',
+            'file' => 'file',
             'associated_users' => ['array', 'exists:users,id'],
             'associated_users.*.user_id' => 'required|numeric',
+
         ]);
 
         if ($validator->fails()) {
@@ -216,122 +217,174 @@ class ContractController extends Controller
         try {
             $totalAmount = 0;
             $totalPercentage = 0;
+            // var_dump($request->milestone);
+            // $decodedMilestones = json_decode($request->milestone, true);
+            // if (!is_array($request->milestone)) {
+            //     $decodedMilestones = json_decode($request->milestone, true);
+            // }
+            // if ($decodedMilestones === null && json_last_error() !== JSON_ERROR_NONE) {
+            //     var_dump("JSON decoding error: " . json_last_error_msg());
+            // } else {
+            //     var_dump($decodedMilestones);
+            // }
+            // $decodedMilestones = json_decode($request->milestone, true);
+            $decodedMilestones = $request->milestone;
+            var_dump($decodedMilestones);
 
             if ($request->contract_type === 'FF') {
-                if (!empty($request->ff_milestones)) {
-                    foreach ($request->ff_milestones as $milestone) {
-                        $totalPercentage += $milestone['percentage'];
-                        $totalAmount += $milestone['amount'];
+                if (!empty($request->milestone)) {
+                    // $decodedMilestones = $request->milestone;
+
+
+                    try {
+                        // foreach ($request->milestone as $milestone) {
+                        //     $totalPercentage += $milestone['percentage'];
+                        //     $totalAmount += $milestone['amount'];
+                        // }
+                        if (!is_array($request->milestone)) {
+                            // Loop through array of milestones
+                            foreach ($request->milestone as $milestone) {
+                                $totalPercentage += $milestone['percentage'];
+                                $totalAmount += $milestone['amount'];
+                            }
+                        } else {
+                            // Handle the case when $request->milestone is a string
+                            // For example, if it's a JSON string, you could decode it
+                            $milestones = json_decode($request->milestone, true);
+                            if ($milestones) {
+                                foreach ($milestones as $milestone) {
+                                    $totalPercentage += $milestone['percentage'];
+                                    $totalAmount += $milestone['amount'];
+                                }
+                            }
+                        }
+                    } catch (Exception $e) {
+                        throw new Exception("Error Processing Request", 1);
+
                     }
                 } else {
-                    throw new Exception('No milestones provided for Fixed Fee contract.');
+                    return response()->json(['error' => 'No milestones provided for Fixed fee contract.'], 422);
                 }
             } else {
-                if (!empty($request->tm_milestones)) {
-                    foreach ($request->tm_milestones as $milestone) {
-                        $totalAmount += $milestone['amount'];
+
+
+                if (!empty($request->milestone)) {
+                    if (is_array($request->milestone)) {
+                        foreach ($request->milestone as $milestone) {
+                            $totalAmount += $milestone['amount'];
+                        }
+                    } else {
+                        foreach (json_decode($request->milestone, true) as $milestone) {
+                            // $totalPercentage += $milestone['percentage'];
+
+                            $totalAmount += $milestone['amount'];
+                        }
                     }
                 } else {
-                    throw new Exception('No milestones provided for Time and Material contract.');
+                    return response()->json(['error' => 'No milestones provided for Time and Material contract.'], 422);
+
                 }
             }
 
             if ($request->contract_type === 'FF' && ($totalPercentage !== 100 || $totalAmount !== $request->estimated_amount)) {
-                return response()->json(['error' => 'Invalid milestones for Fixed Fee contract.'], 400);
+                return response()->json(['error' => 'Invalid milestones for Fixed Fee contract.'], 422);
             }
 
-            if ($request->contract_type === 'TM' && $totalAmount !== $request->estimated_amount) {
-                return response()->json(['error' => 'Invalid milestones for Time and Material contract.'], 400);
+            if ($request->contract_type === 'TM' && $totalAmount !== (int) $request->estimated_amount) {
+                return response()->json(['error' => 'Invalid milestones for Time and Material contract.'], 422);
             }
-
             $googleDrive = new GoogleDriveController();
+
+
             $fileLink = $googleDrive->store($request);
+            if ($fileLink) {
+                $contract = Contracts::create([
+                    'msa_id' => $request->msa_id,
+                    'contract_added_by' => $request->contract_added_by,
+                    'contract_ref_id' => $request->contract_ref_id,
+                    'contract_type' => $request->contract_type,
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                    'date_of_signature' => $request->date_of_signature,
+                    'du' => $request->du,
+                    'contract_status' => "Active",
+                    'estimated_amount' => $request->estimated_amount,
+                    'comments' => $request->comments,
+                    'contract_doclink' => $fileLink,
 
-            $contract = Contracts::create([
-                'msa_id' => $request->msa_id,
-                'contract_added_by' => $request->contract_added_by,
-                'contract_ref_id' => $request->contract_ref_id,
-                'contract_type' => $request->contract_type,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'date_of_signature' => $request->date_of_signature,
-                'du' => $request->du,
-                'is_active' => true,
-                'estimated_amount' => $request->estimated_amount,
-                'comments' => $request->comments,
-                'contract_doclink' => $fileLink,
-            ]);
-
-            // if ($fileLink) {
-            //     $contract = Contracts::create([
-            //         'msa_id' => $request->msa_id,
-            //         'contract_added_by' => $request->contract_added_by,
-            //         'contract_ref_id' => $request->contract_ref_id,
-            //         'contract_type' => $request->contract_type,
-            //         'start_date' => $request->start_date,
-            //         'end_date' => $request->end_date,
-            //         'date_of_signature' => $request->date_of_signature,
-            //         'du' => $request->du,
-            //         'is_active' => true,
-            //         'estimated_amount' => $request->estimated_amount,
-            //         'comments' => $request->comments,
-            //         'contract_doclink' => $fileLink,
-            //     ]);
-            // } else {
-            //     $contract = Contracts::create([
-            //         'msa_id' => $request->msa_id,
-            //         'contract_added_by' => $request->contract_added_by,
-            //         'contract_ref_id' => $request->contract_ref_id,
-            //         'contract_type' => $request->contract_type,
-            //         'start_date' => $request->start_date,
-            //         'end_date' => $request->end_date,
-            //         'date_of_signature' => $request->date_of_signature,
-            //         'du' => $request->du,
-            //         'is_active' => true,
-            //         'estimated_amount' => $request->estimated_amount,
-            //         'comments' => $request->comments,
-            //         'contract_doclink' => "",
-            //     ]);
-            // }
-
+                ]);
+            } else {
+                $contract = Contracts::create([
+                    'msa_id' => $request->msa_id,
+                    'contract_added_by' => $request->contract_added_by,
+                    'contract_ref_id' => $request->contract_ref_id,
+                    'contract_type' => $request->contract_type,
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                    'date_of_signature' => $request->date_of_signature,
+                    'du' => $request->du,
+                    'contract_status' => "Active",
+                    'estimated_amount' => $request->estimated_amount,
+                    'comments' => $request->comments,
+                    'contract_doclink' => $fileLink,
+                ]);
+            }
             $contractId = $contract->id;
             // return response ()->json([$request->assoc[0]]);
+
             if (!empty($request->assoc)) {
-                foreach ($request->assoc as $users) {
-                    // return response()->json([$users['user_id']]);
-                    // if (!User::find($users->user_id)) {
-                    //     throw new Exception("User not Found");
-                    //     // return response()->json(["User doesn't exist"], 404);
-                    // }
-                    AssociatedUsers::create([
-                        'contract_id' => $contractId,
-                        'user_id' => $users['user_id'],
-                    ]);
+                if (!is_array($request->assoc)) {
+                    foreach (json_decode($request->assoc, true) as $users) {
+                        // return response()->json([$users['user_id']]);
+                        $assoc_users = AssociatedUsers::create([
+                            'contract_id' => $contractId,
+                            'user_id' => $users['user_id'],
+                        ]);
+                    }
                 }
             }
 
             if ($request->contract_type === 'FF') {
-                foreach ($request->ff_milestones as $milestone) {
-                    FixedFeeContracts::create([
-                        'contract_id' => $contractId,
-                        'milestone_desc' => $milestone['milestone_desc'],
-                        'milestone_enddate' => $milestone['milestone_enddate'],
-                        'percentage' => $milestone['percentage'],
-                        'amount' => $milestone['amount'],
-                    ]);
+                try {
+                    if (!is_array($request->milestone)) {
+                        foreach (json_decode($request->milestone, true) as $milestone) {
+                            $ffresult = FixedFeeContracts::create([
+                                'contract_id' => $contractId,
+                                'milestone_desc' => $milestone['milestone_desc'],
+                                'milestone_enddate' => $milestone['milestone_enddate'],
+                                'percentage' => $milestone['percentage'],
+                                'amount' => $milestone['amount'],
+                            ]);
+                        }
+                    }
+                } catch (Exception $e) {
+                    var_dump($e);
+                    throw new Exception('Error is milestone not array');
                 }
+                return response()->json([
+                    'message' => 'Contract created successfully',
+                    'data' =>
+                        ['contract_result' => $contract, 'associated_users_result' => $assoc_users, "milestone_result" => $ffresult]
+                ], 201);
             } else {
-                foreach ($request->tm_milestones as $milestone) {
-                    TimeAndMaterialContracts::create([
-                        'contract_id' => $contractId,
-                        'milestone_desc' => $milestone['milestone_desc'],
-                        'milestone_enddate' => $milestone['milestone_enddate'],
-                        'amount' => $milestone['amount'],
-                    ]);
+                if (!is_array($request->milestone)) {
+                    foreach (json_decode($request->milestone, true) as $milestone) {
+                        $tmresult = TimeAndMaterialContracts::create([
+                            'contract_id' => $contractId,
+                            'milestone_desc' => $milestone['milestone_desc'],
+                            'milestone_enddate' => $milestone['milestone_enddate'],
+                            'amount' => $milestone['amount'],
+                        ]);
+                    }
+                    return response()->json([
+                        'message' => 'Contract created successfully',
+                        'data' =>
+                            ['contract_result' => $contract, 'associated_users_result' => $assoc_users, "milestone_result" => $tmresult]
+                    ], 201);
                 }
             }
 
-            return response()->json(['message' => 'Contract created successfully', 'contract' => $contractId], 201);
+
         } catch (Exception $e) {
             if (strpos($e->getMessage(), 'foreign key constraint fails') !== false) {
                 return response()->json(['error' => 'User not valid'], 500);
@@ -343,6 +396,8 @@ class ContractController extends Controller
 
         }
     }
+
+    
 
 
 }
