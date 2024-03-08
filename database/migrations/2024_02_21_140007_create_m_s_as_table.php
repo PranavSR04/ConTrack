@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->date('end_date');
             $table->string('comments')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->string('msa_doclink');
+            $table->longText('msa_doclink');
 
             $table->timestamps();
         });
