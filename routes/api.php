@@ -71,9 +71,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
 
     // Notifications routes
-    Route::get('/general/notifications', [NotificationController::class, 'getUserNotification']);
+    Route::get('/notification/list', [NotificationController::class, 'getUserNotification']);
     Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
-    Route::post('/insert/logdata', [InsertController::class, 'insertData']);
 
 
     // Fixed fee route
