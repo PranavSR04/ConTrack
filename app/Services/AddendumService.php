@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Services;
+use App\ServiceInterfaces\AddendumInterface;
 use App\Models\Addendums;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
 
-class AddendumController extends Controller
-{
+class AddendumService implements AddendumInterface{
     /**
      * Generate a google api token.
      */
@@ -31,22 +29,6 @@ class AddendumController extends Controller
         $accessToken = json_decode((string) $response->getBody(), true)['access_token'];
 
         return $accessToken;
-    }
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -94,74 +76,5 @@ class AddendumController extends Controller
             }
         }
         
-    }
-
-    /**
-     * Store generated data
-     */
-    public function generateData(){
-        $addendumData = [
-            [
-                "contract_id"=>1,
-                "addendum_doclink"=>"https://example.com/document1"
-            ],
-            [
-                "contract_id"=>1,
-                "addendum_doclink"=>"https://example.com/document12"
-            ],
-            [
-                "contract_id"=>1,
-                "addendum_doclink"=>"https://example.com/document13"
-            ],
-            [
-                "contract_id"=>2,
-                "addendum_doclink"=>"https://example.com/document20"
-            ],
-            [
-                "contract_id"=>2,
-                "addendum_doclink"=>"https://example.com/document21"
-            ],
-            [
-                "contract_id"=>3,
-                "addendum_doclink"=>"https://example.com/document30"
-            ]
-        ];
-        foreach ($addendumData as $data) {
-            Addendums::create($data);
-        }        
-
-        return "Data inserted successfully for Addendum table";
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
