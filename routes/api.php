@@ -49,20 +49,20 @@ Route::get('/msa/list', [MSAController::class, 'MSAList']);
 Route::post('/user/insertuser',[UserController::class,'create']);
 Route::post('/insert/experiondata', [ExperionEmployeeController::class,'store']);
 Route::post('/experion/generatedata', [ExperionEmployeeController::class,'generateRandomData']);
-Route::get('/experion/getexperionlist',[ExperionEmployeeController::class,'show']);
 Route::post('/addeddum/insertdata', [AddendumController::class,'generateData']);
 Route::post('/role/insertrole', [RoleController::class, 'insertRole']);
-Route::get('/role/details', [RoleController::class, 'getRole']);
 Route::post('/contracts/addcontracts', [ContractController::class,'addContract']);
 Route::put('/contracts/editcontract/{id}', [ContractController::class,'updateContractData']);
-Route::get('/users/getusers',[UserController::class,'getUsers']);  
-Route::post('/users/adduser', [UserController::class,'addUser']);  
-Route::put('/users/updateuser/{user_id}', [UserController::class,'updateUser']); 
 Route::post('/add/msa', [MSAController::class, 'addMsa']);
 Route::put('/update/msa/{id}', [MSAController::class, 'updateMsa']);
 Route::get('/contracts/myContracts/{id}', [UserController::class,'myContracts']);  
-
 });
+Route::get('/users/getusers',[UserController::class,'getUsers']);  
+Route::put('/users/updateuser/{user_id}', [UserController::class,'updateUser']); 
+Route::get('/experion/getexperionlist',[ExperionEmployeeController::class,'show']);
+Route::get('/role/details', [RoleController::class, 'getRole']);
+Route::post('/users/adduser', [UserController::class,'addUser']);  
+
 
 Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
 Route::get('/notAuth',[UserCheckController::class,'notauth'])->name('notauth');

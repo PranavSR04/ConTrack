@@ -403,7 +403,6 @@ class MsaController extends Controller
         try{
        $msa = MSAs::find($id);
    
-       
        if (!$msa) {
            return response()->json(['error' => 'MSA not found'], 404);
        }

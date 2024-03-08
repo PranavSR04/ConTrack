@@ -156,7 +156,7 @@ class ExperionEmployeeController extends Controller
         try {
             // Validate the request
             $request->validate([
-                'name' => 'required|string',
+                'name' => 'string',
             ]);
 
             $users = ExperionEmployees::where(function ($query) use ($request) {

@@ -30,7 +30,10 @@ class UserController extends Controller
         if ($existingUser) {
             // If the user was soft-deleted, restore the user
             if ($existingUser->is_active === 0) {
-                $existingUser->update(['is_active' => 1]); // Restore the user by setting is_active to 1
+                $existingUser->update([
+                    'is_active' => 1,    // Restore the user by setting is_active to 1
+                    'role_id' => $request->role_id, // Update the role_id
+                ]);                               
                 return response()->json(['message' => 'User restored successfully'], 200);
             } else {
                 throw new Exception('User already exists');
@@ -71,25 +74,32 @@ class UserController extends Controller
 
     public function getUsers(Request $request){
         try{    
-           // Default values for parameters
+
+        // Default values for parameters
+        $perPage = $request->input('pageSize', 10); // default per page is 10
+        $page = $request->input('current', 1); // page number
+       
         $searchTerm = $request->input('search', '');
         $sortColumn = $request->input('sort', 'user_name');
         $sortOrder = $request->input('sort_order', 'asc');
 
-        $users = User::leftJoin('contracts', 'users.id', '=', 'contracts.contract_added_by')
+        $users = User::leftJoin('associated_users', 'users.id', '=', 'associated_users.user_id')
                     ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
-                    ->select('users.user_name', 'roles.role_access', \DB::raw('COUNT(contracts.id) as contracts_count'))
+                    ->select('users.id','users.user_name', 'roles.role_access', \DB::raw('COUNT(associated_users.contract_id) as contracts_count'))
                     ->where('users.is_active', 1)
                     ->when($searchTerm, function ($query) use ($searchTerm) {
                         return $query->where('users.user_name', 'like', "%$searchTerm%");
                     })
                     ->orderBy($sortColumn, $sortOrder)
                     ->groupBy('users.user_name', 'roles.role_access', 'users.id')
-                    ->paginate(3);
+                    ->paginate($perPage, ['*'], 'page', $page);
 
-
-    
-    return response()->json($users);
+        return response()->json([
+                 'success' => true,
+                 'message' => 'Data retrieved successfully',
+                 'data' => $users
+                ]);
+                    
 } catch (QueryException $e) {
     // Handle database query exceptions
     return response()->json(['error' => 'Database error.'], 500);
