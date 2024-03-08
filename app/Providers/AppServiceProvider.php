@@ -2,18 +2,23 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\ActivityLogInsertService;
+use App\ServiceInterfaces\ActivityLogInsertInterface;
 use App\ServiceInterfaces\ContractInterface;
 use App\ServiceInterfaces\ExperionEmployeesInterface;
 use App\ServiceInterfaces\GoogleDriveInterface;
+use App\ServiceInterfaces\NotificationInterface;
 use App\ServiceInterfaces\MsaInterface;
 use App\ServiceInterfaces\RevenueProjectionInterface;
 use App\Services\ContractService;
 use App\Services\MsaService;
 use App\Services\ExperionEmployeesService;
 use App\Services\GoogleDriveService;
+use App\Services\NotificationService;
 use App\Services\RevenueProjectionService;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
+use Monolog\Handler\FingersCrossed\ActivationStrategyInterface;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -42,6 +47,14 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             ExperionEmployeesInterface::class,
             ExperionEmployeesService::class
+        );
+        $this->app->bind(
+            NotificationInterface::class,
+            NotificationService::class
+        );
+        $this->app->bind(
+            ActivityLogInsertInterface::class,
+            ActivityLogInsertService::class
         );
 
     }
