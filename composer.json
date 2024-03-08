@@ -10,6 +10,7 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "microsoft/microsoft-graph": "^2.2",
         "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {
@@ -24,6 +25,7 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
+            "Microsoft\\Graph\\": "vendor/microsoft/microsoft-graph/src/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }

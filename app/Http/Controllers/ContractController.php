@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Addendums;
 use App\Models\AssociatedUsers;
 use App\Models\Contracts;
 use App\Models\FixedFeeContracts;
 use App\Models\TimeAndMaterialContracts;
-use App\Models\User;
+use App\ServiceInterfaces\ContractInterface;
 use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Database\QueryException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
-use SebastianBergmann\CodeCoverage\Util\Percentage;
-use Spatie\FlareClient\Http\Exceptions\NotFound;
 
 class ContractController extends Controller
 {
+    private $contractService;
+    private $addContract;
+    public function __construct(ContractInterface $contractService)
+    {
+        $this->contractService = $contractService;
+    }
     public function insertContractsData()
     {
         $contractsDataArray = [
@@ -111,7 +111,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'N621',
                 'msa_id' => 5,
                 'contract_added_by' => 1,
-                
+
                 'contract_type' => "TM",
                 'date_of_signature' => now()->subMonths(2),
                 'comments' => "Fixed fee with tight schedule",
@@ -160,184 +160,43 @@ class ContractController extends Controller
         
         return response()->json(['Data inserted']);
     }
-    public function getContractData(Request $request, $id=null)
+    
+    /**
+     * Retrieve contract data based on the provided parameters.
+     *
+     * If an ID is provided, it fetches individual contract details along with associated milestones, addendums,
+     * and associated users. If no ID is provided, it retrieves a list of contracts based on the request parameters.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int|null $id (optional) The ID of the contract to retrieve individual details.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Exception if an error occurs during data retrieval.
+     */
+    public function getContractData(Request $request, $id = null)
     {
-        if($id!=null){
-            try {
-            $contractData = Contracts::find($id);
-            if(!$contractData){
-                return response()->json(['error'=> 'Id not found in the database'],404); 
-                }
-            else {
-                // Check contract type
-                $contractType = $contractData->contract_type;
-                $singleContract=Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
-                ->join('users', 'contracts.contract_added_by', '=', 'users.id')
-                ->where('contracts.id','=',$id)
-                ->select('contracts.*', 'msas.client_name', 'users.user_name')->get();
-                if ($contractType == 'T&M') {
-                    $milestones=TimeAndMaterialContracts::where('tm_contracts.contract_id','=',$id)
-                    ->select('*');
-                } elseif ($contractType == 'Fixed Fee') {
-                    $milestones=FixedFeeContracts::where('ff_contracts.contract_id','=',$id)
-                    ->select('*');
-                }
-                $data=$milestones->get();
+        return $this->contractService->getContractData($request, $id);
+    }
 
-               //joining with contract data
-                $combinedData = $singleContract->map(function ($contract) use ($data) {
-                    $contract['milestones'] = $data->where('contract_id', $contract['id'])->values()->all();
-                    return $contract;
-                }); 
-                return response()->json($combinedData); 
-            }
-        }
-        catch (Exception $e) {
-            return response()->json(['error'=> $e->getMessage()]);
-        }
-    } 
-        try{
-            //get data in request parameter
-            $requestData = $request->all();
-            $querydata=Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
-            ->join('users', 'contracts.contract_added_by', '=', 'users.id')
-            ->select('msas.client_name', 'users.user_name','contracts.contract_type','contracts.date_of_signature',
-            'contracts.contract_ref_id','contracts.comments','contracts.start_date','contracts.end_date','du','estimated_amount','contract_doclink','contracts.status');
-            if (empty($requestData)) {
-                return $querydata->paginate('10');
-            } else {
-                foreach ($requestData as $key => $value) {
-                   
-                    if(in_array($key, ['contract_ref_id','client_name','du','contract_type','msa_ref_id','status'])){
-                        $querydata->where($key, 'LIKE', '%' . $value . '%');
-                    }
-                    if($key =='sort_by'){
-                        $querydata->orderBy($value, $request->sort_value);
-                    }
-                    if(in_array($key, ['start_date', 'end_date'])){
-                        $querydata->where('contracts.'.$key, 'LIKE', '%' . $value . '%');
-                    }       
-            }
-            if ($querydata->count() == 0) {
-                return response()->json(['error' => 'Data not found'], 404);
-            }  
-            
-                return $querydata->paginate('10');
-        } 
+    /**
+     * Function to update a contract.
+     *
+     * @param \Illuminate\Http\Request $request The incoming request containing updated contract data.
+     * @param int $contractId The ID of the contract to be updated.
+     * @return \Illuminate\Http\JsonResponse|string JSON response indicating the status of the update or an error message.
+     */
+    public function updateContractData(Request $request, $contractId)
+    {
+        return $this->contractService->updateContractData($request, $contractId);
     }
-    catch (Exception $e) {
-        return response()->json(['error'=> $e->getMessage()],500);
-    }
-}
 
     public function addContract(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'msa_id' => 'required|exists:msas,id',
-            'contract_ref_id' => 'required|string|max:25',
-            'contract_type' => 'required|string|max:25',
-            'start_date' => 'required|date|before:end_date|after:date_of_signature',
-            'end_date' => 'required|date|after:start_date',
-            'date_of_signature' => 'required|date',
-            'du' => 'required|string',
-            'estimated_amount' => 'required|numeric|min:0',
-            'comments' => 'string',
-            'contract_doclink' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return $validator->errors();
-        }
-
-        $validated = $validator->validated();
-
-        try {
-            $totalAmount = 0;
-            $totalPercentage = 0;
-
-            if ($request->contract_type === 'FF') {
-                if (!empty($request->ff_milestones)) {
-                    foreach ($request->ff_milestones as $milestone) {
-                        $totalPercentage += $milestone['percentage'];
-                        $totalAmount += $milestone['amount'];
-                    }
-                } else {
-                    throw new Exception('No milestones provided for Fixed Fee contract.');
-                }
-            } else {
-                if (!empty($request->tm_milestones)) {
-                    foreach ($request->tm_milestones as $milestone) {
-                        $totalAmount += $milestone['amount'];
-                    }
-                } else {
-                    throw new Exception('No milestones provided for Time and Material contract.');
-                }
-            }
-
-            if ($request->contract_type === 'FF' && ($totalPercentage !== 100 || $totalAmount !== $request->estimated_amount)) {
-                return response()->json(['error' => 'Invalid milestones for Fixed Fee contract.'], 400);
-            }
-
-            if ($request->contract_type === 'TM' && $totalAmount !== $request->estimated_amount) {
-                return response()->json(['error' => 'Invalid milestones for Time and Material contract.'], 400);
-            }
-
-            $contract = Contracts::create([
-                'msa_id' => $request->msa_id,
-                'contract_added_by' => $request->contract_added_by,
-                'contract_ref_id' => $request->contract_ref_id,
-                'contract_type' => $request->contract_type,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'date_of_signature' => $request->date_of_signature,
-                'du' => $request->du,
-                'is_active' => true,
-                'estimated_amount' => $request->estimated_amount,
-                'comments' => $request->comments,
-                'contract_doclink' => $request->contract_doclink,
-            ]);
-            $contractId = $contract->id;
-            // return response ()->json([$request->assoc[0]]);
-            if (!empty($request->assoc)) {
-                foreach ($request->assoc as $users) {
-                    // return response()->json([$users['user_id']]);
-                    AssociatedUsers::create([
-                        'contract_id' => $contractId,
-                        'user_id' => $users['user_id'],
-                    ]);
-                }
-            }
-
-            if ($request->contract_type === 'FF') {
-                foreach ($request->ff_milestones as $milestone) {
-                    FixedFeeContracts::create([
-                        'contract_id' => $contractId,
-                        'milestone_desc' => $milestone['milestone_desc'],
-                        'milestone_enddate' => $milestone['milestone_enddate'],
-                        'percentage' => $milestone['percentage'],
-                        'amount' => $milestone['amount'],
-                    ]);
-                }
-            } else {
-                foreach ($request->tm_milestones as $milestone) {
-                    TimeAndMaterialContracts::create([
-                        'contract_id' => $contractId,
-                        'milestone_desc' => $milestone['milestone_desc'],
-                        'milestone_enddate' => $milestone['milestone_enddate'],
-                        'amount' => $milestone['amount'],
-                    ]);
-                }
-            }
-            $action="Add";
-            $anotherController = new InsertController();
-            $anotherController->addToActivityLog($contractId,null,$added_by,$action);
-
-            return response()->json(['message' => 'Contract created successfully', 'contract' => $contractId], 201);
-        } catch (Exception $e) {
-            return response()->json(['error' => 'Failed to create contract', 'message' => $e->getMessage()], 500);
-        }
+        return $this->contractService->addContract($request);
     }
 
 
+
+
 }
-;

@@ -31,44 +31,74 @@ use App\Http\Controllers\ExperionEmployeeController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::GET('/notification/general',[NotificationController::class,'getUserNotification']);
-Route::PUT('/notification/statusupdate',[NotificationController::class,'notificationStatusUpdate']);
-Route::get('/contract/getlist/{id?}', [ContractController::class, 'getContractData']);
-Route::post('/insertContractsData', [ContractController::class, 'insertContractsData']);
-Route::post('/insertFixedFeeData', [FixedFeeController::class, 'insertFixedFeeData']);
-Route::post('/insertTandMData', [TandMController::class, 'insertTandMData']);
-Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
-Route::get('/get/msalist', [MSAController::class, 'MSAList']);
-Route::post('/add/msa', [MSAController::class, 'addMsa']);
-Route::put('/update/msa/{id}', [MSAController::class, 'updateMsa']);
-Route::post('/insertUser',[UserController::class,'create']);
-Route::post('/insert/ExperionData', [ExperionEmployeeController::class,'store']);
-Route::post('/generate/ExperionData', [ExperionEmployeeController::class,'generateRandomData']);
-Route::get('/display/ExperionData/{id}',[ExperionEmployeeController::class,'show']);
-Route::post('/insert/AddendumData', [AddendumController::class,'generateData']);
-Route::post('/insertRole', [RoleController::class, 'insertRole']);
-Route::get('/role/details', [RoleController::class, 'getRole']);
-Route::post('/add/contracts', [ContractController::class,'addContract']);
-Route::post('updateContractData/{id}', [ContractController::class,'updateContractData']);
-Route::get('/getUsers',[UserController::class,'getUsers']);  
-Route::post('/addUser', [UserController::class,'addUser']);  
-Route::put('/updateUser/{user_id}', [UserController::class,'updateUser']); 
 
 
-
-
-
-Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
-Route::get('/notAuth',[UserCheckController::class,'notauth'])->name('notauth');
-
+Route::get('/notAuth', [UserCheckController::class, 'notauth'])->name('notauth');
 
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/register', [AuthController::class, 'register']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::get('/user-profile', [AuthController::class, 'userProfile']);    
+    Route::get('/user-profile', [AuthController::class, 'userProfile']);
+});
+
+Route::middleware('auth')->group(function () {
+    // Roles routes
+    Route::post('/role/insertrole', [RoleController::class, 'insertRole']);
+    Route::get('/role/details', [RoleController::class, 'getRole']);
+
+    // Users routes
+    Route::post('/user/insert', [UserController::class, 'create']);
+    Route::get('/users/get', [UserController::class, 'getUsers']);
+    Route::post('/users/add', [UserController::class, 'addUser']);
+    Route::put('/users/update/{user_id}', [UserController::class, 'updateUser']);
+
+    // MSA routes
+    Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
+    Route::get('/msa/list', [MSAController::class, 'MSAList']);
+    Route::post('/msa/add', [MSAController::class, 'addMsa']);
+    Route::post('/msa/update/{id}', [MSAController::class, 'updateMsa']);
+
+    // Contracts routes
+    Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
+    Route::post('/contracts/add', [ContractController::class, 'addContract']);
+    Route::post('/contracts/edit/{id}', [ContractController::class, 'updateContractData']);
+    Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
+    Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
+
+    // Revenue routes
+    Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
+
+    // Notifications routes
+    Route::get('/general/notifications', [UserNotification::class, 'getUserNotification']);
+    Route::put('/notification/statusupdate', [UserNotification::class, 'notificationStatusUpdate']);
+    Route::post('/insert/logdata', [InsertController::class, 'insertData']);
+
+
+    // Fixed fee route
+    Route::post('/fixedFee/insert', [FixedFeeController::class, 'insertFixedFeeData']);
+
+    // Time and material route
+    Route::post('/timeAndMaterial/insert', [TandMController::class, 'insertTandMData']);
+    
+    // Experion Routes
+    Route::post('/experion/insertData', [ExperionEmployeeController::class, 'store']);
+    Route::post('/experion/generateData', [ExperionEmployeeController::class, 'generateRandomData']);
+    Route::get('/experion/list', [ExperionEmployeeController::class, 'show']);
+    
+});
+
+
+
+
+Route::middleware(['auth', 'role:super_admin'])->group(function () {
+    // Routes accessible only to super admins
+
+});
+Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
+    // Routes accessible only to admins or superadmins
+
 });

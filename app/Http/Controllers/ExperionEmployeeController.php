@@ -2,31 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\ServiceInterfaces\ExperionEmployeesInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\ExperionEmployees;
-use App\Models\User;
-
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Validation\ValidationException;
 
 class ExperionEmployeeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    private $experionEmployeesService;
+    public function __construct(ExperionEmployeesInterface $experionEmployeesService)
     {
-        //
+        $this->experionEmployeesService = $experionEmployeesService;
     }
 
     /**
@@ -124,6 +111,20 @@ class ExperionEmployeeController extends Controller
                 "middle_name" => "",
                 "last_name" => "Miller",
             ],
+            [
+                "email_id" => "dantus.tom@experionglobal.com",
+                "password" => bcrypt("password8"),
+                "first_name" => "Dantus",
+                "middle_name" => "George",
+                "last_name" => "Tom",
+            ],
+            [
+                "email_id" => "abhi.j@experionglobal.com",
+                "password" => bcrypt("password9"),
+                "first_name" => "Abhi",
+                "middle_name" => "",
+                "last_name" => "J",
+            ]
         ];
 
         foreach ($dataArray as $data) {
@@ -146,57 +147,6 @@ class ExperionEmployeeController extends Controller
      */
     public function show(Request $request)
     {
-        try {
-            // Validate the request
-            $request->validate([
-                'name' => 'required|string',
-            ]);
-
-            $users = ExperionEmployees::where(function ($query) use ($request) {
-                $query->where('first_name', 'like', $request->name . '%')
-                    ->orWhere('middle_name', 'like', $request->name . '%')
-                    ->orWhere('last_name', 'like', $request->name . '%');
-            })->get();
-
-            if ($users->isEmpty()) {
-                // 404 Not Found: No records found
-                return response()->json(['error' => 'No records found.'], 404);
-            }
-
-            return response()->json($users);
-        } catch (ValidationException $e) {
-            // 422 Unprocessable Entity: Validation error
-            return response()->json(['error' => $e->validator->errors()], 422);
-        } catch (ModelNotFoundException $e) {
-            // 404 Not Found: Model not found exception
-            return response()->json(['error' => 'Record not found.'], 404);
-        } catch (\Exception $e) {
-            // 500 Internal Server Error: Other exceptions
-            return response()->json(['error' => 'Internal Server Error.'], 500);
-        }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return $this->experionEmployeesService->show($request);
     }
 }

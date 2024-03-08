@@ -7,12 +7,9 @@ use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Exception;
-
-
-
-
 use Illuminate\Http\Request;
 use App\Models\User;
+use Validator;
 
 class UserController extends Controller
 {
@@ -23,7 +20,7 @@ class UserController extends Controller
     try {
         // Validate the request data
         $request->validate([
-            'experion_id' => 'required|exists:experion_employees,id',
+            'experion_id' => 'required',
             'role_id' => 'required|exists:roles,id', 
         ]);
 
@@ -88,8 +85,10 @@ class UserController extends Controller
                     })
                     ->orderBy($sortColumn, $sortOrder)
                     ->groupBy('users.user_name', 'roles.role_access', 'users.id')
-                    ->get();
+                    ->paginate(3);
 
+
+    
     return response()->json($users);
 } catch (QueryException $e) {
     // Handle database query exceptions
@@ -115,8 +114,6 @@ class UserController extends Controller
             'role_id' => 'sometimes|required|exists:roles,id',
             'is_active' => 'sometimes|required|boolean',
         ]);
-        
-        // $id = $request->input('id'); 
 
         // Find the user by ID
         $user = User::findOrFail($user_id);
@@ -127,7 +124,7 @@ class UserController extends Controller
         }
 
         elseif ($request->has('is_active')) {
-            $user->is_active = 0; // Set is_active to 0 if delete_flag is true
+            $user->is_active = 0; // Set is_active to 0 if is_active passed
             $message = 'User soft deleted successfully';
         } 
 
@@ -146,11 +143,37 @@ class UserController extends Controller
     }
 }
 
+    public function myContracts($user_id){
 
+        try {
+            // Validate the input parameters
+            $validator = Validator::make(['user_id' => $user_id], [
+                'user_id' => 'required|exists:users,id',
+            ]);
+    
+            // Check if validation fails
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 400);
+            }
+    
+            // Continue with query if validation passes
+            $myContracts = User::where('user_id', $user_id)
+                        ->leftJoin('associated_users', 'users.id', '=', 'associated_users.user_id')
+                        ->leftJoin('contracts', 'associated_users.contract_id', '=', 'contracts.id')
+                        ->leftJoin('msas', 'msas.id', '=', 'contracts.msa_id')
+                        ->select('contracts.id','contracts.contract_ref_id', 'msas.client_name', 'contracts.start_date', 'contracts.end_date', 'contracts.contract_type', 'contracts.contract_status')
+                        ->get();    
+    
+            return response()->json(["data" => $myContracts]);
+        } catch (QueryException $e) {
+            // Handle database query exceptions
+            return response()->json(['error' => 'Database error: ' . $e->getMessage()], 500);
+        } catch (Exception $e) {
+            // Handle other exceptions
+            return response()->json(['error' => 'Internal server error'], 500);
+        }
+    }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
@@ -210,40 +233,5 @@ class UserController extends Controller
         return "5 meaningful users created successfully!";
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-   
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }
