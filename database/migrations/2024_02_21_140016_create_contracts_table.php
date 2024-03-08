@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->string('du');
             $table->longText('contract_doclink');
             $table->double('estimated_amount');
-            $table->string('contract_status')->default('Active');
+            $table->string('contract_status')->default("Active");
             $table->timestamps();
             $table->foreign('msa_id')->references('id')->on('msas');
         });
