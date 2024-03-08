@@ -161,7 +161,21 @@ class ContractController extends Controller
         }
         return response()->json(['Data inserted']);
     }
-    public function getContractData(Request $request, $id=null)
+    
+    /**
+     * Retrieve contract data based on the provided parameters.
+     *
+     * If an ID is provided, it fetches individual contract details along with associated milestones, addendums,
+     * and associated users. If no ID is provided, it retrieves a list of contracts based on the request parameters.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int|null $id (optional) The ID of the contract to retrieve individual details.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Exception if an error occurs during data retrieval.
+     */
+    public function getContractData(Request $request, $id = null)
     {
         if ($id != null) { //get individual contracts data if id is passed.
             try {
@@ -240,14 +254,13 @@ class ContractController extends Controller
                 ->where('contract_status', '!=', 'Expired');
             if (empty($requestData)) {
                 return $querydata->paginate($paginate);
-                return $querydata->paginate($paginate);
             } else {
                 foreach ($requestData as $key => $value) {
-                   
-                    if(in_array($key, ['contract_ref_id','client_name','du','contract_type','msa_ref_id','status'])){
+
+                    if (in_array($key, ['contract_ref_id', 'client_name', 'du', 'contract_type', 'msa_ref_id', 'status'])) {
                         $querydata->where($key, 'LIKE', '%' . $value . '%');
                     }
-                    if($key =='sort_by'){
+                    if ($key == 'sort_by') {
                         $querydata->orderBy($value, $request->sort_value);
                     }
                     if (in_array($key, ['start_date', 'end_date'])) {
