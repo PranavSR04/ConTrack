@@ -232,7 +232,7 @@ class ContractController extends Controller
             } else {
                 foreach ($requestData as $key => $value) {
                    
-                    if(in_array($key, ['contract_ref_id','client_name','du','contract_type','msa_ref_id','status'])){
+                    if(in_array($key, ['contract_ref_id','client_name','du','contract_type','msa_ref_id','contract_status'])){
                         $querydata->where($key, 'LIKE', '%' . $value . '%');
                     }
                     if($key =='sort_by'){
