@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 use App\Models\ActivityLogs;
+use App\ServiceInterfaces\ActivityLogInsertInterface;
 use Illuminate\Http\Request;
 
-class InsertController extends Controller
+class ActivityLogInsertService implements ActivityLogInsertInterface
 {
     public function addToActivityLog($contract_id,$msa_id,$performed_by,$action){
         ActivityLogs::create([
@@ -16,4 +17,3 @@ class InsertController extends Controller
        
     }
 }
-

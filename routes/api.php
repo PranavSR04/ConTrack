@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Controllers\AssociatedUsersController;
 use App\Http\Controllers\MsaController;
-use App\Http\Controllers\AddendumController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RevenueController;
@@ -73,8 +71,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
 
     // Notifications routes
-    Route::get('/general/notifications', [UserNotification::class, 'getUserNotification']);
-    Route::put('/notification/statusupdate', [UserNotification::class, 'notificationStatusUpdate']);
+    Route::get('/general/notifications', [NotificationController::class, 'getUserNotification']);
+    Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
     Route::post('/insert/logdata', [InsertController::class, 'insertData']);
 
 
