@@ -45,7 +45,7 @@ Route::post('/contracts/insertdata', [ContractController::class, 'insertContract
 Route::post('/ff/insertFixedFeeData', [FixedFeeController::class, 'insertFixedFeeData']);
 Route::post('/tm/insertTandMData', [TandMController::class, 'insertTandMData']);
 Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
-// Route::get('/msa/list', [MSAController::class, 'MSAList']);
+Route::get('/msa/list', [MSAController::class, 'MSAList']);
 Route::post('/user/insertuser',[UserController::class,'create']);
 Route::post('/insert/experiondata', [ExperionEmployeeController::class,'store']);
 Route::post('/experion/generatedata', [ExperionEmployeeController::class,'generateRandomData']);
@@ -58,17 +58,27 @@ Route::put('/contracts/editcontract/{id}', [ContractController::class,'updateCon
 Route::get('/users/getusers',[UserController::class,'getUsers']);  
 Route::post('/users/adduser', [UserController::class,'addUser']);  
 Route::put('/users/updateuser/{user_id}', [UserController::class,'updateUser']); 
-// Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
-Route::put('/msa/update/{id}', [MSAController::class, 'updateMsa']);
-Route::get('/contracts/myContracts/{id}', [UserController::class,'myContracts']);  
+Route::post('/add/msa/{user_id}', [MSAController::class, 'addMsa']);
+Route::put('/update/msa/{id}/{user_id}', [MSAController::class, 'updateMsa']);
+Route::get('/contracts/myContracts/{id}', [UserController::class,'myContracts']);
+// Route::post('/addendum',[AddendumController::class],'show');
 
 });
+Route::get('/msa/list', [MSAController::class, 'MSAList']);
+Route::post('/add/msa/{user_id}', [MSAController::class, 'addMsa']);
+
 
 Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
 Route::get('/notAuth',[UserCheckController::class,'notauth'])->name('notauth');
-Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
-Route::get('/msa/list', [MSAController::class, 'MSAList']);
 
+Route::middleware(['auth', 'role:super_admin'])->group(function () {
+    // Routes accessible only to super admins
+
+});
+Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
+    // Routes accessible only to admins or superadmins
+
+});
 
 Route::group([
     'middleware' => 'api',
@@ -79,3 +89,6 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/user-profile', [AuthController::class, 'userProfile']);    
 });
+
+
+// Route::put('/contracts/editcontract/{id}', [ContractController::class,'updateContractData']);

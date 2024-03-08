@@ -14,11 +14,12 @@ use Illuminate\Validation\ValidationException;
 
 class MsaController extends Controller
 {
-    public function insertValues(){
+    public function insertValues()
+    {
         $data = [
             [
                 'msa_ref_id' => 'MSA001',
-                'added_by'=>1,
+                'added_by' => 1,
                 'client_name' => 'Microsoft Corporation',
                 'region' => 'America',
                 'start_date' => '2024-02-20',
@@ -29,7 +30,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA002',
-                'added_by'=>1,
+                'added_by' => 1,
                 'client_name' => 'Apple Inc.',
                 'region' => 'Europe',
                 'start_date' => '2019-03-10',
@@ -39,8 +40,8 @@ class MsaController extends Controller
                 'msa_doclink' => 'https://example.com/msa002-document'
             ],
             [
-                'msa_ref_id' => 'MSA003',             
-                'added_by'=>5,
+                'msa_ref_id' => 'MSA003',
+                'added_by' => 5,
                 'client_name' => 'Amazon.com Inc.',
                 'region' => 'Asia',
                 'start_date' => '2020-04-05',
@@ -51,7 +52,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA004',
-                'added_by'=>2,
+                'added_by' => 2,
                 'client_name' => 'Alphabet Inc.',
                 'region' => 'America',
                 'start_date' => '2015-05-15',
@@ -62,7 +63,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA005',
-                'added_by'=>2,
+                'added_by' => 2,
                 'client_name' => 'Facebook Inc.',
                 'region' => 'Europe',
                 'start_date' => '2018-06-20',
@@ -73,7 +74,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA006',
-                'added_by'=>2,
+                'added_by' => 2,
                 'client_name' => 'Samsung Electronics Co., Ltd.',
                 'region' => 'China',
                 'start_date' => '2023-07-10',
@@ -84,7 +85,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA007',
-                'added_by'=>5,
+                'added_by' => 5,
                 'client_name' => 'Walmart Inc.',
                 'region' => 'America',
                 'start_date' => '2021-08-05',
@@ -95,7 +96,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA008',
-                'added_by'=>3,
+                'added_by' => 3,
                 'client_name' => 'Toyota Motor Corporation',
                 'region' => 'India',
                 'start_date' => '2020-09-25',
@@ -106,7 +107,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA009',
-                'added_by'=>4,
+                'added_by' => 4,
                 'client_name' => 'Sony Corporation',
                 'region' => 'Europe',
                 'start_date' => '2020-10-10',
@@ -117,7 +118,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA010',
-                'added_by'=>3,
+                'added_by' => 3,
                 'client_name' => 'McDonald\'s Corporation',
                 'region' => 'America',
                 'start_date' => '2024-01-15',
@@ -128,7 +129,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA011',
-                'added_by'=>1,
+                'added_by' => 1,
                 'client_name' => 'Tata Consultancy Services Ltd.',
                 'region' => 'India',
                 'start_date' => '2019-02-20',
@@ -139,7 +140,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA012',
-                'added_by'=>3,
+                'added_by' => 3,
                 'client_name' => 'Reliance Industries Limited',
                 'region' => 'India',
                 'start_date' => '2019-03-10',
@@ -150,7 +151,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA013',
-                'added_by'=>5,
+                'added_by' => 5,
                 'client_name' => 'Infosys Limited',
                 'region' => 'India',
                 'start_date' => '2015-04-05',
@@ -161,7 +162,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA014',
-                 'added_by'=>2,
+                'added_by' => 2,
                 'client_name' => 'HDFC Bank Limited',
                 'region' => 'India',
                 'start_date' => '2024-01-15',
@@ -172,7 +173,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA015',
-                'added_by'=>5,
+                'added_by' => 5,
                 'client_name' => 'Mahindra & Mahindra Limited',
                 'region' => 'India',
                 'start_date' => '2020-06-20',
@@ -183,7 +184,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA016',
-                'added_by'=>2,
+                'added_by' => 2,
                 'client_name' => 'State Bank of India',
                 'region' => 'India',
                 'start_date' => '2014-07-10',
@@ -194,7 +195,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA017',
-                'added_by'=>4,
+                'added_by' => 4,
                 'client_name' => 'Bharat Petroleum Corporation Limited',
                 'region' => 'India',
                 'start_date' => '2020-08-05',
@@ -205,7 +206,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA018',
-                'added_by'=>2,
+                'added_by' => 2,
                 'client_name' => 'Wipro Limited',
                 'region' => 'India',
                 'start_date' => '2024-02-25',
@@ -216,7 +217,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA019',
-                'added_by'=>1,
+                'added_by' => 1,
                 'client_name' => 'Indian Oil Corporation Limited',
                 'region' => 'India',
                 'start_date' => '2024-10-10',
@@ -227,7 +228,7 @@ class MsaController extends Controller
             ],
             [
                 'msa_ref_id' => 'MSA020',
-                'added_by'=>2,
+                'added_by' => 2,
                 'client_name' => 'Bajaj Auto Limited',
                 'region' => 'India',
                 'start_date' => '2024-01-15',
@@ -238,260 +239,266 @@ class MsaController extends Controller
             ]
         ];
 
- 
-    foreach ($data as $msaData) {
-        $msa = new MSAs($msaData);
-        $msa->save();
+
+        foreach ($data as $msaData) {
+            $msa = new MSAs($msaData);
+            $msa->save();
+        }
+
+        return 'Values inserted';
     }
 
-    return 'Values inserted';
-  }
+    /**
+     * Retrieve a list of MSAs based on specified filters or sorting criteria.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function MSAList(Request $request)
+    {
+        try {
+            
 
-/**
- * Retrieve a list of MSAs based on specified filters or sorting criteria.
- *
- * @param  \Illuminate\Http\Request  $request
- * @return \Illuminate\Http\JsonResponse
- */
-    public function MSAList(Request $request){
-        try{
-            $validator=Validator::make($request->all(),[
-                'msa_ref_id' => 'string|max:25',
-                'client_name' => 'string',
-                'region' => 'string|max:100',
-                'added_by_user' => 'string',
-                
-               ]);
-    
-            if($validator->fails()){
-    
+            $params = $request->all();
+
+            $msas_query = MSAs::query();
+            $offset=$request->paginate_offset;
+           $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
+           ->select('users.user_name as added_by_user');
+            // Iterate through each request parameter
+            foreach ($params as $key => $value) {
+                // Check if the parameter is a filtering or sorting criterion
+                switch ($key) {
+                    case 'msa_ref_id':
+                    case 'client_name':
+                    case 'region':
+                    case 'start_date':
+                    case 'end_date':
+                        $msas_query->where($key, 'like', '%' . $value . '%');
+                        break;
+                    case 'added_by_user':
+                        $added_by_user 
+                        ->where($key, 'like', '%' . $value . '%'); // Fetch the first matching record
+                    break;
+                    case 'sort_by':
+                        // Extract sort order 
+                        $sort_order = isset($params['sort_order']) && strtolower($params['sort_order']) === 'desc' ? 'desc' : 'asc';
+                        $msas_query->orderBy($value, $sort_order);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            $msas = $msas_query->orderByDesc('updated_at')
+            ->orderByDesc('is_active')->paginate($offset);
+            return response()->json($msas);
+        } catch (QueryException $e) {
+            return response()->json(['error' => 'Database error'], 500);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'MSA not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json($e, 500);
+        }
+    }
+
+    /**
+     * Add a new MSA (Master Service Agreement).
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+
+    public function addMsa(Request $request,$user_id)
+    {
+        try {
+            // Validate the incoming request data
+            $validator = Validator::make($request->all(), [
+                'msa_ref_id' => 'required|string|max:25',
+                'client_name' => 'required|string',
+                'region' => 'required|string|max:100',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date',
+                'comments' => 'string',
+                'file' => 'file',
+            ]);
+
+            // Check if validation fails
+            if ($validator->fails()) {
+
+                // Return validation errors if validation fails
                 return $validator->errors();
             }
-    
-        $validated=$validator->validated();
 
-        $added_by=$request->user_id;//session()->get(user_id)
-        $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
-                     ->select('users.user_name as added_by_user')
-                     ->first();
-        
-        $msas_query = MSAs::query();
-        $offset=$request->paginate_offset;
+            // Get the validated data
+            $validated = $validator->validated();
 
-        foreach ($validated as $key => $value) {
-            switch ($key) {
-                case 'msa_ref_id':
-                case 'client_name':
-                case 'region':
-                case 'start_date':
-                case 'end_date':
-                    $msas_query->where($key,'like','%'.$value.'%');
-                    break;
-                case 'added_by_user':
-                    $added_by_user->where($key,'like','%'.$value.'%');
-                    break;
-                case 'sort_by':
-                    // Extract sort order 
-                    $sort_order = isset($params['sort_order']) && strtolower($validated['sort_order']) === 'desc' ? 'desc' : 'asc';
-                    $msas_query->orderBy($value, $sort_order);
-                    break;
-                default:
-                    break;
-            }
-        }
-        
-        $msas = $msas_query->where('is_active', true)
-                            ->orderByDesc('updated_at')
-                            ->paginate($offset);
-        $msas->added_by_user=$added_by_user->added_by_user;
-        return response()->json($msas);
-    } catch (QueryException $e) {
-        return response()->json(['error' => 'Database error'], 500);
-    } catch (ValidationException $e) {
-        return response()->json(['error' => $e->getMessage()], 422);
-    } catch (ModelNotFoundException $e) {
-        return response()->json(['error' => 'MSA not found'], 404);
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Invalid user Request'], 500);
-    }
-    }
 
-/**
- * Add a new MSA (Master Service Agreement).
- *
- * @param  \Illuminate\Http\Request  $request
- * @return \Illuminate\Http\JsonResponse
- */
-
-    public function addMsa(Request $request,$user_id){   
-        try{
-        $validator=Validator::make($request->all(),[
-            'msa_ref_id' => 'required|string|max:25',
-            'client_name' => 'required|string',
-            'region' => 'required|string|max:100',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'comments' => 'string',
-            'msa_doclink' => 'required|string',
-           ]);
-
-        if($validator->fails()){
-
-            return $validator->errors();
-        }
-
-        $validated=$validator->validated();
-
-        $existingMSA = MSAs::where('msa_ref_id', $request->msa_ref_id)->exists();
+            $existingMSA = MSAs::where('msa_ref_id', $request->msa_ref_id)->exists();
 
             if ($existingMSA) {
-              return response()->json(['error' => 'Failed to create MSA', 'message' => 'MSA with  ' . $request->msa_ref_id . ' already exists.'], 400);
+
+                return response()->json(['error' => 'Failed to create MSA', 'message' => 'MSA with  ' . $request->msa_ref_id . ' already exists.'], 400);
             }
 
-            $added_by=$user_id;//session()->get(user_id)
+            $added_by = $user_id;
+            // return $added_by;//session()->get(user_id)
             $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
-                     ->select('users.user_name as added_by_user')
-                     ->first();
+                ->select('users.user_name as added_by_user')
+                ->first();
 
             $start_date = $request->start_date;
             $end_date = $request->end_date;
-             if ($end_date <= $start_date) 
-             {
-               $response = [
-                         'error' => 'End date must be greater than '.$start_date
-                         ];
-               return response()->json($response, 400);
-             } else {
-            $msa = MSAs::create([
-                'msa_ref_id' => $request->msa_ref_id,
-                'added_by' => $added_by,//session()->get(user_id)
-                'client_name' =>$request->client_name,
-                'region' =>$request->region,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'comments' => $request->comments,
-                'msa_doclink' =>$request->msa_doclink
-            ]);
+            if ($end_date <= $start_date) {
+                $response = [
+                    'error' => 'End date must be greater than ' . $start_date
+                ];
+                return response()->json($response, 400);
+            } else {
 
-            $msa->added_by_user=$added_by_user->added_by_user;
-            $action="Added";
-             ActivityLogs::create([
-            'msa_id' => $msa->id,
-            'performed_by' => $added_by,
-            'action' =>$action,
-              ]);
+                $googleDrive = new GoogleDriveController();
+                $fileLink = $googleDrive->store($request);
+                
+                $msa = MSAs::create([
+                    'msa_ref_id' => $request->msa_ref_id,
+                    'added_by' => $added_by,//session()->get(user_id)
+                    'client_name' => $request->client_name,
+                    'region' => $request->region,
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                    'msa_doclink'=>$fileLink,
+                    'comments' => $request->comments,
+                ]);
 
-              
-            
-            return response()->json(['message' =>'MSA created successfully', 201]);
-        }
-    } catch (ValidationException $e) {
-        return response()->json(['error' => 'Validation failed', 'message' => $e->validator->errors()], 422);
-    } catch (QueryException $e) {
-        return response()->json(['error' => 'Database error', 'message' => $e->getMessage()], 500);
-    } catch (ModelNotFoundException $e) {
-        return response()->json(['error' => 'Model not found', 'message' => $e->getMessage()], 404);
-    }
-     catch (\Exception $e) {
+                $msa->added_by_user = $added_by_user->added_by_user;
+                $action = "Added ";
+                ActivityLogs::create([
+                    'msa_id' => $msa->id,
+                    'performed_by' => $added_by,
+                    'action' => $action,
+                ]);
+
+
+
+                return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 201);
+            }
+        } catch (ValidationException $e) {
+            return response()->json(['error' => 'Validation failed', 'message' => $e->validator->errors()], 422);
+        } catch (QueryException $e) {
+            return response()->json(['error' => 'Database error', 'message' => $e->getMessage()], 500);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Model not found', 'message' => $e->getMessage()], 404);
+        } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to create MSA', 'message' => $e->getMessage()], 500);
         }
     }
 
-/**
- * Update an existing MSA.
- *
- * @param  \Illuminate\Http\Request  $request
- * @param  int  $id
- * @return \Illuminate\Http\JsonResponse
- */
-    public function updateMsa(Request $request,$user_id){
-    try{
-       $msa = MSAs::find($user_id);
+    /**
+     * Update an existing MSA.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateMsa(Request $request, $id,$user_id)
+    {
+        try {
+            $msa = MSAs::find($id);
 
-       if (!$msa) {
-           return response()->json(['error' => 'MSA not found'], 404);
-       }
 
-        $validator=Validator::make($request->all(),[
-           'client_name' => 'string|min:5|max:100',
-           'region' => 'string|max:100',
-           'start_date' => 'date',
-           'end_date' => 'date',
-           'comments' => 'string',
-           'msa_doclink' => 'string',
+            if (!$msa) {
+                return response()->json(['error' => 'MSA not found'], 404);
+            }
+            // Validate the incoming request data
+            $validator = Validator::make($request->all(), [
+                'client_name' => 'string|min:5|max:100',
+                'region' => 'string|max:100',
+                'start_date' => 'date',
+                'end_date' => 'date',
+                'comments' => 'string',
+                'msa_doclink'=>'string',
+                'file' => 'file',
             ]);
-   
-       if($validator->fails()){
-   
-           return $validator->errors();
-       }
 
-       $validated=$validator->validated();
+            // Check if validation fails
+            if ($validator->fails()) {
 
-                    if (isset($validated['start_date']) && isset($validated['end_date'])) 
-                    {
-                        if ($validated['start_date'] >= $validated['end_date'])
-                        {
-                            return response()->json(['error' => 'Start date must be less than end date'], 400);
-                        }
-                    } 
-                   elseif (isset($validated['start_date'])) 
-                    {
-                        if ($msa->end_date && $validated['start_date'] >= $msa->end_date) 
-                        {
-                            return response()->json(['error' => 'Start date must be less than '. $msa->end_date], 400);
-                        }
-                    }
-                elseif (isset($validated['end_date'])) 
-                    {
-                        if ($msa->start_date && $validated['end_date'] <= $msa->start_date) 
-                        {
-                            return response()->json(['error' => 'End date must be greater than '. $msa->start_date], 400);
-                        }
-                    }
-                  
-                    $added_by=$request->user_id;//session()->get(user_id)
-                    $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
-                             ->select('users.user_name as added_by_user')
-                             ->first();
-                 $msa->added_by_user=$added_by_user->added_by_user;
+                // Return validation errors if validation fails
+                return $validator->errors();
+            }
 
-             if ($msa->is_active == 1) {
-                $action="Updated ";
-               $msa->update($validated);
-               ActivityLogs::create([
+            // Get the validated data
+            $validated = $validator->validated();
+
+            // Check if both start_date and end_date are provided
+            if (isset($validated['start_date']) && isset($validated['end_date'])) {
+                if ($validated['start_date'] >= $validated['end_date']) {
+                    return response()->json(['error' => 'Start date must be less than end date'], 400);
+                }
+            } elseif (isset($validated['start_date'])) {
+                // Check with end_date in the database
+                if ($msa->end_date && $validated['start_date'] >= $msa->end_date) {
+                    return response()->json(['error' => 'Start date must be less than ' . $msa->end_date], 400);
+                }
+            } elseif (isset($validated['end_date'])) {
+                // Check with start_date in the database
+                if ($msa->start_date && $validated['end_date'] <= $msa->start_date) {
+                    return response()->json(['error' => 'End date must be greater than ' . $msa->start_date], 400);
+                }
+            }
+
+            $added_by = $request->$user_id;//session()->get(user_id)
+            $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
+                ->select('users.user_name as added_by_user')
+                ->first();
+            if ($msa->is_active == 1) {
+                $action = "Updated ";
+                $msa->update($validated);
+            } else {
+                $googleDrive = new GoogleDriveController();
+                // $fileLink = $googleDrive->store($request);
+
+                if($googleDrive->store($request)){
+                    $fileLink = $googleDrive->store($request);
+                    $msa->update([
+                        'start_date' => $request->start_date,
+                        'end_date' => $request->end_date,
+                        'msa_doclink' => $fileLink,
+                        'is_active' => 1,
+                    ]);
+                } else{
+                    $msa->update([
+                        'start_date' => $request->start_date,
+                        'end_date' => $request->end_date,
+                        'msa_doclink' => $request->msa_doclink,
+                        'is_active' => 1,
+                    ]);
+                }
+
+                
+
+                $action = "Renewed";
+            }
+            $msa->added_by_user = $added_by_user->added_by_user;
+
+            ActivityLogs::create([
                 'msa_id' => $msa->id,
                 'performed_by' => $added_by,
-                'action' =>$action
-                  ]);
-               return response()->json(['message' => 'MSA updated successfully', 'data' => [$msa]], 200);
+                'action' => $action,
+            ]);
+            // Return success response
+            return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => 'Validation failed', 'message' => $e->validator->errors()], 422);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'MSA not found'], 404);
+        } catch (QueryException $e) {
+            return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
+        }
+    }
 
-             }else{
-                $msa->update([
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'msa_doclink' => $request->msa_doclink,
-                    'is_active' => 1,
-                ]);
-            
-                $action = "Renewed";
-                ActivityLogs::create([
-                    'msa_id' => $msa->id,
-                    'performed_by' => $added_by,
-                    'action' =>$action
-                      ]);
-                return response()->json(['message' => 'MSA renewed successfully', 'data' => [$msa]], 200);
-
-             }                
-              
-                } catch (ValidationException $e) {
-                    return response()->json(['error' => 'Validation failed', 'message' => $e->validator->errors()], 422);
-                } catch (ModelNotFoundException $e) {
-                    return response()->json(['error' => 'MSA not found'], 404);
-                } catch (QueryException $e) {
-                    return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
-            }catch(\Exception $e){
-                return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
-            }
-       }
 }

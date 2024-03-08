@@ -124,12 +124,19 @@ class ExperionEmployeeController extends Controller
             //     "middle_name" => "",
             //     "last_name" => "Miller",
             // ],
+            // [
+            //     "email_id" => "dantus.tom@experionglobal.com",
+            //     "password" => bcrypt("password8"),
+            //     "first_name" => "Dantus",
+            //     "middle_name" => "George",
+            //     "last_name" => "Tom",
+            // ]
             [
-                "email_id" => "dantus.tom@experionglobal.com",
-                "password" => bcrypt("password8"),
-                "first_name" => "Dantus",
-                "middle_name" => "George",
-                "last_name" => "Tom",
+                "email_id" => "abhi.j@experionglobal.com",
+                "password" => bcrypt("password9"),
+                "first_name" => "Abhi",
+                "middle_name" => "",
+                "last_name" => "J",
             ]
         ];
 
