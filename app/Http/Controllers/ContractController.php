@@ -328,6 +328,9 @@ class ContractController extends Controller
                     ]);
                 }
             }
+            $action="Add";
+            $anotherController = new InsertController();
+            $anotherController->addToActivityLog($contractId,null,$added_by,$action);
 
             return response()->json(['message' => 'Contract created successfully', 'contract' => $contractId], 201);
         } catch (Exception $e) {

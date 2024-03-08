@@ -6,20 +6,13 @@ use Illuminate\Http\Request;
 
 class InsertController extends Controller
 {
-    public function insertData(){
-        $activityLogDataArray=[
-            [
-                "msa_id"=>1,
-                "performed_by"=>5,
-                "action"=>"edit"
-            ],
-        ] ;
-        
-        foreach ($activityLogDataArray as $logData) {
-            $logData = new ActivityLogs($logData);
-            $logData->save();
-        }
-        return response()->json(['message' => 'Data entered'], 200);
+    public function addToActivityLog($contract_id,$msa_id,$performed_by,$action){
+        ActivityLogs::create([
+            'contract_id' => $contract_id,
+            'msa_id' => $msa_id,
+            'performed_by' => $performed_by,
+            'action' => $action,
+        ]);
        
     }
 }
