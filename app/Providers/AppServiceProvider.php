@@ -5,8 +5,10 @@ namespace App\Providers;
 use App\ServiceInterfaces\ContractInterface;
 use App\ServiceInterfaces\ExperionEmployeesInterface;
 use App\ServiceInterfaces\GoogleDriveInterface;
+use App\ServiceInterfaces\MsaInterface;
 use App\ServiceInterfaces\RevenueProjectionInterface;
 use App\Services\ContractService;
+use App\Services\MsaService;
 use App\Services\ExperionEmployeesService;
 use App\Services\GoogleDriveService;
 use App\Services\RevenueProjectionService;
@@ -28,6 +30,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             ContractInterface::class,
             ContractService::class
+            );
+            $this->app->bind(
+                MsaInterface::class,
+                MsaService::class
             );
         $this->app->bind(
             GoogleDriveInterface::class,
