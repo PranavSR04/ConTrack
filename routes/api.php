@@ -18,7 +18,6 @@ use App\Models\UserNotifications;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExperionEmployeeController;
-use App\Http\Controllers\OneDriveController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +39,7 @@ Route::middleware('auth')->group(function () {
 Route::GET('/general/notifications',[UserNotification::class,'getUserNotification']);
 Route::PUT('/notification/statusupdate',[UserNotification::class,'notificationStatusUpdate']);
 Route::POST('/insert/logdata',[InsertController::class,'insertData']);
-Route::get('/contract/getlist/{id?}', [ContractController::class, 'getContractData']);
+
 Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
 Route::post('/ff/insertFixedFeeData', [FixedFeeController::class, 'insertFixedFeeData']);
 Route::post('/tm/insertTandMData', [TandMController::class, 'insertTandMData']);
@@ -54,19 +53,19 @@ Route::post('/addeddum/insertdata', [AddendumController::class,'generateData']);
 Route::post('/role/insertrole', [RoleController::class, 'insertRole']);
 Route::get('/role/details', [RoleController::class, 'getRole']);
 Route::post('/contracts/addcontracts', [ContractController::class,'addContract']);
-Route::put('/contracts/editcontract/{id}', [ContractController::class,'updateContractData']);
+Route::post('/contracts/editcontract/{id}', [ContractController::class,'updateContractData']);
 Route::get('/users/getusers',[UserController::class,'getUsers']);  
 Route::post('/users/adduser', [UserController::class,'addUser']);  
 Route::put('/users/updateuser/{user_id}', [UserController::class,'updateUser']); 
 Route::post('/add/msa', [MSAController::class, 'addMsa']);
 Route::put('/update/msa/{id}', [MSAController::class, 'updateMsa']);
-Route::get('/contracts/myContracts/{id}', [UserController::class,'myContracts']);
-// Route::post('/addendum',[AddendumController::class],'show');
+ 
 
 });
+Route::get('/contract/getlist/{id?}', [ContractController::class, 'getContractData']);
+Route::get('/contracts/myContracts/{id}', [UserController::class,'myContracts']); 
 
-Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjection'])->middleware('auth');
-Route::get('/notAuth',[UserCheckController::class,'notauth'])->name('notauth');
+
 
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
     // Routes accessible only to super admins
@@ -76,6 +75,11 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
     // Routes accessible only to admins or superadmins
 
 });
+
+
+Route::get('/revenue/projection/{id?}',[RevenueController::class,'revenueProjections']);
+Route::get('/notAuth',[UserCheckController::class,'notauth'])->name('notauth');
+
 
 Route::group([
     'middleware' => 'api',
