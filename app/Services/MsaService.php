@@ -1,4 +1,16 @@
 <?php
+namespace App\Services;
+use App\Http\Controllers\GoogleDriveController;
+use App\Models\ActivityLogs;
+use App\Models\MSAs;
+
+use App\ServiceInterfaces\MsaInterface;
+use Dotenv\Exception\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class MsaService implements MsaInterface {
     public function MSAList(Request $request)
@@ -46,7 +58,7 @@ class MsaService implements MsaInterface {
             return response()->json(['error' => $e->getMessage()], 422);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'MSA not found'], 404);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json($e, 500);
         }
     }
@@ -130,19 +142,17 @@ class MsaService implements MsaInterface {
             return response()->json(['error' => 'Database error', 'message' => $e->getMessage()], 500);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Model not found', 'message' => $e->getMessage()], 404);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => 'Failed to create MSA', 'message' => $e->getMessage()], 500);
         }
     }
-    public function updateMsa(Request $request, $id,$user_id)
+    public function updateMsa(Request $request,$user_id)
     {
         try {
-            $msa = MSAs::find($id);
+            $msa_id= $request->id;
+            $msa=MSAs::findOrFail($msa_id);
 
-
-            if (!$msa) {
-                return response()->json(['error' => 'MSA not found'], 404);
-            }
+            
             // Validate the incoming request data
             $validator = Validator::make($request->all(), [
                 'client_name' => 'string|min:5|max:100',
@@ -228,7 +238,7 @@ class MsaService implements MsaInterface {
             return response()->json(['error' => 'MSA not found'], 404);
         } catch (QueryException $e) {
             return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
         }
     }

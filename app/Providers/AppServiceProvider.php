@@ -2,8 +2,15 @@
 
 namespace App\Providers;
 
+use App\ServiceInterfaces\ContractInterface;
+use App\ServiceInterfaces\MsaInterface;
+use App\ServiceInterfaces\RevenueProjectionInterface;
+use App\Services\ContractService;
+use App\Services\MsaService;
+use App\Services\RevenueProjectionService;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -12,7 +19,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        
+        $this->app->bind(
+            RevenueProjectionInterface::class,
+            RevenueProjectionService::class
+        );
+        $this->app->bind(
+            ContractInterface::class,
+            ContractService::class
+            );
+            $this->app->bind(
+                MsaInterface::class,
+                MsaService::class
+            );
     }
 
     /**
