@@ -284,9 +284,12 @@ class MsaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function updateMsa(Request $request,$user_id=null)
+    public function editMsa(Request $request,$user_id=null)
     {
-        return $this->MsaService->updateMsa($request,$user_id);
+        return $this->MsaService->editMsa($request,$user_id);
+    }
+    public function renewMsa(Request $request,$user_id=null){
+        return $this->MsaService->renewMsa($request,$user_id);
     }
 
 }
