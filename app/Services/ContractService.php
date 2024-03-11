@@ -135,6 +135,7 @@ class ContractService implements ContractInterface
             'file' => 'file',
             'associated_users' => ['array', 'exists:users,id'],
             'associated_users.*.user_id' => 'required|numeric',
+            'milestone' => 'required|array',
 
         ]);
 
@@ -147,24 +148,27 @@ class ContractService implements ContractInterface
         try {
             $totalAmount = 0;
             $totalPercentage = 0;
-            // var_dump($request->milestone);
-            // $decodedMilestones = json_decode($request->milestone, true);
-            // if (!is_array($request->milestone)) {
-            //     $decodedMilestones = json_decode($request->milestone, true);
-            // }
-            // if ($decodedMilestones === null && json_last_error() !== JSON_ERROR_NONE) {
-            //     var_dump("JSON decoding error: " . json_last_error_msg());
-            // } else {
-            //     var_dump($decodedMilestones);
-            // }
-            // $decodedMilestones = json_decode($request->milestone, true);
-            $decodedMilestones = json_decode($request->milestone, true);
-            if ($decodedMilestones === null && json_last_error() !== JSON_ERROR_NONE) {
-                // Handle decoding error
+        
+            $decodedMilestones = $request->milestone;
+            var_dump($decodedMilestones);
+            if ($decodedMilestones === null) {
                 return response()->json(['error' => 'Invalid JSON format for milestones'], 422);
             }
-            var_dump($decodedMilestones);
+            // var_dump($decodedMilestones);
 
+            foreach ($decodedMilestones as $milestone) {
+                // Access each milestone's properties
+                $milestone_desc = $milestone['milestone_desc'];
+                $milestone_enddate = $milestone['milestone_enddate'];
+                $percentage = $milestone['percentage'];
+                $amount = $milestone['amount'];
+
+                
+            }
+
+            foreach ($decodedMilestones as $milestone) {
+                var_dump($milestone);
+            }
             if ($request->contract_type === 'FF') {
                 if (!empty($request->milestone)) {
                     // $decodedMilestones = $request->milestone;
