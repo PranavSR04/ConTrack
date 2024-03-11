@@ -55,6 +55,8 @@ Route::post('/contracts/editcontract/{id}', [ContractController::class,'updateCo
 Route::get('/users/getusers',[UserController::class,'getUsers']);  
 Route::post('/users/adduser', [UserController::class,'addUser']);  
 Route::put('/users/updateuser/{user_id}', [UserController::class,'updateUser']); 
+Route::get('/experion/getexperionlist',[ExperionEmployeeController::class,'show']);
+Route::get('/role/details', [RoleController::class, 'getRole']);
 Route::post('/add/msa', [MSAController::class, 'addMsa']);
 Route::put('/update/msa/{id}', [MSAController::class, 'updateMsa']);
  
@@ -62,6 +64,8 @@ Route::put('/update/msa/{id}', [MSAController::class, 'updateMsa']);
 });
 Route::get('/contract/getlist/{id?}', [ContractController::class, 'getContractData']);
 Route::get('/contracts/myContracts/{id}', [UserController::class,'myContracts']); 
+
+
 
 
 

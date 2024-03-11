@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\ServiceInterfaces\ContractInterface;
 use App\ServiceInterfaces\RevenueProjectionInterface;
+use App\ServiceInterfaces\UserInterface;
 use App\Services\ContractService;
 use App\Services\RevenueProjectionService;
+use App\Services\UserService;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 
@@ -25,6 +27,11 @@ class AppServiceProvider extends ServiceProvider
             ContractInterface::class,
             ContractService::class
             );
+
+        $this->app->bind(
+            UserInterface::class,
+            UserService::class
+        );
     }
 
     /**
