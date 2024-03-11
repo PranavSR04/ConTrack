@@ -1,8 +1,7 @@
 <?php
 
-use App\Http\Controllers\AssociatedUsersController;
 use App\Http\Controllers\MsaController;
-use App\Http\Controllers\AddendumController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\UserCheckController;
@@ -11,10 +10,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\FixedFeeController;
 use App\Http\Controllers\TandMController;
-use App\Http\Controllers\InsertController;
-
-use App\Http\Controllers\UserNotification;
-use App\Models\UserNotifications;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExperionEmployeeController;
@@ -33,7 +28,6 @@ use App\Http\Controllers\ExperionEmployeeController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
 
 Route::get('/notAuth', [UserCheckController::class, 'notauth'])->name('notauth');
 
@@ -61,8 +55,9 @@ Route::middleware('auth')->group(function () {
     // MSA routes
     Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
     Route::get('/msa/list', [MSAController::class, 'MSAList']);
-    Route::post('/msa/add', [MSAController::class, 'addMsa']);
+    Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
     Route::post('/msa/update/{id}', [MSAController::class, 'updateMsa']);
+    Route::post('msa/renew/{id}', [MsaController::class,'renewMsa']);
 
     // Contracts routes
     Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
@@ -75,9 +70,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
 
     // Notifications routes
-    Route::get('/notification/list', [UserNotification::class, 'getUserNotification']);
-    Route::put('/notification/statusupdate', [UserNotification::class, 'notificationStatusUpdate']);
-    Route::post('/insert/logdata', [InsertController::class, 'insertData']);
+    Route::get('/notification/list', [NotificationController::class, 'getUserNotification']);
+    Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
 
 
     // Fixed fee route
