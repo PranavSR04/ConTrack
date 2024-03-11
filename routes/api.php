@@ -1,8 +1,7 @@
 <?php
 
-use App\Http\Controllers\AssociatedUsersController;
 use App\Http\Controllers\MsaController;
-use App\Http\Controllers\AddendumController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\UserCheckController;
@@ -12,9 +11,6 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\FixedFeeController;
 use App\Http\Controllers\TandMController;
 use App\Http\Controllers\InsertController;
-
-use App\Http\Controllers\UserNotification;
-use App\Models\UserNotifications;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExperionEmployeeController;
@@ -76,9 +72,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
 
     // Notifications routes
-    Route::get('/general/notifications', [UserNotification::class, 'getUserNotification']);
-    Route::put('/notification/statusupdate', [UserNotification::class, 'notificationStatusUpdate']);
-    Route::post('/insert/logdata', [InsertController::class, 'insertData']);
+    Route::get('/notification/list', [NotificationController::class, 'getUserNotification']);
+    Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
 
 
     // Fixed fee route
