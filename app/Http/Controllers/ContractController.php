@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Validator;
 class ContractController extends Controller
 {
     private $contractService;
-    private $addContract;
     public function __construct(ContractInterface $contractService)
     {
         $this->contractService = $contractService;
@@ -194,8 +193,6 @@ class ContractController extends Controller
     {
         return $this->contractService->addContract($request);
     }
-
-
 
 
 }

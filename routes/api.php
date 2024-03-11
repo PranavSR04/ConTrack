@@ -75,7 +75,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
 
     // Notifications routes
-    Route::get('/general/notifications', [UserNotification::class, 'getUserNotification']);
+    Route::get('/notification/list', [UserNotification::class, 'getUserNotification']);
     Route::put('/notification/statusupdate', [UserNotification::class, 'notificationStatusUpdate']);
     Route::post('/insert/logdata', [InsertController::class, 'insertData']);
 
