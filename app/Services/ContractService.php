@@ -283,7 +283,7 @@ class ContractService implements ContractInterface
 
                             return response()->json([
                                 "message" => "Contract edited successfully",
-                                "data" => [l
+                                "data" => [
                                     'contract_result' => $contractResult,
                                     'milestones_result' => $ffResult,
                                     'associatedusers_result' => $associated_users,
