@@ -12,6 +12,8 @@ use App\Models\TimeAndMaterialContracts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Exception;
+use Carbon\Carbon;
+
 
 
 class ContractService implements ContractInterface
@@ -195,7 +197,7 @@ class ContractService implements ContractInterface
                     // Checking only to update the data of contracts which are not having status as closed
                     $fileLink = $googleDrive->store($request);
                     if ($fileLink) {
-                        // If contract file is uploaded it returns a link 
+                        // If contract file is uploaded it returns a link
                         $contractUpdateData = [
                             'msa_id' => $validated_ff['msa_id'],
                             'contract_added_by' => $validated_ff['contract_added_by'],
@@ -449,6 +451,8 @@ class ContractService implements ContractInterface
     }
     public function addContract(Request $request)
     {
+        // return response()->json([$request->all()]);
+
         $validator = Validator::make($request->all(), [
             'msa_id' => 'required|exists:msas,id',
             'contract_ref_id' => 'required|string|max:25',
@@ -463,7 +467,6 @@ class ContractService implements ContractInterface
             'file' => 'file',
             'associated_users' => ['array', 'exists:users,id'],
             'associated_users.*.user_id' => 'required|numeric',
-            'milestone' => 'required|array',
 
         ]);
 
@@ -476,44 +479,38 @@ class ContractService implements ContractInterface
         try {
             $totalAmount = 0;
             $totalPercentage = 0;
-        
             $decodedMilestones = $request->milestone;
-            var_dump($decodedMilestones);
-            if ($decodedMilestones === null) {
-                return response()->json(['error' => 'Invalid JSON format for milestones'], 422);
+            if (!is_array(($request->milestone))) {
+                $decodedMilestones = json_decode($request->milestone, true);
+            }
+
+            // var_dump($decodedMilestones);
+            if ($decodedMilestones === null && json_last_error() !== JSON_ERROR_NONE) {
+                // Handle decoding error
+                return response()->json(['error' => 'Invalid JSON format for milestones'], 422, ["content-type" => "application/json"]);
             }
             // var_dump($decodedMilestones);
 
-            foreach ($decodedMilestones as $milestone) {
-                // Access each milestone's properties
-                $milestone_desc = $milestone['milestone_desc'];
-                $milestone_enddate = $milestone['milestone_enddate'];
-                $percentage = $milestone['percentage'];
-                $amount = $milestone['amount'];
-
-                
-            }
-
-            foreach ($decodedMilestones as $milestone) {
-                var_dump($milestone);
-            }
             if ($request->contract_type === 'FF') {
+
                 if (!empty($request->milestone)) {
                     // $decodedMilestones = $request->milestone;
 
 
                     try {
+
                         // foreach ($request->milestone as $milestone) {
                         //     $totalPercentage += $milestone['percentage'];
                         //     $totalAmount += $milestone['amount'];
                         // }
-                        if (!is_array($request->milestone)) {
+                        if (is_array($request->milestone)) {
                             // Loop through array of milestones
                             foreach ($request->milestone as $milestone) {
                                 $totalPercentage += $milestone['percentage'];
                                 $totalAmount += $milestone['amount'];
                             }
                         } else {
+
                             // Handle the case when $request->milestone is a string
                             // For example, if it's a JSON string, you could decode it
                             $milestones = json_decode($request->milestone, true);
@@ -524,6 +521,7 @@ class ContractService implements ContractInterface
                                 }
                             }
                         }
+
                     } catch (Exception $e) {
                         throw new Exception("Error Processing Request", 1);
 
@@ -552,14 +550,15 @@ class ContractService implements ContractInterface
                 }
             }
 
-            if ($request->contract_type === 'FF' && ($totalPercentage !== 100 || $totalAmount !== $request->estimated_amount)) {
-                return response()->json(['error' => 'Invalid milestones for Fixed Fee contract.'], 422);
+            if ($request->contract_type === 'FF' && ($totalPercentage !== 100 || floatval($totalAmount) !== floatval($request->estimated_amount))) {
+                return response()->json(['error in milestone amount calculation' => 'Invalid milestones for Fixed Fee contract.'], 422);
             }
 
             if ($request->contract_type === 'TM' && $totalAmount !== (int) $request->estimated_amount) {
                 return response()->json(['error' => 'Invalid milestones for Time and Material contract.'], 422);
             }
             $googleDrive = new GoogleDriveController();
+
 
 
             $fileLink = $googleDrive->store($request);
@@ -569,9 +568,9 @@ class ContractService implements ContractInterface
                     'contract_added_by' => $request->contract_added_by,
                     'contract_ref_id' => $request->contract_ref_id,
                     'contract_type' => $request->contract_type,
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'date_of_signature' => $request->date_of_signature,
+                    'start_date' => Carbon::parse($request->start_date)->format('Y-m-d'),
+                    'end_date' => Carbon::parse($request->end_date)->format('Y-m-d'),
+                    'date_of_signature' => Carbon::parse($request->date_of_signature)->format('Y-m-d'),
                     'du' => $request->du,
                     'contract_status' => "Active",
                     'estimated_amount' => $request->estimated_amount,
@@ -598,9 +597,9 @@ class ContractService implements ContractInterface
             $contractId = $contract->id;
             // return response ()->json([$request->assoc[0]]);
 
-            if (!empty($request->assoc)) {
-                if (!is_array($request->assoc)) {
-                    foreach (json_decode($request->assoc, true) as $users) {
+            if (!empty($request->assoc_users)) {
+                if (!is_array($request->assoc_users)) {
+                    foreach (json_decode($request->assoc_users, true) as $users) {
                         // return response()->json([$users['user_id']]);
                         $assoc_users = AssociatedUsers::create([
                             'contract_id' => $contractId,
@@ -612,15 +611,26 @@ class ContractService implements ContractInterface
 
             if ($request->contract_type === 'FF') {
                 try {
-                    if (!is_array($request->milestone)) {
-                        foreach (json_decode($request->milestone, true) as $milestone) {
+                    //    return response()->json([$request->milestone]);
+                    if (is_array($request->milestone) && !empty($request->milestone)) {
+                        // return response()->json(["hii"]);
+                        try{
+                        foreach ($request->milestone as $milestone) {
+                            var_dump($request->milestone);
                             $ffresult = FixedFeeContracts::create([
                                 'contract_id' => $contractId,
-                                'milestone_desc' => $milestone['milestone_desc'],
-                                'milestone_enddate' => $milestone['milestone_enddate'],
+                                'milestone_desc' => $milestone['milestones'],
+                                // 'milestone_enddate' => isset($milestone['milestone_enddate']) && !empty($milestone['milestone_enddate'])
+                                //     ? Carbon::parse($milestone['milestone_enddate'])->format('Y-m-d')
+                                //     : null,
+                                'milestone_enddate' => Carbon::parse($milestone['expectedCompletionDate'])->format('Y-m-d'),
                                 'percentage' => $milestone['percentage'],
                                 'amount' => $milestone['amount'],
                             ]);
+                        }
+                    }catch (Exception $e) {
+                        return response()->json(['error' => 'Failect', 'message' => $e->getMessage()], 500);
+
                         }
                     }
                 } catch (Exception $e) {
@@ -630,22 +640,23 @@ class ContractService implements ContractInterface
                 return response()->json([
                     'message' => 'Contract created successfully',
                     'data' =>
-                        ['contract_result' => $contract, 'associated_users_result' => $assoc_users, "milestone_result" => $ffresult]
+                        ['contract_result' => $contract, 'associated_users_result' => !empty($assoc_users) ? $assoc_users : "Nil", "milestone_result" => $ffresult]
                 ], 201);
-            } else {
-                if (!is_array($request->milestone)) {
-                    foreach (json_decode($request->milestone, true) as $milestone) {
+            } else if ($request->contract_type === 'TM') {
+                if (is_array($request->milestone) && !empty($request->milestone)) {
+                    foreach ($request->milestone as $milestone) {
                         $tmresult = TimeAndMaterialContracts::create([
                             'contract_id' => $contractId,
-                            'milestone_desc' => $milestone['milestone_desc'],
-                            'milestone_enddate' => $milestone['milestone_enddate'],
+                            'milestone_desc' => $milestone['milestones'],
+                            'milestone_enddate' => Carbon::parse($milestone['expectedCompletionDate'])->format('Y-m-d'),
                             'amount' => $milestone['amount'],
                         ]);
+                        
                     }
                     return response()->json([
                         'message' => 'Contract created successfully',
                         'data' =>
-                            ['contract_result' => $contract, 'associated_users_result' => $assoc_users, "milestone_result" => $tmresult]
+                            ['contract_result' => $contract, !empty($assoc_users) ? $assoc_users : "Nil", "milestone_result" => $tmresult]
                     ], 201);
                 }
             }

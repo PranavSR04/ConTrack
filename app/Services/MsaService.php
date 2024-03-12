@@ -33,7 +33,7 @@ class MsaService implements MsaInterface {
                     case 'region':
                     case 'start_date':
                     case 'end_date':
-                        $msas_query->where($key, 'like', '%' . $value . '%');
+                        $msas_query->where($key, 'like', $value . '%');
                         break;
                     case 'added_by_user':
                         $added_by_user 

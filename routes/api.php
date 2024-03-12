@@ -80,12 +80,12 @@ Route::middleware('auth')->group(function () {
 
     // Time and material route
     Route::post('/timeAndMaterial/insert', [TandMController::class, 'insertTandMData']);
-    
+
     // Experion Routes
     Route::post('/experion/insertData', [ExperionEmployeeController::class, 'store']);
     Route::post('/experion/generateData', [ExperionEmployeeController::class, 'generateRandomData']);
     Route::get('/experion/list', [ExperionEmployeeController::class, 'show']);
-    
+
 });
 
 
