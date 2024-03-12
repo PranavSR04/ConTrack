@@ -95,6 +95,55 @@ class FixedFeeController extends Controller
                 'percentage' => 20,
                 'amount' => 160000.00, // 20% of $800,000
             ],
+            [
+                'contract_id' => 4,
+                'milestone_desc' => 'Software Design and Architecture',
+                'milestone_enddate' => '2024-07-30',
+                'percentage' => 20,
+                'amount' => 500000.00, 
+            ],
+            [
+                'contract_id' => 4,
+                'milestone_desc' => 'Coding and Implementation',
+                'milestone_enddate' => '2024-09-15',
+                'percentage' => 20,
+                'amount' => 1000000.00, 
+            ],
+            [
+                'contract_id' => 4,
+                'milestone_desc' => 'Testing and Quality Assurance',
+                'milestone_enddate' => '2024-10-30',
+                'percentage' => 20,
+                'amount' => 1000000.00, 
+            ],
+            [
+                'contract_id' => 5,
+                'milestone_desc' => 'Software Design and Architecture',
+                'milestone_enddate' => '2024-07-30',
+                'percentage' => 20,
+                'amount' => 500000.00, 
+            ],
+            [
+                'contract_id' => 5,
+                'milestone_desc' => 'Final delivery',
+                'milestone_enddate' => '2024-09-15',
+                'percentage' => 20,
+                'amount' => 700000.00, 
+            ],
+            [
+                'contract_id' => 10,
+                'milestone_desc' => 'Software Design and Architecture',
+                'milestone_enddate' => '2024-07-30',
+                'percentage' => 20,
+                'amount' => 100000.00, 
+            ],
+            [
+                'contract_id' => 10,
+                'milestone_desc' => 'Final delivery',
+                'milestone_enddate' => '2024-09-15',
+                'percentage' => 20,
+                'amount' => 100000.00, 
+            ],
 
 
 

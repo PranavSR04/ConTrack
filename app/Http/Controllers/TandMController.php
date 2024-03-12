@@ -88,14 +88,64 @@ class TandMController extends Controller
             'milestone_desc' => 'Project Completion',
             'milestone_enddate' => now()->addMonths(8),
             'amount' => 50000.00,
-        ]
+        ],
+        [
+            'contract_id' => 9,
+            'milestone_desc' => 'Project Initiation',
+            'milestone_enddate' => now()->addDays(10),
+            'amount' => 1000000.00,
+        ],
+        [
+            'contract_id' => 9,
+            'milestone_desc' => 'Requirements Analysis',
+            'milestone_enddate' => now()->addMonths(2),
+            'amount' => 1500000.00,
+        ],
+        [
+            'contract_id' => 9,
+            'milestone_desc' => 'Design and Planning',
+            'milestone_enddate' => now()->addMonths(3),
+            'amount' => 750000.00,
+        ],
+        [
+            'contract_id' => 9,
+            'milestone_desc' => 'Development Milestone 1',
+            'milestone_enddate' => now()->addMonths(5),
+            'amount' => 1250000.00,
+        ],
+        [
+            'contract_id' => 9,
+            'milestone_desc' => 'Testing and QA',
+            'milestone_enddate' => now()->addMonths(7),
+            'amount' => 3500000.00,
+        ],
+        [
+            'contract_id' => 9,
+            'milestone_desc' => 'Project Completion',
+            'milestone_enddate' => now()->addMonths(8),
+            'amount' => 3200000.00,
+        ],
+        [
+            'contract_id' => 11,
+            'milestone_desc' => 'Project Initiation',
+            'milestone_enddate' => now()->addDays(10),
+            'amount' => 200000.00,
+        ],
+        [
+            'contract_id' => 11,
+            'milestone_desc' => 'Design and Planning',
+            'milestone_enddate' => now()->addMonths(2),
+            'amount' => 500000.00,
+        ],
+        [
+            'contract_id' => 11,
+            'milestone_desc' => 'Development Milestone',
+            'milestone_enddate' => now()->addMonths(5),
+            'amount' => 500000.00,
+        ],
 
     ];
 
-
-
-     
-    
     foreach ($dummyData as $tmData) {
         $tmData = new TimeAndMaterialContracts($tmData);
         $tmData->save();
