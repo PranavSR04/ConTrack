@@ -10,7 +10,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\FixedFeeController;
 use App\Http\Controllers\TandMController;
-use App\Http\Controllers\InsertController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExperionEmployeeController;
@@ -29,7 +28,6 @@ use App\Http\Controllers\ExperionEmployeeController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
 
 Route::get('/notAuth', [UserCheckController::class, 'notauth'])->name('notauth');
 
@@ -57,13 +55,14 @@ Route::middleware('auth')->group(function () {
     // MSA routes
     Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
     Route::get('/msa/list', [MSAController::class, 'MSAList']);
-    Route::post('/msa/add', [MSAController::class, 'addMsa']);
+    Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
     Route::post('/msa/update/{id}', [MSAController::class, 'updateMsa']);
+    Route::post('msa/renew/{id}', [MsaController::class,'renewMsa']);
 
     // Contracts routes
     Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
     Route::post('/contracts/add', [ContractController::class, 'addContract']);
-    Route::post('/contracts/edit/{id}', [ContractController::class, 'updateContractData']);
+    // Route::post('/contracts/edit/{id}', [ContractController::class, 'updateContractData']);
     Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
     Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
 
@@ -71,7 +70,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
 
     // Notifications routes
-    Route::get('/notification/list', [NotificationController::class, 'getUserNotification']);
+   
+
+    Route::get('/notification/list', [NotificationController::class, 'getUserNotification']); 
     Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
 
 
@@ -79,8 +80,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/fixedFee/insert', [FixedFeeController::class, 'insertFixedFeeData']);
 
     // Time and material route
-    Route::post('/timeAndMaterial/insert', [TandMController::class, 'insertTandMData']);
-
+   
+    
     // Experion Routes
     Route::post('/experion/insertData', [ExperionEmployeeController::class, 'store']);
     Route::post('/experion/generateData', [ExperionEmployeeController::class, 'generateRandomData']);
@@ -99,3 +100,4 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
     // Routes accessible only to admins or superadmins
 
 });
+Route::post('/contracts/edit/{id}', [ContractController::class, 'updateContractData']);

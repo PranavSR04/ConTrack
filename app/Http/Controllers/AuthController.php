@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Models\Demousers;
+use App\Models\User;
 
 
 
@@ -94,11 +95,14 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     protected function createNewToken($token){
+        $user = auth()->user();
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()
+            'user' => $user,
+            'user_id' => $user->id,
+            'contrackUser' =>User::where("experion_id", $user->id)->first()
         ]);
     }
    

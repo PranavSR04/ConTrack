@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Controllers\ActivityLogInsertController;
 use App\Http\Controllers\GoogleDriveController;
 use App\ServiceInterfaces\ContractInterface;
 use App\Models\Addendums;
@@ -18,6 +19,7 @@ use Carbon\Carbon;
 
 class ContractService implements ContractInterface
 {
+
     public function getContractData(Request $request, $id = null)
     {
         if ($id != null) { //get individual contracts data if id is passed.
@@ -139,7 +141,7 @@ class ContractService implements ContractInterface
 
             // Checking whether contract needed to be closed
             if ($request->contract_status === "Closed") {
-                $result = Contracts::where('id', $contractId)->update(['contract_status', "Closed"]);
+                $result = Contracts::where('id', $contractId)->update(['contract_status' => "Closed"]);
                 return response()->json(['message' => 'Contract Closed']);
             }
 
@@ -274,6 +276,11 @@ class ContractService implements ContractInterface
                                 $addendum = new AddendumService();
                                 $addendum->store($request, $contractId);
                             }
+
+                            $action = "Edited";
+                            $activityLogInsertService = new ActivityLogInsertService();
+                            $insertController = new ActivityLogInsertController($activityLogInsertService);
+                            $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
 
 
                             return response()->json([
@@ -423,7 +430,10 @@ class ContractService implements ContractInterface
                             $addendum->store($request, $contractId);
                         }
 
-
+                        $action = "Edited";
+                        $activityLogInsertService = new ActivityLogInsertService();
+                        $insertController = new ActivityLogInsertController($activityLogInsertService);
+                        $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
 
                         return response()->json([
                             "message" => "Contract edited successfully",
@@ -445,13 +455,12 @@ class ContractService implements ContractInterface
                 return response()->json(["error" => "Invalid Contract Type"], 422);
             }
         } catch (Exception $e) {
-            // return response()->json(['error' => "Failed to edit contract"], 500);
-            return response()->json(["error" => $e->getMessage()], 500);
+            return response()->json(['error' => "Failed to edit contract"], 500);
+            // return response()->json(["error" => $e->getMessage()], 500);
         }
     }
     public function addContract(Request $request)
     {
-        // return response()->json([$request->all()]);
 
         $validator = Validator::make($request->all(), [
             'msa_id' => 'required|exists:msas,id',
@@ -484,25 +493,15 @@ class ContractService implements ContractInterface
                 $decodedMilestones = json_decode($request->milestone, true);
             }
 
-            // var_dump($decodedMilestones);
             if ($decodedMilestones === null && json_last_error() !== JSON_ERROR_NONE) {
                 // Handle decoding error
                 return response()->json(['error' => 'Invalid JSON format for milestones'], 422, ["content-type" => "application/json"]);
             }
-            // var_dump($decodedMilestones);
 
             if ($request->contract_type === 'FF') {
 
                 if (!empty($request->milestone)) {
-                    // $decodedMilestones = $request->milestone;
-
-
                     try {
-
-                        // foreach ($request->milestone as $milestone) {
-                        //     $totalPercentage += $milestone['percentage'];
-                        //     $totalAmount += $milestone['amount'];
-                        // }
                         if (is_array($request->milestone)) {
                             // Loop through array of milestones
                             foreach ($request->milestone as $milestone) {
@@ -539,8 +538,6 @@ class ContractService implements ContractInterface
                         }
                     } else {
                         foreach (json_decode($request->milestone, true) as $milestone) {
-                            // $totalPercentage += $milestone['percentage'];
-
                             $totalAmount += $milestone['amount'];
                         }
                     }
@@ -557,7 +554,7 @@ class ContractService implements ContractInterface
             if ($request->contract_type === 'TM' && $totalAmount !== (int) $request->estimated_amount) {
                 return response()->json(['error' => 'Invalid milestones for Time and Material contract.'], 422);
             }
-            $googleDrive = new GoogleDriveController();
+            $googleDrive = new GoogleDriveService();
 
 
 
@@ -595,12 +592,10 @@ class ContractService implements ContractInterface
                 ]);
             }
             $contractId = $contract->id;
-            // return response ()->json([$request->assoc[0]]);
 
             if (!empty($request->assoc_users)) {
                 if (!is_array($request->assoc_users)) {
                     foreach (json_decode($request->assoc_users, true) as $users) {
-                        // return response()->json([$users['user_id']]);
                         $assoc_users = AssociatedUsers::create([
                             'contract_id' => $contractId,
                             'user_id' => $users['user_id'],
@@ -611,9 +606,7 @@ class ContractService implements ContractInterface
 
             if ($request->contract_type === 'FF') {
                 try {
-                    //    return response()->json([$request->milestone]);
                     if (is_array($request->milestone) && !empty($request->milestone)) {
-                        // return response()->json(["hii"]);
                         try{
                         foreach ($request->milestone as $milestone) {
                             var_dump($request->milestone);

@@ -18,6 +18,30 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
+         // Insert default roles
+         DB::table('roles')->insert([
+            [
+                "role_name" => "Super Admin",
+                "role_access" => "Full Access",
+                "is_active" => true,
+                "created_at" => now(),
+                "updated_at" => now()
+            ],
+            [
+                "role_name" => "Admin",
+                "role_access" => "View and Edit",
+                "is_active" => true,
+                "created_at" => now(),
+                "updated_at" => now()
+            ],
+            [
+                "role_name" => "Reader",
+                "role_access" => "View Only",
+                "is_active" => true,
+                "created_at" => now(),
+                "updated_at" => now()
+            ],
+        ]);
     }
 
     /**
