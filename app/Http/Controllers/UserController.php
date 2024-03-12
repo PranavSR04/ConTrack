@@ -48,24 +48,24 @@ class UserController extends Controller
     {
         //
         $usersData = [
-            // [
-            //     'experion_id' => 1,
-            //     'role_id' => 1,
-            //     'user_name' => 'Gokul Surendran',
-            //     'user_mail' => 'gokul.surendran@experionglobal.com',
-            //     'user_designation' => 'Project Manager',
-            //     'group_name' => '',
-            //     'is_active' => true
-            // ],
-            // [
-            //     'experion_id' => 2,
-            //     'role_id' => 2,
-            //     'user_name' => 'Athul Nair',
-            //     'user_mail' => 'athul.nair@experionglobal.com',
-            //     'user_designation' => 'UX Designer',
-            //     'group_name' => '',
-            //     'is_active' => true
-            // ],
+            [
+                'experion_id' => 1,
+                'role_id' => 1,
+                'user_name' => 'Gokul Surendran',
+                'user_mail' => 'gokul.surendran@experionglobal.com',
+                'user_designation' => 'Project Manager',
+                'group_name' => '',
+                'is_active' => true
+            ],
+            [
+                'experion_id' => 2,
+                'role_id' => 2,
+                'user_name' => 'Athul Nair',
+                'user_mail' => 'athul.nair@experionglobal.com',
+                'user_designation' => 'UX Designer',
+                'group_name' => '',
+                'is_active' => true
+            ],
             [
                 'experion_id' => 4,
                 'role_id' => 2,

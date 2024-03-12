@@ -5,24 +5,24 @@ use App\Models\Roles;
 
 class RoleController extends Controller
 {
- public function insertRole()
-{
-    try {
-        $role1 = new Roles([
-            "role_name" => "Super Admin",
-            "role_access" => "Full Access",
-            "is_active" => true,
-        ]);
-        $role2 = new Roles([
-            "role_name" => "Admin",
-            "role_access" => "View and Edit",
-            "is_active" => true,
-        ]);
-        $role3 = new Roles([
-            "role_name" => "Reader",
-            "role_access" => "View Only",
-            "is_active" => true,
-        ]);
+//  public function insertRole()
+// {
+//     try {
+//         $role1 = new Roles([
+//             "role_name" => "Super Admin",
+//             "role_access" => "Full Access",
+//             "is_active" => true,
+//         ]);
+//         $role2 = new Roles([
+//             "role_name" => "Admin",
+//             "role_access" => "View and Edit",
+//             "is_active" => true,
+//         ]);
+//         $role3 = new Roles([
+//             "role_name" => "Reader",
+//             "role_access" => "View Only",
+//             "is_active" => true,
+//         ]);
        
 
 //         $role1->save();
@@ -33,8 +33,8 @@ class RoleController extends Controller
 //         return "Role created successfully!!";
 //     } catch (\Exception $e) {
 //         return "Error occurred: " . $e->getMessage();
-    }
-}
+//     }
+// }
 
 public function getRole()
 {

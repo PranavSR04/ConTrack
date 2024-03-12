@@ -1,5 +1,6 @@
 <?php
 namespace App\Services;
+use App\Http\Controllers\ActivityLogInsertController;
 use App\Http\Controllers\GoogleDriveController;
 use App\Models\ActivityLogs;
 use App\Models\MSAs;
@@ -112,12 +113,12 @@ class MsaService implements MsaInterface {
 
             $start_date = $request->start_date;
             $end_date = $request->end_date;
-            if ($end_date <= $start_date) {
-                $response = [
-                    'error' => 'End date must be greater than ' . $start_date
-                ];
-                return response()->json($response, 400);
-            } else {
+            // if ($end_date <= $start_date) {
+            //     $response = [
+            //         'error' => 'End date must be greater than ' . $start_date
+            //     ];
+            //     return response()->json($response, 400);
+            // } else {
 
                 $googleDrive = new GoogleDriveController();
                 $fileLink = $googleDrive->store($request);
@@ -135,16 +136,15 @@ class MsaService implements MsaInterface {
 
                 $msa->added_by_user = $added_by_user->added_by_user;
                 $action = "Added ";
-                ActivityLogs::create([
-                    'msa_id' => $msa->id,
-                    'performed_by' => $added_by,
-                    'action' => $action,
-                ]);
+                $activityLogInsertService = new ActivityLogInsertService();
+$insertController = new ActivityLogInsertController($activityLogInsertService);
+$insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+
 
 
 
                 return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 201);
-            }
+           // }
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Validation failed', 'message' => $e->validator->errors()], 422);
         } catch (QueryException $e) {
@@ -206,11 +206,9 @@ class MsaService implements MsaInterface {
                 ->first();
                 $action = "Updated ";
                 $msa->update($validated);
-            ActivityLogs::create([
-                'msa_id' => $msa->id,
-                'performed_by' => $added_by,
-                'action' => $action,
-            ]);
+            $activityLogInsertService = new ActivityLogInsertService();
+$insertController = new ActivityLogInsertController($activityLogInsertService);
+$insertController->addToActivityLog(null, $msa->id, $added_by, $action);
             // Return success response
             return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
         } catch (ValidationException $e) {
@@ -272,16 +270,11 @@ class MsaService implements MsaInterface {
                    'is_active'=>1
                 ]));
 
-
+                $added_by = $user_id;
                 $action = "Renew";
-                ActivityLogs::create([
-                    'msa_id' => $msaId,
-                    'performed_by' => $user_id,
-                    'action' => $action,
-                ]);
-
-
-
+                $activityLogInsertService = new ActivityLogInsertService();
+                $insertController = new ActivityLogInsertController($activityLogInsertService);
+                $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
                 return response()->json(['message' => 'MSA renewed successfully', 'msa' => $msa], 201);
             }
         } catch (ValidationException $e) {
