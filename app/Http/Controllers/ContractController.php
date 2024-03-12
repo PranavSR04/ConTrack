@@ -196,6 +196,4 @@ class ContractController extends Controller
     }
 
 
-
-
 }
