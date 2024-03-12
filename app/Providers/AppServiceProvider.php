@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\ActivityLogInsertService;
+use App\Services\ActivityLogInsertService;
 use App\ServiceInterfaces\ActivityLogInsertInterface;
 use App\ServiceInterfaces\ContractInterface;
 use App\ServiceInterfaces\ExperionEmployeesInterface;
