@@ -25,14 +25,14 @@ class RoleController extends Controller
         ]);
        
 
-        $role1->save();
-        $role2->save();
-        $role3->save();
+//         $role1->save();
+//         $role2->save();
+//         $role3->save();
 
         
-        return "Role created successfully!!";
-    } catch (\Exception $e) {
-        return "Error occurred: " . $e->getMessage();
+//         return "Role created successfully!!";
+//     } catch (\Exception $e) {
+//         return "Error occurred: " . $e->getMessage();
     }
 }
 

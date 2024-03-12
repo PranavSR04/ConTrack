@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Services;
 use App\Models\ActivityLogs;
 use App\ServiceInterfaces\ActivityLogInsertInterface;
 use Illuminate\Http\Request;

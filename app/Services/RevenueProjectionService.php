@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Services;
+
 use Illuminate\Http\Request;
 use App\Models\Contracts;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Collection;
 use App\ServiceInterfaces\RevenueProjectionInterface;
 
 class RevenueProjectionService implements RevenueProjectionInterface
@@ -12,20 +14,33 @@ class RevenueProjectionService implements RevenueProjectionInterface
     //Function to Retrive the Revenue Projection of Contracts
     public function revenueProjection(Request $request, $contract_id = null)
     {
+        $contracts = new Collection();
         $projectionType = $request->type;
         $revenueProjections = [];
         $totalAmount = 0;
-        $duFilter = $request->du;
+        $duFilters = $request->du;
+        $ctypeFilters = $request->ctype;
 
-        
+
 
         if ($contract_id === null) {
 
-            if ($duFilter) {
-                $contracts = Contracts::where('du', $duFilter)->get();
-                if ($contracts->isEmpty()) {
-                    return response()->json(['error' => 'No contracts found for the specified DU'], 404);
+            if ($duFilters || $ctypeFilters) {
+                // $contracts = Contracts::where('du', $duFilter)->get();
+                if ($duFilters) {
+                    foreach ($duFilters as $duFilter) {
+                        // Retrieve contracts for the current DU value
+                        $filteredContracts = Contracts::where('du', $duFilter)->get();
+
+                        // Merge the results into the main contracts collection
+                        $contracts = $contracts->merge($filteredContracts);
+                    }
+
+                    if ($contracts->isEmpty()) {
+                        return response()->json(['error' => 'No contracts found for the specified DU'], 404);
+                    }
                 }
+
             } else {
                 $contracts = Contracts::all();
                 if ($contracts->isEmpty()) {
@@ -111,7 +126,7 @@ class RevenueProjectionService implements RevenueProjectionInterface
         // Quarterly projection calculation logic
         foreach ($Milestones as $milestone) {
             $formattedDate = Carbon::parse($milestone->milestone_enddate);
-            $quarter = ceil($formattedDate->month / 3);            
+            $quarter = ceil($formattedDate->month / 3);
             $key = $formattedDate->year . '-Q' . $quarter; //Creating an index for Quraters
             // Initialize the revenue projection for the quarter if it doesn't exist
             if (!isset($revenueProjections[$key])) {
