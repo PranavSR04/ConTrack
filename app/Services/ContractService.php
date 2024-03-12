@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Controllers\ActivityLogInsertController;
 use App\Http\Controllers\GoogleDriveController;
 use App\ServiceInterfaces\ContractInterface;
 use App\Models\Addendums;
@@ -16,6 +17,7 @@ use Exception;
 
 class ContractService implements ContractInterface
 {
+
     public function getContractData(Request $request, $id = null)
     {
         if ($id != null) { //get individual contracts data if id is passed.
@@ -137,7 +139,7 @@ class ContractService implements ContractInterface
 
             // Checking whether contract needed to be closed
             if ($request->contract_status === "Closed") {
-                $result = Contracts::where('id', $contractId)->update(['contract_status', "Closed"]);
+                $result = Contracts::where('id', $contractId)->update(['contract_status' => "Closed"]);
                 return response()->json(['message' => 'Contract Closed']);
             }
 
@@ -272,6 +274,11 @@ class ContractService implements ContractInterface
                                 $addendum = new AddendumService();
                                 $addendum->store($request, $contractId);
                             }
+
+                            $action = "Edited";
+                            $activityLogInsertService = new ActivityLogInsertService();
+                            $insertController = new ActivityLogInsertController($activityLogInsertService);
+                            $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
 
 
                             return response()->json([
@@ -421,7 +428,10 @@ class ContractService implements ContractInterface
                             $addendum->store($request, $contractId);
                         }
 
-
+                        $action = "Edited";
+                        $activityLogInsertService = new ActivityLogInsertService();
+                        $insertController = new ActivityLogInsertController($activityLogInsertService);
+                        $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
 
                         return response()->json([
                             "message" => "Contract edited successfully",

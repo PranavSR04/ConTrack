@@ -10,7 +10,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\FixedFeeController;
 use App\Http\Controllers\TandMController;
-use App\Http\Controllers\InsertController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExperionEmployeeController;
