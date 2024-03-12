@@ -629,7 +629,7 @@ class ContractService implements ContractInterface
                             ]);
                         }
                     }catch (Exception $e) {
-                        return response()->json(['error' => 'Failect', 'message' => $e->getMessage()], 500);
+                        return response()->json(['error' => 'Failed', 'message' => $e->getMessage()], 500);
 
                         }
                     }
