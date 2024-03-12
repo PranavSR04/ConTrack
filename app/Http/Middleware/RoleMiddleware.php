@@ -18,7 +18,7 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next,$role): Response
     {
         $user = Auth::user();
-        $contrackUser = User::where("experion_id", $user->id)->first();
+        $contrackUser = User::where("experion_id", $user->id)->first(); 
         
         // Check if the user is authenticated
         if (!$contrackUser) {

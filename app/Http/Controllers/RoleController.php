@@ -5,35 +5,35 @@ use App\Models\Roles;
 
 class RoleController extends Controller
 {
- public function insertRole()
-{
-    try {
-        $role2 = new Roles([
-            "role_name" => "Admin",
-            "role_access" => "Can edit and view contracts",
-            "is_active" => true,
-        ]);
-        $role3 = new Roles([
-            "role_name" => "Reader",
-            "role_access" => "Can view contracts",
-            "is_active" => true,
-        ]);
-        $role1 = new Roles([
-            "role_name" => "Super Admin",
-            "role_access" => "Full Access",
-            "is_active" => true,
-        ]);
+//  public function insertRole()
+// {
+//     try {
+//         $role2 = new Roles([
+//             "role_name" => "Admin",
+//             "role_access" => "Can edit and view contracts",
+//             "is_active" => true,
+//         ]);
+//         $role3 = new Roles([
+//             "role_name" => "Reader",
+//             "role_access" => "Can view contracts",
+//             "is_active" => true,
+//         ]);
+//         $role1 = new Roles([
+//             "role_name" => "Super Admin",
+//             "role_access" => "Full Access",
+//             "is_active" => true,
+//         ]);
 
-        $role1->save();
-        $role2->save();
-        $role3->save();
+//         $role1->save();
+//         $role2->save();
+//         $role3->save();
 
         
-        return "Role created successfully!!";
-    } catch (\Exception $e) {
-        return "Error occurred: " . $e->getMessage();
-    }
-}
+//         return "Role created successfully!!";
+//     } catch (\Exception $e) {
+//         return "Error occurred: " . $e->getMessage();
+//     }
+// }
 
 public function getRole()
 {
