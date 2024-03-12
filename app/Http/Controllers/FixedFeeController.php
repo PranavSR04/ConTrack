@@ -21,77 +21,77 @@ class FixedFeeController extends Controller
             [
                 'contract_id' => 1,
                 'milestone_desc' => 'Prototype Development',
-                'milestone_enddate' => '2024-06-30',
+                'milestone_enddate' => '2024-09-30',
                 'percentage' => 30,
                 'amount' => 60000.00, // 30% of $200,000
             ],
             [
                 'contract_id' => 1,
                 'milestone_desc' => 'Prototype Testing and Feedback',
-                'milestone_enddate' => '2024-08-15',
+                'milestone_enddate' => '2025-03-15',
                 'percentage' => 40,
                 'amount' => 80000.00, // 40% of $200,000
             ],
             [
                 'contract_id' => 1,
                 'milestone_desc' => 'Manufacturing Setup',
-                'milestone_enddate' => '2024-09-30',
+                'milestone_enddate' => '2026-09-30',
                 'percentage' => 10,
                 'amount' => 20000.00, // 10% of $200,000
             ],
             [
                 'contract_id' => 2,
                 'milestone_desc' => 'Product Design and Planning',
-                'milestone_enddate' => '2024-05-20',
+                'milestone_enddate' => '2024-10-20',
                 'percentage' => 20,
                 'amount' => 50000.00, // 20% of $250,000
             ],
             [
                 'contract_id' => 2,
                 'milestone_desc' => 'Prototype Development',
-                'milestone_enddate' => '2024-06-30',
+                'milestone_enddate' => '2025-02-30',
                 'percentage' => 30,
                 'amount' => 75000.00, // 30% of $250,000
             ],
             [
                 'contract_id' => 2,
                 'milestone_desc' => 'Prototype Testing and Feedback',
-                'milestone_enddate' => '2024-08-15',
+                'milestone_enddate' => '2025-08-15',
                 'percentage' => 40,
                 'amount' => 100000.00, // 40% of $250,000
             ],
             [
                 'contract_id' => 2,
                 'milestone_desc' => 'Manufacturing Setup',
-                'milestone_enddate' => '2024-09-30',
+                'milestone_enddate' => '2026-09-30',
                 'percentage' => 10,
                 'amount' => 25000.00, // 10% of $250,000
             ],
             [
                 'contract_id' => 3,
                 'milestone_desc' => 'Requirements Analysis and Planning',
-                'milestone_enddate' => '2024-06-15',
+                'milestone_enddate' => '2024-08-15',
                 'percentage' => 20,
                 'amount' => 160000.00, // 20% of $800,000
             ],
             [
                 'contract_id' => 3,
                 'milestone_desc' => 'Software Design and Architecture',
-                'milestone_enddate' => '2024-07-30',
+                'milestone_enddate' => '2025-07-30',
                 'percentage' => 20,
                 'amount' => 160000.00, // 20% of $800,000
             ],
             [
                 'contract_id' => 3,
                 'milestone_desc' => 'Coding and Implementation',
-                'milestone_enddate' => '2024-09-15',
+                'milestone_enddate' => '2026-02-15',
                 'percentage' => 20,
                 'amount' => 160000.00, // 20% of $800,000
             ],
             [
                 'contract_id' => 3,
                 'milestone_desc' => 'Testing and Quality Assurance',
-                'milestone_enddate' => '2024-10-30',
+                'milestone_enddate' => '2026-11-30',
                 'percentage' => 20,
                 'amount' => 160000.00, // 20% of $800,000
             ],

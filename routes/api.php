@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/users/update/{user_id}', [UserController::class, 'updateUser']);
 
     // MSA routes
-    Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
+
     Route::get('/msa/list', [MSAController::class, 'MSAList']);
     Route::post('/msa/add', [MSAController::class, 'addMsa']);
     Route::post('/msa/update/{id}', [MSAController::class, 'updateMsa']);
@@ -71,7 +71,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
 
     // Notifications routes
-    Route::get('/notification/list', [NotificationController::class, 'getUserNotification']);
+   
+
+    Route::get('/notification/list', [NotificationController::class, 'getUserNotification']); 
     Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
 
 
@@ -99,3 +101,4 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
     // Routes accessible only to admins or superadmins
 
 });
+Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
