@@ -34,7 +34,9 @@ class ContractController extends Controller
                 'du' => 'DU1',
                 'estimated_amount' => 200000.00,
                 'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=1&web=1&e=pNA6Qx",
-                'is_active' => true
+                'contract_status' => 'Active',
+                "created_at" => now(),
+                "updated_at" => now()
             ],
             [
                 'contract_ref_id' => 'A166',
@@ -48,7 +50,10 @@ class ContractController extends Controller
                 'du' => 'DU1',
                 'estimated_amount' => 250000,
                 'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=sdfsfd1&web=1&e=pNA6Qx",
-                'is_active' => true
+                'contract_status' => 'Active',
+                "created_at" => now(),
+                "updated_at" => now()
+
             ],
             [
                 'contract_ref_id' => 'ABC1',
@@ -62,7 +67,9 @@ class ContractController extends Controller
                 'du' => 'DU1',
                 'estimated_amount' => 800000,
                 'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=1&web=1&e=pNA6Qx",
-                'is_active' => true
+                'contract_status' => 'Active',
+                "created_at" => now(),
+                "updated_at" => now()
             ],
             [
                 'contract_ref_id' => 'A097',
@@ -76,7 +83,9 @@ class ContractController extends Controller
                 'du' => 'DU1',
                 'estimated_amount' => 2500000,
                 'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=adas1&web=1&e=pNA6Qx",
-                'is_active' => true
+                'contract_status' => 'Active',
+                "created_at" => now(),
+                "updated_at" => now()
             ],
             [
                 'contract_ref_id' => 'A921',
@@ -90,7 +99,9 @@ class ContractController extends Controller
                 'du' => 'DU1',
                 'estimated_amount' => 1200000,
                 'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=1&web=1&e=pNA6Qxasdasd",
-                'is_active' => false
+                'contract_status' => 'Active',
+                "created_at" => now(),
+                "updated_at" => now()
             ],
             [
                 'contract_ref_id' => 'AN21',
@@ -104,13 +115,14 @@ class ContractController extends Controller
                 'du' => 'DU1',
                 'estimated_amount' => 2200000,
                 'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=1&web=1&e=pNA6Qxsda",
-                'is_active' => false
+                'contract_status' => 'Active',
+                "created_at" => now(),
+                "updated_at" => now()
             ],
             [
                 'contract_ref_id' => 'N621',
                 'msa_id' => 5,
                 'contract_added_by' => 1,
-
                 'contract_type' => "TM",
                 'date_of_signature' => now()->subMonths(2),
                 'comments' => "Fixed fee with tight schedule",
@@ -119,7 +131,9 @@ class ContractController extends Controller
                 'du' => 'DU1',
                 'estimated_amount' => 2400000,
                 'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=1&web=1&e=pNA6Qxasdasdw",
-                'is_active' => false
+                'contract_status' => 'Active',
+                "created_at" => now(),
+                "updated_at" => now()
             ],
             [
                 'contract_ref_id' => 'A091',
@@ -133,7 +147,9 @@ class ContractController extends Controller
                 'du' => 'DU1',
                 'estimated_amount' => 600000,
                 'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=1&web=1&e=pNA6Qx",
-                'is_active' => false
+                'contract_status' => 'Active',
+                "created_at" => now(),
+                "updated_at" => now()
             ],
             [
                 'contract_ref_id' => 'M921',
@@ -147,7 +163,9 @@ class ContractController extends Controller
                 'du' => 'DU1',
                 'estimated_amount' => 11200000,
                 'contract_doclink' => "https://experiontechnologies-my.sharepoint.com/:x:/r/personal/pranav_sr_experionglobal_com/Documents/Contrack%20DB%20Design.xlsx?d=wf1de9a65fe984daba803e1e0edb882ac&csf=1&web=1&e=pNA6Qx",
-                'is_active' => false
+                'contract_status' => 'Active',
+                "created_at" => now(),
+                "updated_at" => now()
             ],
 
         ];
@@ -194,8 +212,6 @@ class ContractController extends Controller
     {
         return $this->contractService->addContract($request);
     }
-
-
 
 
 }
