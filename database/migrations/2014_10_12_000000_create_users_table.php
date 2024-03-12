@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -22,8 +23,51 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
-    }
+    
+    $usersData = [
+        [
+            'experion_id' => 1,
+            'role_id' => 1,
+            'user_name' => 'Gokul Surendran',
+            'user_mail' => 'gokul.surendran@experionglobal.com',
+            'user_designation' => 'Project Manager',
+            'group_name' => '',
+            'is_active' => true
+        ],
+        [
+            'experion_id' => 2,
+            'role_id' => 2,
+            'user_name' => 'Athul Nair',
+            'user_mail' => 'athul.nair@experionglobal.com',
+            'user_designation' => 'UX Designer',
+            'group_name' => '',
+            'is_active' => true
+        ],
+        [
+            'experion_id' => 3,
+            'role_id' => 3,
+            'user_name' => 'Dantus George',
+            'user_mail' => 'dantus.tom@experionglobal.com',
+            'user_designation' => 'Finance Head',
+            'group_name' => '',
+            'is_active' => true
+        ],
+        [
+            'experion_id' => 4,
+            'role_id' => 2,
+            'user_name' => 'Aneeka Geo',
+            'user_mail' => 'aneeka.geo@experionglobal.com',
+            'user_designation' => 'UX Designer',
+            'group_name' => '',
+            'is_active' => true
+        ]
+    ];
 
+    foreach ($usersData as $userData) {
+        $user = new User($userData);
+        $user->save();
+    }
+}
     /**
      * Reverse the migrations.
      */

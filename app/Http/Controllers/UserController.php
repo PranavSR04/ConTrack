@@ -51,45 +51,27 @@ class UserController extends Controller
             [
                 'experion_id' => 1,
                 'role_id' => 1,
-                'user_name' => 'John Doe Smith',
-                'user_mail' => 'john.smith@experionglobal.com',
-                'user_designation' => 'Software Engineer',
+                'user_name' => 'Gokul Surendran',
+                'user_mail' => 'gokul.surendran@experionglobal.com',
+                'user_designation' => 'Project Manager',
                 'group_name' => '',
                 'is_active' => true
             ],
             [
                 'experion_id' => 2,
                 'role_id' => 2,
-                'user_name' => 'Jane Alice Johnson',
-                'user_mail' => 'jane.johnson@experionglobal.com',
+                'user_name' => 'Athul Nair',
+                'user_mail' => 'athul.nair@experionglobal.com',
                 'user_designation' => 'UX Designer',
                 'group_name' => '',
                 'is_active' => true
             ],
             [
-                'experion_id' => 3,
-                'role_id' => 3,
-                'user_name' => 'Michael Brown',
-                'user_mail' => 'michael.brown@experionglobal.com',
-                'user_designation' => 'Project Manager',
-                'group_name' => '',
-                'is_active' => true
-            ],
-            [
                 'experion_id' => 4,
-                'role_id' => 3,
-                'user_name' => 'Emily Grace Taylor',
-                'user_mail' => 'emily.taylor@experionglobal.com',
-                'user_designation' => 'Quality Assurance',
-                'group_name' => '',
-                'is_active' => true
-            ],
-            [
-                'experion_id' => 5,
-                'role_id' => 1,
-                'user_name' => 'William Jones',
-                'user_mail' => 'william.jones@experionglobal.com',
-                'user_designation' => 'Frontend Developer',
+                'role_id' => 2,
+                'user_name' => 'Aneeka Geo',
+                'user_mail' => 'aneeka.geo@experionglobal.com',
+                'user_designation' => 'UX Designer',
                 'group_name' => '',
                 'is_active' => true
             ]
