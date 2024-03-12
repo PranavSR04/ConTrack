@@ -54,7 +54,7 @@ Route::middleware('auth')->group(function () {
 
     // MSA routes
     Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
-    // Route::get('/msa/list', [MSAController::class, 'MSAList']);
+    Route::get('/msa/list', [MSAController::class, 'MSAList']);
     Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
     Route::post('/msa/update/{id}', [MSAController::class, 'updateMsa']);
     Route::post('msa/renew/{id}', [MsaController::class,'renewMsa']);
@@ -99,4 +99,6 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
 
 });
 
-     Route::get('/msa/list', [MSAController::class, 'MSAList']);
+    //  Route::get('/msa/list', [MSAController::class, 'MSAList']);
+    //  Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
+
