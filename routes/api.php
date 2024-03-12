@@ -86,7 +86,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/experion/insertData', [ExperionEmployeeController::class, 'store']);
     Route::post('/experion/generateData', [ExperionEmployeeController::class, 'generateRandomData']);
     Route::get('/experion/list', [ExperionEmployeeController::class, 'show']);
-    
+
 });
 
 
