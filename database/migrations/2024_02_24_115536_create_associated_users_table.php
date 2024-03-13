@@ -17,6 +17,28 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
+
+        $data = [
+            ['contract_id' => 1, 'user_id' => 1],
+            ['contract_id' => 1, 'user_id' => 2],
+            ['contract_id' => 1, 'user_id' => 3],
+            ['contract_id' => 1, 'user_id' => 4],
+            ['contract_id' => 2, 'user_id' => 1],
+            ['contract_id' => 2, 'user_id' => 2],
+            ['contract_id' => 2, 'user_id' => 3],
+            ['contract_id' => 3, 'user_id' => 1],
+            ['contract_id' => 3, 'user_id' => 4],
+            ['contract_id' => 4, 'user_id' => 1],
+            ['contract_id' => 4, 'user_id' => 2],
+            ['contract_id' => 4, 'user_id' => 3],
+            ['contract_id' => 4, 'user_id' => 4],
+            ['contract_id' => 5, 'user_id' => 3],
+            ['contract_id' => 5, 'user_id' => 4],
+        ];
+        
+        // Insert data into associated_users table
+        DB::table('associated_users')->insert($data);
+        
     }
 
     /**

@@ -94,7 +94,9 @@ class ContractService implements ContractInterface
                     'contract_doclink',
                     'contract_status'
                 )
-                ->where('contract_status', '!=', 'Expired');
+                ->where('contract_status', '!=', 'Expired')
+                ->orderBy('contracts.updated_at', 'desc');
+
             if (empty($requestData)) {
                 return $querydata->paginate($paginate);
             } else {
