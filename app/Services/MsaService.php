@@ -120,7 +120,7 @@ class MsaService implements MsaInterface {
             //     return response()->json($response, 400);
             // } else {
 
-                $googleDrive = new GoogleDriveController();
+                $googleDrive = new GoogleDriveService();
                 $fileLink = $googleDrive->store($request);
                 
                 $msa = MSAs::create([
