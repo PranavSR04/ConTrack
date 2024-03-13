@@ -30,7 +30,6 @@ class UserService implements UserInterface
                 throw new Exception('There can be only one Super Admin');
             }
 
-
             // Check if the user already exists in the users table
             $existingUser = User::where('experion_id', $request->experion_id)->first();
 
