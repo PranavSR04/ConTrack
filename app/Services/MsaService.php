@@ -111,8 +111,16 @@ class MsaService implements MsaInterface {
             $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
                 ->select('users.user_name as added_by_user')
                 ->first();
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
+            // if ($end_date <= $start_date) {
+            //     $response = [
+            //         'error' => 'End date must be greater than ' . $start_date
+            //     ];
+            //     return response()->json($response, 400);
+            // } else {
 
-                $googleDrive = new GoogleDriveController();
+                $googleDrive = new GoogleDriveService();
                 $fileLink = $googleDrive->store($request);
                 
                 $msa = MSAs::create([
