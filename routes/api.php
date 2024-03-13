@@ -72,7 +72,7 @@ Route::middleware('auth')->group(function () {
     // Notifications routes
    
 
-    Route::get('/notification/list', [NotificationController::class, 'getUserNotification']); 
+
     Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
 
 
@@ -101,3 +101,4 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
 
 });
 Route::post('/contracts/edit/{id}', [ContractController::class, 'updateContractData']);
+Route::get('/notification/list', [NotificationController::class, 'getUserNotification']); 

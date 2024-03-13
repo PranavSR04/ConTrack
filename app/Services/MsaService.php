@@ -1,7 +1,6 @@
 <?php
 namespace App\Services;
 use App\Http\Controllers\ActivityLogInsertController;
-use App\Http\Controllers\GoogleDriveController;
 use App\Models\ActivityLogs;
 use App\Models\MSAs;
 
@@ -120,7 +119,7 @@ class MsaService implements MsaInterface {
             //     return response()->json($response, 400);
             // } else {
 
-                $googleDrive = new GoogleDriveController();
+                $googleDrive = new GoogleDriveService();
                 $fileLink = $googleDrive->store($request);
                 
                 $msa = MSAs::create([
@@ -258,7 +257,7 @@ $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
                 return response()->json($response, 400);
             } else {
 
-                $googleDrive = new GoogleDriveController();
+                $googleDrive = new GoogleDriveService();
                 $fileLink = $googleDrive->store($request);
                 $msa->update(([ 
                     'client_name' => $request->client_name,
