@@ -13,139 +13,137 @@ class FixedFeeController extends Controller
         $dummydata_ff = [
             [
                 'contract_id' => 1,
-                'milestone_desc' => 'Product Design and Planning',
-                'milestone_enddate' => '2024-05-20',
+                'milestone_desc' => 'On BRD Signoff',
+                'milestone_enddate' => now()->addMonths(7), //'2024-10-20',
                 'percentage' => 20,
-                'amount' => 40000.00, // 20% of $200,000
+                'amount' => 3000.00,
             ],
             [
                 'contract_id' => 1,
-                'milestone_desc' => 'Prototype Development',
-                'milestone_enddate' => '2024-06-30',
-                'percentage' => 30,
-                'amount' => 60000.00, // 30% of $200,000
-            ],
-            [
-                'contract_id' => 1,
-                'milestone_desc' => 'Prototype Testing and Feedback',
-                'milestone_enddate' => '2024-08-15',
+                'milestone_desc' => 'On API creation',
+                'milestone_enddate' => now()->addMonths(19), //'2025-08-15'
                 'percentage' => 40,
-                'amount' => 80000.00, // 40% of $200,000
+                'amount' => 6000.00,
             ],
             [
                 'contract_id' => 1,
-                'milestone_desc' => 'Manufacturing Setup',
-                'milestone_enddate' => '2024-09-30',
-                'percentage' => 10,
-                'amount' => 20000.00, // 10% of $200,000
-            ],
-            [
-                'contract_id' => 2,
-                'milestone_desc' => 'Product Design and Planning',
-                'milestone_enddate' => '2024-05-20',
-                'percentage' => 20,
-                'amount' => 50000.00, // 20% of $250,000
-            ],
-            [
-                'contract_id' => 2,
-                'milestone_desc' => 'Prototype Development',
-                'milestone_enddate' => '2024-06-30',
-                'percentage' => 30,
-                'amount' => 75000.00, // 30% of $250,000
-            ],
-            [
-                'contract_id' => 2,
-                'milestone_desc' => 'Prototype Testing and Feedback',
-                'milestone_enddate' => '2024-08-15',
+                'milestone_desc' => 'On Deployment',
+                'milestone_enddate' => now()->addMonths(34), // '2027-01-01'
                 'percentage' => 40,
-                'amount' => 100000.00, // 40% of $250,000
+                'amount' => 6000.00,
             ],
             [
                 'contract_id' => 2,
-                'milestone_desc' => 'Manufacturing Setup',
-                'milestone_enddate' => '2024-09-30',
+                'milestone_desc' => 'On BRD Signoff',
+                'milestone_enddate' => now()->subMonths(6) , //'2023-09-10'
+                'percentage' => 25,
+                'amount' => 3125.00,
+            ],
+            [
+                'contract_id' => 2,
+                'milestone_desc' => 'On API creation',
+                'milestone_enddate' => now()->addMonths(6), // '2024-09-15'
+                'percentage' => 25,
+                'amount' => 3125.00,
+            ],
+            [
+                'contract_id' => 2,
+                'milestone_desc' => 'On Completion of UI',
+                'milestone_enddate' => now()->addMonths(9) , // '2024-12-19'
+                'percentage' => 50,
+                'amount' => 6250.00,
+            ],
+            [
+                'contract_id' => 3,
+                'milestone_desc' => 'On completion of figma design',
+                'milestone_enddate' => now()->addMonths(15) , // '2025-05-20'
+                'percentage' => 20,
+                'amount' => 3000.00,
+            ],
+            [
+                'contract_id' => 3,
+                'milestone_desc' => 'On completion of UI',
+                'milestone_enddate' => now()->addMonths(30) , // '2026-09-15'
+                'percentage' => 40,
+                'amount' => 6000.00,
+            ],
+            [
+                'contract_id' => 3,
+                'milestone_desc' => 'On Deployment',
+                'milestone_enddate' => now()->addMonths(34), // '2027-01-01'
+                'percentage' => 40,
+                'amount' => 6000.00,
+            ],
+            [
+                'contract_id' => 4,
+                'milestone_desc' => 'On signoff of BRD',
+                'milestone_enddate' => now()->addMonths(9) , // '2024-12-20'
+                'percentage' => 25,
+                'amount' => 7500.00,
+            ],
+            [
+                'contract_id' => 4,
+                'milestone_desc' => 'On completion figma design',
+                'milestone_enddate' => now()->addMonths(24) ,
+                'percentage' => 25,
+                'amount' => 7500.00,
+            ],
+            [
+                'contract_id' => 4,
+                'milestone_desc' => 'On completion of UI',
+                'milestone_enddate' => now()->addMonths(36),
+                'percentage' => 25,
+                'amount' => 7500.00,
+            ],
+            [
+                'contract_id' => 4,
+                'milestone_desc' => 'On Deployment',
+                'milestone_enddate' => now()->addMonths(50),
+                'percentage' => 25,
+                'amount' => 7500.00,
+            ],
+            [
+                'contract_id' => 11,
+                'milestone_desc' => 'On signoff of BRD',
+                'milestone_enddate' => now()->subMonths(10) ,
                 'percentage' => 10,
-                'amount' => 25000.00, // 10% of $250,000
+                'amount' => 2900.00,
             ],
             [
-                'contract_id' => 3,
-                'milestone_desc' => 'Requirements Analysis and Planning',
-                'milestone_enddate' => '2024-06-15',
-                'percentage' => 20,
-                'amount' => 160000.00, // 20% of $800,000
+                'contract_id' => 11,
+                'milestone_desc' => 'On completion of UI',
+                'milestone_enddate' => now()->subMonths(2) ,
+                'percentage' => 30,
+                'amount' => 8700.00,
             ],
             [
-                'contract_id' => 3,
-                'milestone_desc' => 'Software Design and Architecture',
-                'milestone_enddate' => '2024-07-30',
-                'percentage' => 20,
-                'amount' => 160000.00, // 20% of $800,000
+                'contract_id' => 11,
+                'milestone_desc' => 'On Deployement',
+                'milestone_enddate' => now()->addMonths(20),
+                'percentage' => 60,
+                'amount' => 17400.00,
             ],
             [
-                'contract_id' => 3,
-                'milestone_desc' => 'Coding and Implementation',
-                'milestone_enddate' => '2024-09-15',
-                'percentage' => 20,
-                'amount' => 160000.00, // 20% of $800,000
+                'contract_id' => 13,
+                'milestone_desc' => 'On signoff of BRD',
+                'milestone_enddate' => now()->subMonths(22) ,
+                'percentage' => 30,
+                'amount' => 6000.00,
             ],
             [
-                'contract_id' => 3,
-                'milestone_desc' => 'Testing and Quality Assurance',
-                'milestone_enddate' => '2024-10-30',
+                'contract_id' => 13,
+                'milestone_desc' => 'On completion of UI',
+                'milestone_enddate' => now()->subMonths(12) ,
                 'percentage' => 20,
-                'amount' => 160000.00, // 20% of $800,000
+                'amount' => 4000.00,
             ],
             [
-                'contract_id' => 4,
-                'milestone_desc' => 'Software Design and Architecture',
-                'milestone_enddate' => '2024-07-30',
-                'percentage' => 20,
-                'amount' => 500000.00, 
-            ],
-            [
-                'contract_id' => 4,
-                'milestone_desc' => 'Coding and Implementation',
-                'milestone_enddate' => '2024-09-15',
-                'percentage' => 20,
-                'amount' => 1000000.00, 
-            ],
-            [
-                'contract_id' => 4,
-                'milestone_desc' => 'Testing and Quality Assurance',
-                'milestone_enddate' => '2024-10-30',
-                'percentage' => 20,
-                'amount' => 1000000.00, 
-            ],
-            [
-                'contract_id' => 5,
-                'milestone_desc' => 'Software Design and Architecture',
-                'milestone_enddate' => '2024-07-30',
-                'percentage' => 20,
-                'amount' => 500000.00, 
-            ],
-            [
-                'contract_id' => 5,
-                'milestone_desc' => 'Final delivery',
-                'milestone_enddate' => '2024-09-15',
-                'percentage' => 20,
-                'amount' => 700000.00, 
-            ],
-            [
-                'contract_id' => 10,
-                'milestone_desc' => 'Software Design and Architecture',
-                'milestone_enddate' => '2024-07-30',
-                'percentage' => 20,
-                'amount' => 100000.00, 
-            ],
-            [
-                'contract_id' => 10,
-                'milestone_desc' => 'Final delivery',
-                'milestone_enddate' => '2024-09-15',
-                'percentage' => 20,
-                'amount' => 100000.00, 
-            ],
-
-
+                'contract_id' => 13,
+                'milestone_desc' => 'On completion of testing',
+                'milestone_enddate' => now()->addMonths(5),
+                'percentage' => 50,
+                'amount' => 10000.00,
+            ]
 
         ];
         foreach ($dummydata_ff as $ffData) {
