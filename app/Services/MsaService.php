@@ -5,8 +5,8 @@ use App\Http\Controllers\ActivityLogInsertController;
 use App\Http\Controllers\GoogleDriveController;
 use App\Models\ActivityLogs;
 use App\Models\MSAs;
-
 use App\ServiceInterfaces\MsaInterface;
+use Carbon\Carbon;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -38,7 +38,7 @@ class MsaService implements MsaInterface
                     case 'region':
                     case 'start_date':
                     case 'end_date':
-                        $msas_query->where($key, 'like',$value . '%');
+                        $msas_query->where($key, 'like', $value . '%');
                         break;
                     case 'added_by_user':
                         $added_by_user
@@ -55,13 +55,12 @@ class MsaService implements MsaInterface
             }
             if (isset($params['msa_ref_id'])) {
                 $msas = $msas_query->first();
-            } 
-            else {
+            } else {
                 // Otherwise, paginate the results
-                $msas =  MSAs::join('users', 'users.id', '=', 'msas.added_by')
-            ->select('msas.*', 'users.user_name as added_by_user')
-            ->orderByDesc('updated_at')
-            ->orderByDesc('is_active')->paginate($offset);
+                $msas = MSAs::join('users', 'users.id', '=', 'msas.added_by')
+                    ->select('msas.*', 'users.user_name as added_by_user')
+                    ->orderByDesc('updated_at')
+                    ->orderByDesc('is_active')->paginate($offset);
             }
 
             return response()->json($msas);
@@ -122,19 +121,19 @@ class MsaService implements MsaInterface
             //     return response()->json($response, 400);
             // } else {
 
-                $googleDrive = new GoogleDriveController();
-                $fileLink = $googleDrive->store($request);
-                
-                $msa = MSAs::create([
-                    'msa_ref_id' => $request->msa_ref_id,
-                    'added_by' => $added_by,//session()->get(user_id)
-                    'client_name' => $request->client_name,
-                    'region' => $request->region,
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'msa_doclink'=>$fileLink,
-                    'comments' => $request->comments,
-                ]);
+            $googleDrive = new GoogleDriveService();
+            $fileLink = $googleDrive->store($request);
+
+            $msa = MSAs::create([
+                'msa_ref_id' => $request->msa_ref_id,
+                'added_by' => $added_by,//session()->get(user_id)
+                'client_name' => $request->client_name,
+                'region' => $request->region,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'msa_doclink' => $fileLink,
+                'comments' => $request->comments,
+            ]);
 
             $msa->added_by_user = $added_by_user->added_by_user;
             $action = "Added ";
@@ -180,11 +179,11 @@ class MsaService implements MsaInterface
 
             // Get the validated data
             $validated = $validator->validated();
-            $msa_ref_id= $request->msa_ref_id;
-            $msa=MSAs::where('msa_ref_id',$msa_ref_id)
-            ->where('is_active',1)
-            ->first();
-           
+            $msa_ref_id = $request->msa_ref_id;
+            $msa = MSAs::where('msa_ref_id', $msa_ref_id)
+                ->where('is_active', 1)
+                ->first();
+
             // Check if both start_date and end_date are provided
             if (isset($validated['start_date']) && isset($validated['end_date'])) {
                 if ($validated['start_date'] >= $validated['end_date']) {
@@ -250,29 +249,40 @@ class MsaService implements MsaInterface
             $msa = MSAs::where('msa_ref_id', $msa_ref_id)->first();
             $msaId = $msa->id;
 
-
+            $previous_end_date = $msa->end_date;
             $start_date = $request->start_date;
             $end_date = $request->end_date;
-                $googleDrive = new GoogleDriveController();
-                $fileLink = $googleDrive->store($request);
-                $msa->update(([
-                    'client_name' => $request->client_name,
 
-                    'msa_doclink' => $fileLink,
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'comments' => $request->comments,
-                    'is_active' => 1
-                ]));
+            if ($start_date > $previous_end_date) {
+                if ($end_date <= $start_date) {
+                    $response = [
+                        'error' => 'End date must be greater than ' . $start_date
+                    ];
+                    return response()->json($response, 400);
+                } else {
 
-                $added_by = $user_id;
-                $action = "Renew";
-                $activityLogInsertService = new ActivityLogInsertService();
-                $insertController = new ActivityLogInsertController($activityLogInsertService);
-                $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+                    $googleDrive = new GoogleDriveService();
+                    $fileLink = $googleDrive->store($request);
+                    $msa->update(([
+                        'client_name' => $request->client_name,
+                        'region' => $request->region,
+                        'msa_doclink' => $fileLink,
+                        'start_date' => $request->start_date,
+                        'end_date' => $request->end_date,
+                        'comments' => $request->comments,
+                        'is_active' => 1
+                    ]));
 
-                return response()->json(['message' => 'MSA renewed successfully', 'msa' => $msa], 201);
-            
+                    $added_by = $user_id;
+                    $action = "Renew";
+                    $activityLogInsertService = new ActivityLogInsertService();
+                    $insertController = new ActivityLogInsertController($activityLogInsertService);
+                    $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+                    return response()->json(['message' => 'MSA renewed successfully', 'msa' => $msa], 201);
+                }
+            } else{
+                return response()->json(['error' => 'Start date'. $start_date .'should be greater than previous end date: '. $previous_end_date], 422);
+            }      
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Validation failed', 'message' => $e->validator->errors()], 422);
         } catch (QueryException $e) {
