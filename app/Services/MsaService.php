@@ -258,7 +258,7 @@ $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
                 return response()->json($response, 400);
             } else {
 
-                $googleDrive = new GoogleDriveController();
+                $googleDrive = new GoogleDriveService();
                 $fileLink = $googleDrive->store($request);
                 $msa->update(([ 
                     'client_name' => $request->client_name,
@@ -270,11 +270,11 @@ $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
                    'is_active'=>1
                 ]));
 
-                $added_by = $user_id;
-                $action = "Renew";
-                $activityLogInsertService = new ActivityLogInsertService();
-                $insertController = new ActivityLogInsertController($activityLogInsertService);
-                $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+                // $added_by = $user_id;
+                // $action = "Renew";
+                // $activityLogInsertService = new ActivityLogInsertService();
+                // $insertController = new ActivityLogInsertController($activityLogInsertService);
+                // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
                 return response()->json(['message' => 'MSA renewed successfully', 'msa' => $msa], 201);
             }
         } catch (ValidationException $e) {

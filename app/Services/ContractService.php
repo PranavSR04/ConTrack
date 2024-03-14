@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Http\Controllers\ActivityLogInsertController;
-use App\Http\Controllers\GoogleDriveController;
 use App\ServiceInterfaces\ContractInterface;
 use App\Models\Addendums;
 use App\Models\AssociatedUsers;
@@ -565,7 +564,7 @@ class ContractService implements ContractInterface
             if ($request->contract_type === 'TM' && $totalAmount !== (int) $request->estimated_amount) {
                 return response()->json(['error' => 'Invalid milestones for Time and Material contract.'], 422);
             }
-            $googleDrive = new GoogleDriveController();
+            $googleDrive = new GoogleDriveService();
 
 
             $fileLink = $googleDrive->store($request);
