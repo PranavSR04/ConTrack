@@ -21,22 +21,22 @@ return new class extends Migration
          // Insert default roles
          DB::table('roles')->insert([
             [
+                "role_name" => "Super Admin",
+                "role_access" => "Full Access",
+                "is_active" => true,
+                "created_at" => now(),
+                "updated_at" => now()
+            ],
+            [
                 "role_name" => "Admin",
-                "role_access" => "Can edit and view contracts",
+                "role_access" => "View and Edit",
                 "is_active" => true,
                 "created_at" => now(),
                 "updated_at" => now()
             ],
             [
                 "role_name" => "Reader",
-                "role_access" => "Can view contracts",
-                "is_active" => true,
-                "created_at" => now(),
-                "updated_at" => now()
-            ],
-            [
-                "role_name" => "Super Admin",
-                "role_access" => "Full Access",
+                "role_access" => "View Only",
                 "is_active" => true,
                 "created_at" => now(),
                 "updated_at" => now()

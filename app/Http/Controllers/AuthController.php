@@ -1,10 +1,11 @@
 <?php
 namespace App\Http\Controllers;
+use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Validator;
 use App\Models\Demousers;
 use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 
 
 
@@ -32,9 +33,10 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
         if (! $token = auth()->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Unauthorized, Invalid Credentials'], 401);
         }
-        return $this->createNewToken($token);
+        return $this->handleRoleCheck($token);
+        // return $this->createNewToken($token);
     }
     /**
      * Register a User.
@@ -104,6 +106,20 @@ class AuthController extends Controller
             'user_id' => $user->id,
             'contrackUser' =>User::where("experion_id", $user->id)->first()
         ]);
+    }
+
+    protected function handleRoleCheck($token){
+        $user = auth()->user();
+        $contrackUser = User::where("experion_id", $user->id )->where("is_active", 1)->first(); 
+       
+        // Check if the user is authenticated
+        if (!$contrackUser) {
+            return response()->json(['error' => 'Unauthorized, Access Denied ,Try to contact Admin'], 401);
+        }else{
+            return $this->createNewToken($token);
+
+        }
+
     }
    
 }
