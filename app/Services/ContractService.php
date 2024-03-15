@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Http\Controllers\ActivityLogInsertController;
-use App\Http\Controllers\GoogleDriveController;
 use App\ServiceInterfaces\ContractInterface;
 use App\Models\Addendums;
 use App\Models\AssociatedUsers;
@@ -562,7 +561,6 @@ class ContractService implements ContractInterface
             $googleDrive = new GoogleDriveService();
 
 
-
             $fileLink = $googleDrive->store($request);
             if ($fileLink) {
                 $contract = Contracts::create([
@@ -598,6 +596,11 @@ class ContractService implements ContractInterface
             }
             $contractId = $contract->id;
 
+            $action = "Added";
+            $activityLogInsertService = new ActivityLogInsertService();
+            $insertController = new ActivityLogInsertController($activityLogInsertService);
+            $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
+
             if (!empty($request->assoc_users)) {
                 if (!is_array($request->assoc_users)) {
                     foreach (json_decode($request->assoc_users, true) as $users) {
@@ -612,22 +615,22 @@ class ContractService implements ContractInterface
             if ($request->contract_type === 'FF') {
                 try {
                     if (is_array($request->milestone) && !empty($request->milestone)) {
-                        try{
-                        foreach ($request->milestone as $milestone) {
-                            var_dump($request->milestone);
-                            $ffresult = FixedFeeContracts::create([
-                                'contract_id' => $contractId,
-                                'milestone_desc' => $milestone['milestones'],
-                                // 'milestone_enddate' => isset($milestone['milestone_enddate']) && !empty($milestone['milestone_enddate'])
-                                //     ? Carbon::parse($milestone['milestone_enddate'])->format('Y-m-d')
-                                //     : null,
-                                'milestone_enddate' => Carbon::parse($milestone['expectedCompletionDate'])->format('Y-m-d'),
-                                'percentage' => $milestone['percentage'],
-                                'amount' => $milestone['amount'],
-                            ]);
-                        }
-                    }catch (Exception $e) {
-                        return response()->json(['error' => 'Failed', 'message' => $e->getMessage()], 500);
+                        try {
+                            foreach ($request->milestone as $milestone) {
+                                var_dump($request->milestone);
+                                $ffresult = FixedFeeContracts::create([
+                                    'contract_id' => $contractId,
+                                    'milestone_desc' => $milestone['milestones'],
+                                    // 'milestone_enddate' => isset($milestone['milestone_enddate']) && !empty($milestone['milestone_enddate'])
+                                    //     ? Carbon::parse($milestone['milestone_enddate'])->format('Y-m-d')
+                                    //     : null,
+                                    'milestone_enddate' => Carbon::parse($milestone['expectedCompletionDate'])->format('Y-m-d'),
+                                    'percentage' => $milestone['percentage'],
+                                    'amount' => $milestone['amount'],
+                                ]);
+                            }
+                        } catch (Exception $e) {
+                            return response()->json(['error' => 'Failed', 'message' => $e->getMessage()], 500);
 
                         }
                     }
@@ -649,7 +652,7 @@ class ContractService implements ContractInterface
                             'milestone_enddate' => Carbon::parse($milestone['expectedCompletionDate'])->format('Y-m-d'),
                             'amount' => $milestone['amount'],
                         ]);
-                        
+
                     }
                     return response()->json([
                         'message' => 'Contract created successfully',
