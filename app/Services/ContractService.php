@@ -96,14 +96,11 @@ class ContractService implements ContractInterface
                     'contract_doclink',
                     'contract_status'
                 )
-                ->where('contract_status', '!=', 'Expired')
                 ->orderBy('contracts.updated_at', 'desc');
-
             if (empty($requestData)) {
                 return $querydata->paginate($paginate);
             } else {
                 foreach ($requestData as $key => $value) {
- 
                     if (in_array($key, ['contract_ref_id', 'client_name', 'du', 'contract_type', 'msa_ref_id', 'contract_status'])) {
                         $querydata->where($key, 'LIKE', '%' . $value . '%');
                     }
@@ -113,6 +110,12 @@ class ContractService implements ContractInterface
                     if (in_array($key, ['start_date', 'end_date'])) {
                         $querydata->where('contracts.' . $key, 'LIKE', '%' . $value . '%');
                     }
+                }
+                if ($request->status) {
+                    $querydata->where('contract_status', '=',$request->status);
+                }
+                else{
+                    $querydata->where('contract_status', '!=', 'Expired');
                 }
                 if ($querydata->count() == 0) {
                     return response()->json(['error' => 'Data not found'], 404);
@@ -667,5 +670,22 @@ class ContractService implements ContractInterface
             }
  
         }
+    }
+    public function getContractCount(Request $request){
+        try{
+            if($request->status){
+                $querydata= Contracts::where('contract_status','=',$request->status)
+                ->count();
+                return response()->json(["count" => $querydata]);
+            }
+            // return default of Active status
+            $querydata= Contracts::where('contract_status','=','Active')
+                ->count();
+            return response()->json(["count" => $querydata]);
+        }
+        catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
     }
 }

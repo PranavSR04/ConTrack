@@ -66,6 +66,7 @@ Route::middleware('auth')->group(function () {
     // Route::post('/contracts/edit/{id}', [ContractController::class, 'updateContractData']);
     Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
     Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
+    Route::get('/contract/count', [ContractController::class, 'getContractCount']);
 
     // Revenue routes
     Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
