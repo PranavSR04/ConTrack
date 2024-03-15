@@ -63,7 +63,7 @@ Route::middleware('auth')->group(function () {
     // Contracts routes
     Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
     Route::post('/contracts/add', [ContractController::class, 'addContract']);
-    // Route::post('/contracts/edit/{id}', [ContractController::class, 'updateContractData']);
+    Route::post('/contracts/edit/{id}', [ContractController::class, 'updateContractData']);
     
     Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
 
@@ -101,9 +101,7 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
     // Routes accessible only to admins or superadmins
 
 });
-
-     Route::get('/msa/list', [MSAController::class, 'MSAList']);
-
+Route::get('/msa/list', [MSAController::class, 'MSAList']);
 Route::get('/notification/list', [NotificationController::class, 'getUserNotification']); 
 Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
 Route::get('/contract/ducount', [ContractController::class, 'getDuCount']);
