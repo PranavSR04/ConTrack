@@ -17,31 +17,37 @@ class MsaService implements MsaInterface {
     public function MSAList(Request $request)
     {
         try {
-            
-
             $params = $request->all();
-
-            $msas_query = MSAs::query();
+            $is_active = (bool) $request->input('is_active');
+            $msas_query = MSAs::join('users', 'users.id', '=', 'msas.added_by')
+            ->select('msas.*', 'users.user_name as added_by_user');
+            
             $offset=$request->paginate_offset;
-           $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
-           ->select('users.user_name as added_by_user');
-            // Iterate through each request parameter
-            foreach ($params as $key => $value) {
+                      foreach ($params as $key => $value) {
                 // Check if the parameter is a filtering or sorting criterion
                 switch ($key) {
+                    
+                    case 'is_active':
+
+                        $msa=MSAs::query()
+                        ->where('is_active', $is_active)->get();
+                        break;
                     case 'msa_ref_id':
+                        
                         $msas_query->where($key, $value);
                         break;
+                   
                     case 'client_name':
                     case 'region':
                     case 'start_date':
                     case 'end_date':
+                    
                         $msas_query->where($key, 'like','%'. $value . '%');
                         break;
                     case 'added_by_user':
-                        $added_by_user 
-                        ->where($key, 'like', '%' . $value . '%'); // Fetch the first matching record
-                    break;
+                        $msas_query->join('users', 'users.id', '=', 'msas.added_by')
+                               ->where('users.user_name', 'like', '%' . $value . '%');
+                                break;
                     case 'sort_by':
                         // Extract sort order 
                         $sort_order = isset($params['sort_order']) && strtolower($params['sort_order']) === 'desc' ? 'desc' : 'asc';
@@ -51,20 +57,24 @@ class MsaService implements MsaInterface {
                         break;
                 }
             }
+            
             if (isset($params['msa_ref_id'])) {
                 $msas = $msas_query->first();
+            }
+            else if(isset($params['is_active'])){
+                $msas=$msa;
             } 
             else {
                 // Otherwise, paginate the results
-                $msas =  $msas_query->join('users', 'users.id', '=', 'msas.added_by')
-            ->select('msas.*', 'users.user_name as added_by_user')
+                $msas =  $msas_query
             ->orderByDesc('updated_at')
-            ->orderByDesc('is_active')->paginate($offset);
+            //  ->orderByDesc('is_active')
+             ->paginate(10);
             }
            
             return response()->json($msas);
         } catch (QueryException $e) {
-            return response()->json(['error' => 'Database error'], 500);
+            return response()->json(['error' => 'Querry error'], 500);
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         } catch (ModelNotFoundException $e) {
@@ -105,6 +115,13 @@ class MsaService implements MsaInterface {
 
                 return response()->json(['error' => 'Failed to create MSA', 'message' => 'MSA with  ' . $request->msa_ref_id . ' already exists.'], 400);
             }
+            $start_date =$request->start_date;
+            $end_date = $request->end_date;
+    
+            // Check if start date is greater than end date
+            if ($start_date > $end_date) {
+                return response()->json(['error' => 'Validation failed', 'message' => 'Start date cannot be after end date'], 422);
+            }
 
             $added_by = $user_id;
             // return $added_by;//session()->get(user_id)
@@ -112,7 +129,7 @@ class MsaService implements MsaInterface {
                 ->select('users.user_name as added_by_user')
                 ->first();
 
-                $googleDrive = new GoogleDriveController();
+                $googleDrive = new GoogleDriveService();
                 $fileLink = $googleDrive->store($request);
                 
                 $msa = MSAs::create([
@@ -127,10 +144,10 @@ class MsaService implements MsaInterface {
                 ]);
 
                 $msa->added_by_user = $added_by_user->added_by_user;
-                $action = "Added ";
-                $activityLogInsertService = new ActivityLogInsertService();
-$insertController = new ActivityLogInsertController($activityLogInsertService);
-$insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+//                 $action = "Added ";
+//                 $activityLogInsertService = new ActivityLogInsertService();
+// $insertController = new ActivityLogInsertController($activityLogInsertService);
+// $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
 
 
 
@@ -170,7 +187,13 @@ $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
 
             // Get the validated data
             $validated = $validator->validated();
-
+            $start_date =$request->start_date;
+            $end_date = $request->end_date;
+    
+            // Check if start date is greater than end date
+            if ($start_date > $end_date) {
+                return response()->json(['error' => 'Validation failed', 'message' => 'Start date cannot be after end date'], 422);
+            }
             $msa_ref_id= $request->msa_ref_id;
             $msa=MSAs::where('msa_ref_id',$msa_ref_id)
             ->where('is_active',1)
@@ -183,9 +206,9 @@ $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
                 ->first();
                 $action = "Updated ";
                 $msa->update($validated);
-            $activityLogInsertService = new ActivityLogInsertService();
-$insertController = new ActivityLogInsertController($activityLogInsertService);
-$insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+//             $activityLogInsertService = new ActivityLogInsertService();
+// $insertController = new ActivityLogInsertController($activityLogInsertService);
+// $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
             // Return success response
             return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
         } catch (ValidationException $e) {
@@ -228,7 +251,7 @@ $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
 
             $start_date = $request->start_date;
             $end_date = $request->end_date;
-                $googleDrive = new GoogleDriveController();
+                $googleDrive = new GoogleDriveService();
                 $fileLink = $googleDrive->store($request);
                 $msa->update(([ 
                     'client_name' => $request->client_name,
@@ -241,10 +264,10 @@ $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
                 ]));
 
                 $added_by = $user_id;
-                $action = "Renew";
-                $activityLogInsertService = new ActivityLogInsertService();
-                $insertController = new ActivityLogInsertController($activityLogInsertService);
-                $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+                // $action = "Renew";
+                // $activityLogInsertService = new ActivityLogInsertService();
+                // $insertController = new ActivityLogInsertController($activityLogInsertService);
+                // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
 
                 return response()->json(['message' => 'MSA renewed successfully', 'msa' => $msa], 201);
             
