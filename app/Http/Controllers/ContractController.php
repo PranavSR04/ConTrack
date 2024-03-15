@@ -278,5 +278,8 @@ class ContractController extends Controller
         return $this->contractService->addContract($request);
     }
 
-
+    public function getDuCount(Request $request)
+    {
+        return $this->contractService->getDuCount($request);
+    }
 }
