@@ -22,28 +22,36 @@ class MsaService implements MsaInterface
 
 
             $params = $request->all();
-
-            $msas_query = MSAs::query();
-            $offset = $request->paginate_offset;
-            $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
-                ->select('users.user_name as added_by_user');
-            // Iterate through each request parameter
-            foreach ($params as $key => $value) {
+            $is_active = (bool) $request->input('is_active');
+            $msas_query = MSAs::join('users', 'users.id', '=', 'msas.added_by')
+            ->select('msas.*', 'users.user_name as added_by_user');
+            
+            $offset=$request->paginate_offset;
+                      foreach ($params as $key => $value) {
                 // Check if the parameter is a filtering or sorting criterion
                 switch ($key) {
+                    
+                    case 'is_active':
+
+                        $msa=MSAs::query()
+                        ->where('is_active', $is_active)->get();
+                        break;
                     case 'msa_ref_id':
+                        
                         $msas_query->where($key, $value);
                         break;
+                   
                     case 'client_name':
                     case 'region':
                     case 'start_date':
                     case 'end_date':
-                        $msas_query->where($key, 'like', $value . '%');
+                    
+                        $msas_query->where($key, 'like','%'. $value . '%');
                         break;
                     case 'added_by_user':
-                        $added_by_user
-                            ->where($key, 'like', '%' . $value . '%'); // Fetch the first matching record
-                        break;
+                        $msas_query->join('users', 'users.id', '=', 'msas.added_by')
+                               ->where('users.user_name', 'like', '%' . $value . '%');
+                                break;
                     case 'sort_by':
                         // Extract sort order 
                         $sort_order = isset($params['sort_order']) && strtolower($params['sort_order']) === 'desc' ? 'desc' : 'asc';
@@ -53,19 +61,24 @@ class MsaService implements MsaInterface
                         break;
                 }
             }
+            
             if (isset($params['msa_ref_id'])) {
                 $msas = $msas_query->first();
-            } else {
+            }
+            else if(isset($params['is_active'])){
+                $msas=$msa;
+            } 
+            else {
                 // Otherwise, paginate the results
-                $msas = MSAs::join('users', 'users.id', '=', 'msas.added_by')
-                    ->select('msas.*', 'users.user_name as added_by_user')
-                    ->orderByDesc('updated_at')
-                    ->orderByDesc('is_active')->paginate($offset);
+                $msas =  $msas_query
+            ->orderByDesc('updated_at')
+            //  ->orderByDesc('is_active')
+             ->paginate(10);
             }
 
             return response()->json($msas);
         } catch (QueryException $e) {
-            return response()->json(['error' => 'Database error'], 500);
+            return response()->json(['error' => 'Querry error'], 500);
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         } catch (ModelNotFoundException $e) {
@@ -106,34 +119,33 @@ class MsaService implements MsaInterface
 
                 return response()->json(['error' => 'Failed to create MSA', 'message' => 'MSA with  ' . $request->msa_ref_id . ' already exists.'], 400);
             }
+            $start_date =$request->start_date;
+            $end_date = $request->end_date;
+    
+            // Check if start date is greater than end date
+            if ($start_date > $end_date) {
+                return response()->json(['error' => 'Validation failed', 'message' => 'Start date cannot be after end date'], 422);
+            }
 
             $added_by = $user_id;
             // return $added_by;//session()->get(user_id)
             $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
                 ->select('users.user_name as added_by_user')
                 ->first();
-            $start_date = $request->start_date;
-            $end_date = $request->end_date;
-            // if ($end_date <= $start_date) {
-            //     $response = [
-            //         'error' => 'End date must be greater than ' . $start_date
-            //     ];
-            //     return response()->json($response, 400);
-            // } else {
 
-            $googleDrive = new GoogleDriveService();
-            $fileLink = $googleDrive->store($request);
-
-            $msa = MSAs::create([
-                'msa_ref_id' => $request->msa_ref_id,
-                'added_by' => $added_by,//session()->get(user_id)
-                'client_name' => $request->client_name,
-                'region' => $request->region,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'msa_doclink' => $fileLink,
-                'comments' => $request->comments,
-            ]);
+                $googleDrive = new GoogleDriveService();
+                $fileLink = $googleDrive->store($request);
+                
+                $msa = MSAs::create([
+                    'msa_ref_id' => $request->msa_ref_id,
+                    'added_by' => $added_by,//session()->get(user_id)
+                    'client_name' => $request->client_name,
+                    'region' => $request->region,
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                    'msa_doclink'=>$fileLink,
+                    'comments' => $request->comments,
+                ]);
 
             $msa->added_by_user = $added_by_user->added_by_user;
             $action = "Added ";
@@ -258,7 +270,7 @@ class MsaService implements MsaInterface
                     $response = [
                         'error' => 'End date must be greater than ' . $start_date
                     ];
-                    return response()->json($response, 400);
+                    return response()->json($response, 400);}
                 } else {
 
                     $googleDrive = new GoogleDriveService();
@@ -272,17 +284,15 @@ class MsaService implements MsaInterface
                         'comments' => $request->comments,
                         'is_active' => 1
                     ]));
-
-                    $added_by = $user_id;
-                    $action = "Renew";
-                    $activityLogInsertService = new ActivityLogInsertService();
-                    $insertController = new ActivityLogInsertController($activityLogInsertService);
-                    $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
-                    return response()->json(['message' => 'MSA renewed successfully', 'msa' => $msa], 201);
                 }
-            } else{
-                return response()->json(['error' => 'Start date'. $start_date .'should be greater than previous end date: '. $previous_end_date], 422);
-            }      
+                $added_by = $user_id;
+                $action = "Renew";
+                $activityLogInsertService = new ActivityLogInsertService();
+                $insertController = new ActivityLogInsertController($activityLogInsertService);
+                $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+
+                return response()->json(['message' => 'MSA renewed successfully', 'msa' => $msa], 201);
+                
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Validation failed', 'message' => $e->validator->errors()], 422);
         } catch (QueryException $e) {
