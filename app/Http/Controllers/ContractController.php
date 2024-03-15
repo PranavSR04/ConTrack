@@ -283,5 +283,10 @@ class ContractController extends Controller
         return $this->contractService->addContract($request);
     }
 
+    public function getAllContractsRevenue()
+    {
+        return $this->contractService->getAllContractsRevenue();
+    }
+
 
 }

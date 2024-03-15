@@ -10,4 +10,6 @@ interface ContractInterface
     public function updateContractData(Request $request, $contractId) ;
     public function addContract(Request $request);
     public function getContractCount(Request $request);
+    
+    public function getAllContractsRevenue();
 }

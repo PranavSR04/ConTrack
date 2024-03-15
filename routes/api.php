@@ -66,6 +66,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/contracts/edit/{id}', [ContractController::class, 'updateContractData']);
     Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
     Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
+    Route::get('/contracts/revenue', [ContractController::class, 'getAllContractsRevenue']);
+
+
     Route::get('/contract/count', [ContractController::class, 'getContractCount']);
 
     // Revenue routes
@@ -102,3 +105,4 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
     // Routes accessible only to admins or superadmins
 
 });
+

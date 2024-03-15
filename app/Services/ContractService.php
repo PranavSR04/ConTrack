@@ -674,6 +674,26 @@ class ContractService implements ContractInterface
  
         }
     }
+
+    public function getAllContractsRevenue()
+    {
+        $contracts = Contracts::all();
+        $contractDetails = [];
+
+        foreach ($contracts as $contract) {
+            $startDate = Carbon::parse($contract->start_date);
+            $endDate = Carbon::parse($contract->end_date);
+            $duration = $endDate->diffInMonths($startDate);
+
+            $contractDetails[] = [
+                'contract_id' => $contract->id,
+                'duration_months' => $duration,
+                'estimated_amount' => $contract->estimated_amount,
+            ];
+        }
+
+        return response()->json($contractDetails);
+    }
     public function getContractCount(Request $request){
         try{
             if($request->status){
