@@ -29,36 +29,35 @@ return new class extends Migration
             'experion_id' => 1,
             'role_id' => 1,
             'user_name' => 'Gokul Surendran',
-            'user_mail' => 'gokul.surendran@experionglobal.com',
-            'user_designation' => 'Project Manager',
-            'group_name' => '',
+            'user_mail' => 'gokul.surendran@sreegcloudgmail.onmicrosoft.com',
             'is_active' => true
         ],
         [
             'experion_id' => 2,
             'role_id' => 2,
             'user_name' => 'Athul Nair',
-            'user_mail' => 'athul.nair@experionglobal.com',
-            'user_designation' => 'UX Designer',
-            'group_name' => '',
+            'user_mail' => 'athul.nair@sreegcloudgmail.onmicrosoft.com',
             'is_active' => true
         ],
         [
             'experion_id' => 3,
             'role_id' => 3,
             'user_name' => 'Dantus George',
-            'user_mail' => 'dantus.tom@experionglobal.com',
-            'user_designation' => 'Finance Head',
-            'group_name' => '',
+            'user_mail' => 'dantus.tom@sreegcloudgmail.onmicrosoft.com',
             'is_active' => true
         ],
         [
             'experion_id' => 4,
-            'role_id' => 2,
+            'role_id' => 3,
             'user_name' => 'Aneeka Geo',
-            'user_mail' => 'aneeka.geo@experionglobal.com',
-            'user_designation' => 'UX Designer',
-            'group_name' => '',
+            'user_mail' => 'aneeka.geo@sreegcloudgmail.onmicrosoft.com',
+            'is_active' => true
+        ],
+        [
+            'experion_id' => 6,
+            'role_id' => 2,
+            'user_name' => 'Pranav S R',
+            'user_mail' => 'pranav.sr@sreegcloudgmail.onmicrosoft.com',
             'is_active' => true
         ]
     ];

@@ -7,23 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-
-class ExperionEmployees extends Authenticatable implements JWTSubject
+class ExpDemo extends Authenticatable implements JWTSubject
 {
     use HasFactory;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+
     protected $fillable = [
+        'u_id',
         'email_id',
-        'first_name',
-        'middle_name',
-        'last_name',
     ];
 
-    
     public function getJWTIdentifier() {
         return $this->getKey();
     }
@@ -34,5 +26,5 @@ class ExperionEmployees extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims() {
         return [];
-    }    
+    }
 }
