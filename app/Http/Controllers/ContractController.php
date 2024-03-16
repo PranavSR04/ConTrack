@@ -39,7 +39,10 @@ class ContractController extends Controller
         return $this->contractService->getContractData($request, $id);
     }
 
-
+    public function getContractCount(Request $request)
+    {
+        return $this->contractService->getContractCount($request);
+    }
 
     /**
      * Function to update a contract.
@@ -61,6 +64,9 @@ class ContractController extends Controller
     public function getAllContractsRevenue()
     {
         return $this->contractService->getAllContractsRevenue();
+    }
+    public function getTopContractRegions() {
+        return $this->contractService->getTopContractRegions();
     }
 
     public function topRevenueRegions()
