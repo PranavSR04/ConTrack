@@ -2,31 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\ServiceInterfaces\ExperionEmployeesInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\ExperionEmployees;
-use App\Models\User;
-
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Validation\ValidationException;
 
 class ExperionEmployeeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    private $experionEmployeesService;
+    public function __construct(ExperionEmployeesInterface $experionEmployeesService)
     {
-        //
+        $this->experionEmployeesService = $experionEmployeesService;
     }
 
     /**
@@ -76,54 +63,68 @@ class ExperionEmployeeController extends Controller
     {
         $dataArray = [
             [
-                "email_id" => "john.smith@experionglobal.com",
+                "email_id" => "gokul.surendran@experionglobal.com",
                 "password" => bcrypt("password1"),
-                "first_name" => "John",
-                "middle_name" => "Doe",
-                "last_name" => "Smith",
+                "first_name" => "Gokul",
+                "middle_name" => "",
+                "last_name" => "Surendran",
             ],
             [
-                "email_id" => "jane.johnson@experionglobal.com",
+                "email_id" => "athul.nair@experionglobal.com",
                 "password" => bcrypt("password2"),
-                "first_name" => "Jane",
-                "middle_name" => "Alice",
-                "last_name" => "Johnson",
+                "first_name" => "Athul",
+                "middle_name" => "",
+                "last_name" => "Nair",
             ],
             [
-                "email_id" => "michael.brown@experionglobal.com",
+                "email_id" => "dantus.tom@experionglobal.com",
                 "password" => bcrypt("password3"),
-                "first_name" => "Michael",
-                "middle_name" => "",
-                "last_name" => "Brown",
+                "first_name" => "Dantus",
+                "middle_name" => "George",
+                "last_name" => "Tom",
             ],
             [
-                "email_id" => "emily.taylor@experionglobal.com",
+                "email_id" => "aneeka.geo@experionglobal.com",
                 "password" => bcrypt("password4"),
-                "first_name" => "Emily",
-                "middle_name" => "Grace",
-                "last_name" => "Taylor",
+                "first_name" => "Aneeka",
+                "middle_name" => "",
+                "last_name" => "Geo",
             ],
             [
-                "email_id" => "william.jones@experionglobal.com",
+                "email_id" => "treesa.james@experionglobal.com",
                 "password" => bcrypt("password5"),
-                "first_name" => "William",
+                "first_name" => "Treesa",
                 "middle_name" => "",
-                "last_name" => "Jones",
+                "last_name" => "James",
             ],
             [
-                "email_id" => "olivia.anderson@experionglobal.com",
+                "email_id" => "pranav.sr@experionglobal.com",
                 "password" => bcrypt("password6"),
-                "first_name" => "Olivia",
-                "middle_name" => "Mae",
-                "last_name" => "Anderson",
+                "first_name" => "Pranav",
+                "middle_name" => "S",
+                "last_name" => "R",
             ],
             [
-                "email_id" => "ethan.miller@experionglobal.com",
+                "email_id" => "boby.benny@experionglobal.com",
                 "password" => bcrypt("password7"),
-                "first_name" => "Ethan",
+                "first_name" => "Boby",
                 "middle_name" => "",
-                "last_name" => "Miller",
+                "last_name" => "Benny",
             ],
+            [
+                "email_id" => "gokulsurendran29@gmail.com",
+                "password" => bcrypt("password8"),
+                "first_name" => "Gokul",
+                "middle_name" => "S",
+                "last_name" => "K",
+            ],
+            [
+                "email_id" => "dantusgeorgetom@gmail.com",
+                "password" => bcrypt("password9"),
+                "first_name" => "George",
+                "middle_name" => "",
+                "last_name" => "Tom",
+            ]
         ];
 
         foreach ($dataArray as $data) {
@@ -146,57 +147,6 @@ class ExperionEmployeeController extends Controller
      */
     public function show(Request $request)
     {
-        try {
-            // Validate the request
-            $request->validate([
-                'name' => 'required|string',
-            ]);
-
-            $users = ExperionEmployees::where(function ($query) use ($request) {
-                $query->where('first_name', 'like', $request->name . '%')
-                    ->orWhere('middle_name', 'like', $request->name . '%')
-                    ->orWhere('last_name', 'like', $request->name . '%');
-            })->get();
-
-            if ($users->isEmpty()) {
-                // 404 Not Found: No records found
-                return response()->json(['error' => 'No records found.'], 404);
-            }
-
-            return response()->json($users);
-        } catch (ValidationException $e) {
-            // 422 Unprocessable Entity: Validation error
-            return response()->json(['error' => $e->validator->errors()], 422);
-        } catch (ModelNotFoundException $e) {
-            // 404 Not Found: Model not found exception
-            return response()->json(['error' => 'Record not found.'], 404);
-        } catch (\Exception $e) {
-            // 500 Internal Server Error: Other exceptions
-            return response()->json(['error' => 'Internal Server Error.'], 500);
-        }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return $this->experionEmployeesService->show($request);
     }
 }

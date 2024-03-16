@@ -1,9 +1,11 @@
 <?php
 namespace App\Http\Controllers;
+use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Validator;
 use App\Models\Demousers;
+use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 
 
 
@@ -24,16 +26,18 @@ class AuthController extends Controller
      */
     public function login(Request $request){
     	$validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'email_id' => 'required|email',
             'password' => 'required|string|min:6',
         ]);
+        return response()->json($validator->validated());
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
         if (! $token = auth()->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Unauthorized, Invalid Credentials'], 401);
         }
-        return $this->createNewToken($token);
+        return $this->handleRoleCheck($token);
+        // return $this->createNewToken($token);
     }
     /**
      * Register a User.
@@ -94,12 +98,29 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     protected function createNewToken($token){
+        $user = auth()->user();
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()
+            'user' => $user,
+            'user_id' => $user->id,
+            'contrackUser' =>User::where("experion_id", $user->id)->first()
         ]);
+    }
+
+    protected function handleRoleCheck($token){
+        $user = auth()->user();
+        $contrackUser = User::where("experion_id", $user->id )->where("is_active", 1)->first(); 
+       
+        // Check if the user is authenticated
+        if (!$contrackUser) {
+            return response()->json(['error' => 'Unauthorized, Access Denied ,Try to contact Admin'], 401);
+        }else{
+            return $this->createNewToken($token);
+
+        }
+
     }
    
 }

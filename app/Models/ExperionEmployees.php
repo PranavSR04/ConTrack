@@ -4,8 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class ExperionEmployees extends Model
+
+class ExperionEmployees extends Authenticatable implements JWTSubject
 {
     use HasFactory;
     /**
@@ -15,27 +18,21 @@ class ExperionEmployees extends Model
      */
     protected $fillable = [
         'email_id',
-        'password',
         'first_name',
         'middle_name',
         'last_name',
     ];
 
+    
+    public function getJWTIdentifier() {
+        return $this->getKey();
+    }
     /**
-     * The attributes that should be hidden for serialization.
+     * Return a key value array, containing any custom claims to be added to the JWT.
      *
-     * @var array<int, string>
+     * @return array
      */
-    protected $hidden = [
-        'password'
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'password' => 'hashed',
-    ];
+    public function getJWTCustomClaims() {
+        return [];
+    }    
 }
