@@ -20,6 +20,8 @@ class RevenueProjectionService implements RevenueProjectionInterface
         $totalAmount = 0;
         $duFilters = $request->du;
         $ctypeFilters = $request->ctype;
+        // return response()->json([$request->all()]);
+        // var_dump($ctypeFilters);
 
 
 
@@ -38,6 +40,16 @@ class RevenueProjectionService implements RevenueProjectionInterface
 
                     if ($contracts->isEmpty()) {
                         return response()->json(['error' => 'No contracts found for the specified DU'], 404);
+                    }
+                }
+                if($ctypeFilters){
+                    foreach ($ctypeFilters as $ctypeFilter) {
+                        $filteredContracts = Contracts::where('contract_type',$ctypeFilter)->get();
+                        $contracts = $contracts->merge($filteredContracts);
+
+                    }
+                    if ($contracts->isEmpty()) {
+                        return response()->json(['error' => 'No contracts found for the specified Type'], 404);
                     }
                 }
 
