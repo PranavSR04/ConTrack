@@ -135,11 +135,11 @@ class MsaService implements MsaInterface
                 'comments' => $request->comments,
             ]);
 
-            $msa->added_by_user = $added_by_user->added_by_user;
-            $action = "Added ";
-            $activityLogInsertService = new ActivityLogInsertService();
-            $insertController = new ActivityLogInsertController($activityLogInsertService);
-            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            // $msa->added_by_user = $added_by_user->added_by_user;
+            // $action = "Added ";
+            // $activityLogInsertService = new ActivityLogInsertService();
+            // $insertController = new ActivityLogInsertController($activityLogInsertService);
+            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
 
 
 
@@ -273,11 +273,11 @@ class MsaService implements MsaInterface
                         'is_active' => 1
                     ]));
 
-                    $added_by = $user_id;
-                    $action = "Renew";
-                    $activityLogInsertService = new ActivityLogInsertService();
-                    $insertController = new ActivityLogInsertController($activityLogInsertService);
-                    $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+                    // $added_by = $user_id;
+                    // $action = "Renew";
+                    // $activityLogInsertService = new ActivityLogInsertService();
+                    // $insertController = new ActivityLogInsertController($activityLogInsertService);
+                    // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
                     return response()->json(['message' => 'MSA renewed successfully', 'msa' => $msa], 201);
                 }
             } else{
