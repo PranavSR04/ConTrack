@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/notAuth', [UserCheckController::class, 'notauth'])->name('notauth');
 
 Route::group([
-    'middleware' => 'api',
+    // 'middleware' => 'api',
     'prefix' => 'auth'
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'login']);
