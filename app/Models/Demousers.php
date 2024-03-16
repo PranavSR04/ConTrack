@@ -5,9 +5,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Model;
 
-class Demousers extends Authenticatable implements JWTSubject
-{
+
+class Demousers extends Model{
     use HasFactory, Notifiable;
     /**
      * The attributes that are mass assignable.
