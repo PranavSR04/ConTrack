@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Http\Controllers\ActivityLogInsertController;
-use App\Http\Controllers\GoogleDriveController;
 use App\ServiceInterfaces\ContractInterface;
 use App\Models\Addendums;
 use App\Models\AssociatedUsers;
@@ -559,7 +558,6 @@ class ContractService implements ContractInterface
             $googleDrive = new GoogleDriveService();
 
 
-
             $fileLink = $googleDrive->store($request);
             if ($fileLink) {
                 $contract = Contracts::create([
@@ -595,10 +593,10 @@ class ContractService implements ContractInterface
             }
             $contractId = $contract->id;
 
-            // $action = "Added";
-            // $activityLogInsertService = new ActivityLogInsertService();
-            // $insertController = new ActivityLogInsertController($activityLogInsertService);
-            // $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
+            $action = "Added";
+            $activityLogInsertService = new ActivityLogInsertService();
+            $insertController = new ActivityLogInsertController($activityLogInsertService);
+            $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
 
             if (!empty($request->assoc_users)) {
                 if (!is_array($request->assoc_users)) {
@@ -672,5 +670,25 @@ class ContractService implements ContractInterface
             }
  
         }
+    }
+
+    public function getAllContractsRevenue()
+    {
+        $contracts = Contracts::all();
+        $contractDetails = [];
+
+        foreach ($contracts as $contract) {
+            $startDate = Carbon::parse($contract->start_date);
+            $endDate = Carbon::parse($contract->end_date);
+            $duration = $endDate->diffInMonths($startDate);
+
+            $contractDetails[] = [
+                'contract_id' => $contract->id,
+                'duration_months' => $duration,
+                'estimated_amount' => $contract->estimated_amount,
+            ];
+        }
+
+        return response()->json($contractDetails);
     }
 }

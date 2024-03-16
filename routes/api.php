@@ -11,7 +11,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\FixedFeeController;
 use App\Http\Controllers\TandMController;
-use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExperionEmployeeController;
@@ -67,6 +66,9 @@ Route::middleware('auth')->group(function () {
     // Route::post('/contracts/edit/{id}', [ContractController::class, 'updateContractData']);
     Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
     Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
+    Route::get('/contracts/revenue', [ContractController::class, 'getAllContractsRevenue']);
+
+
 
     // Revenue routes
     Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
@@ -103,12 +105,12 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
 
 });
 
-     Route::get('/msa/list', [MSAController::class, 'MSAList']);
-     Route::get('/view-blade/{filename}', function ($filename) {
-        return view($filename);
-    });
+Route::get('/msa/list', [MSAController::class, 'MSAList']);
+Route::get('/view-blade/{filename}', function ($filename) {
+   return view($filename);
+});
 
-     // MICROSOFT LOGIN
+// MICROSOFT LOGIN
 Route::get('/',[MicrosoftAuthController::class,'signInForm'])->name('sign.in');
 Route::post('/loginAzure', [MicrosoftAuthController::class,'loginAzure']);
 Route::get('/microsoft-oAuth',[MicrosoftAuthController::class,'microsoftOAuth'])->name('microsoft.oAuth');
