@@ -261,6 +261,8 @@ class ContractController extends Controller
         return $this->contractService->getContractData($request, $id);
     }
 
+
+
     /**
      * Function to update a contract.
      *
@@ -281,5 +283,10 @@ class ContractController extends Controller
     public function getDuCount(Request $request)
     {
         return $this->contractService->getDuCount($request);
+    }    public function getAllContractsRevenue()
+    {
+        return $this->contractService->getAllContractsRevenue();
     }
+
+
 }

@@ -11,4 +11,6 @@ interface ContractInterface
     public function addContract(Request $request);
 
     public function getDuCount(Request $request);
+    
+    public function getAllContractsRevenue();
 }
