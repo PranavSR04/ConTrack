@@ -61,7 +61,10 @@ class ContractController extends Controller
         return $this->contractService->addContract($request);
     }
 
-    public function getAllContractsRevenue()
+    public function getDuCount(Request $request)
+    {
+        return $this->contractService->getDuCount($request);
+    }    public function getAllContractsRevenue()
     {
         return $this->contractService->getAllContractsRevenue();
     }

@@ -73,12 +73,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/contract/count', [ContractController::class, 'getContractCount']);
 
     // Revenue routes
-    Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
+   
 
     // Notifications routes
    
 
-    Route::get('/notification/list', [NotificationController::class, 'getUserNotification']); 
+
     Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
 
 
@@ -106,8 +106,12 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
     // Routes accessible only to admins or superadmins
 
 });
-
-
+Route::get('/msa/list', [MSAController::class, 'MSAList']);
+Route::get('/notification/list', [NotificationController::class, 'getUserNotification']); 
+Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
+Route::get('/contract/ducount', [ContractController::class, 'getDuCount']);
+Route::get('/contracts/revenue', [ContractController::class, 'getAllContractsRevenue']);
+Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
 Route::get('/msa/list', [MSAController::class, 'MSAList']);
 Route::get('/view-blade/{filename}', function ($filename) {
    return view($filename);
