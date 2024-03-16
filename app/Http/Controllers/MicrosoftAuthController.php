@@ -34,8 +34,8 @@ class MicrosoftAuthController extends Controller
 
         }
         $credentials = [
-            'email_id' => $email_id,
-            'u_id' => $u_id,
+            'email_id' => $email_id
+            // 'u_id' => $u_id,
         ];
         $jwt_token = auth()->attempt($credentials);
         return $this->handleRoleCheck($jwt_token);
