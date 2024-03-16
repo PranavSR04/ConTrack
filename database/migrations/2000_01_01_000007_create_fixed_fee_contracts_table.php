@@ -1,15 +1,26 @@
 <?php
 
-namespace App\Http\Controllers;
-
-use App\Models\Contracts;
 use App\Models\FixedFeeContracts;
-use Illuminate\Http\Request;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class FixedFeeController extends Controller
+return new class extends Migration
 {
-    public function insertFixedFeeData()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
+        Schema::create('ff_contracts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('contract_id')->constrained('contracts');
+            $table->text('milestone_desc');
+            $table->date('milestone_enddate');
+            $table->decimal('percentage');
+            $table->double('amount');
+            $table->timestamps();
+        });
         $dummydata_ff = [
             [
                 'contract_id' => 1,
@@ -150,6 +161,13 @@ class FixedFeeController extends Controller
             $ffData = new FixedFeeContracts($ffData);
             $ffData->save();
     }
-    return response()->json(['Data inserted']);
     }
-}
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('ff_contracts');
+    }
+};

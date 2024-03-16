@@ -67,9 +67,10 @@ class NotificationService implements NotificationInterface
                     'log_id' => $notification->log_id,
                     'contract_id' => optional($contract)->contract_ref_id,
                     'msa_id' => optional($msa)->msa_ref_id,
+                    'client_name'=>$msa->client_name,
                     'performed_by' => $actionLog->performed_by,
                     'action' => $actionLog->action,
-                    'updated_at'=>$actionLog->updated_at,
+                    'updated_at'=>$actionLog->created_at,
                 ];
                 $finalNotifications["NotificationListdisplay"][] = $notificationDetails;
             }

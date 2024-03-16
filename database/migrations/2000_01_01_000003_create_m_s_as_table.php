@@ -1,23 +1,32 @@
 <?php
 
-namespace App\Http\Controllers;
-
-use App\Models\ActivityLogs;
 use App\Models\MSAs;
-use App\Models\UserNotifications;
-use App\ServiceInterfaces\MsaInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class MsaController extends Controller
-{
-    protected $MsaService;
-    public function insertValues()
+return new class extends Migration {
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
+        Schema::create('msas', function (Blueprint $table) {
+            $table->id();
+            $table->string('msa_ref_id', 25);
+            $table->foreignId('added_by')->constrained('users');
+            $table->string('client_name', 100);
+            $table->string('region', 100);
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->string('comments')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->longText('msa_doclink');
+
+            $table->timestamps();
+        });
+
+
         $data = [
             [
                 'msa_ref_id' => 'MSA001',
@@ -159,50 +168,13 @@ class MsaController extends Controller
             $msa = new MSAs($msaData);
             $msa->save();
         }
-
-        return 'Values inserted';
     }
 
     /**
-     * Retrieve a list of MSAs based on specified filters or sorting criteria.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * Reverse the migrations.
      */
-
-    public function __construct(MsaInterface $MsaService)
+    public function down(): void
     {
-        $this->MsaService=$MsaService;
+        Schema::dropIfExists('msas');
     }
-    /**
-     * Add a new MSA (Master Service Agreement).
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-     public function MSAList(Request $request){
-        return $this->MsaService->MSAList($request);
-
-     }
-    public function addMsa(Request $request,$user_id=null)
-    {
-        return $this->MsaService->addMsa($request,$user_id);
-
-    }
-
-    /**
-     * Update an existing MSA.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function editMsa(Request $request,$user_id=null)
-    {
-        return $this->MsaService->editMsa($request,$user_id);
-    }
-    public function renewMsa(Request $request,$user_id=null){
-        return $this->MsaService->renewMsa($request,$user_id);
-    }
-
-}
+};

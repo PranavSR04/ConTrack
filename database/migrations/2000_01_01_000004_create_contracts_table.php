@@ -1,32 +1,40 @@
 <?php
 
-namespace App\Http\Controllers;
-
-use App\Models\Addendums;
-use App\Models\AssociatedUsers;
 use App\Models\Contracts;
-use App\Models\FixedFeeContracts;
-use App\Models\TimeAndMaterialContracts;
-use App\ServiceInterfaces\ContractInterface;
-use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class ContractController extends Controller
-{
-    private $contractService;
-    public function __construct(ContractInterface $contractService)
+return new class extends Migration {
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
-        $this->contractService = $contractService;
-    }
-    public function insertContractsData()
-    {
+        Schema::create('contracts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('msa_id');
+            $table->foreignId('contract_added_by')->constrained('users');
+            $table->string('contract_ref_id', 25);
+            $table->string('contract_type', 25);
+            $table->date('date_of_signature');
+            $table->string('comments')->nullable();
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->string('du');
+            $table->longText('contract_doclink');
+            $table->double('estimated_amount');
+            $table->string('contract_status')->default("Active");
+            $table->timestamps();
+            $table->foreign('msa_id')->references('id')->on('msas');
+        });
+
         $contractsDataArray = [
             [
                 'contract_ref_id' => 'AGF7',
                 'msa_id' => 1,
                 'contract_added_by' => 2,
-                'contract_type' => "Fixed Fee",
+                'contract_type' => "FF",
                 'date_of_signature' => now()->addMonths(2),
                 'comments' => " view document to see further milestone data",
                 'start_date' => now()->addMonths(4),
@@ -42,7 +50,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'A166',
                 'msa_id' => 2,
                 'contract_added_by' => 2,
-                'contract_type' => "Fixed Fee",
+                'contract_type' => "FF",
                 'date_of_signature' => now()->subMonths(10),
                 'comments' => "Fixed fee with tight schedule",
                 'start_date' => now()->subMonths(9),
@@ -59,7 +67,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'ABC1',
                 'msa_id' => 1,
                 'contract_added_by' => 4,
-                'contract_type' => "Fixed Fee",
+                'contract_type' => "FF",
                 'date_of_signature' => now()->addMonths(12),
                 'comments' => "High priority, complete on time",
                 'start_date' => now()->addMonths(13),
@@ -76,7 +84,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'AN21',
                 'msa_id' => 5,
                 'contract_added_by' => 2,
-                'contract_type' => "Fixed Fee",
+                'contract_type' => "FF",
                 'date_of_signature' => now()->addMonths(7),
                 'comments' => "view document to see further milestone data",
                 'start_date' => now()->addMonths(8),
@@ -172,7 +180,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'ABB3',
                 'msa_id' => 10,
                 'contract_added_by' => 4,
-                'contract_type' => "Fixed Fee",
+                'contract_type' => "FF",
                 'date_of_signature' => now()->addMonths(1),
                 'comments' => "High priority, complete on time",
                 'start_date' => now()->addMonths(4),
@@ -188,7 +196,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'ABB4',
                 'msa_id' => 11,
                 'contract_added_by' => 2,
-                'contract_type' => "Fixed Fee",
+                'contract_type' => "FF",
                 'date_of_signature' => now()->subMonths(13),
                 'comments' => "view document to see further milestone data",
                 'start_date' => now()->subMonths(12),
@@ -204,7 +212,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'ABB5',
                 'msa_id' => 5,
                 'contract_added_by' => 2,
-                'contract_type' => "Fixed Fee",
+                'contract_type' => "FF",
                 'date_of_signature' => now()->addMonths(4),
                 'comments' => "High priority, complete on time",
                 'start_date' => now()->addMonths(5),
@@ -220,7 +228,7 @@ class ContractController extends Controller
                 'contract_ref_id' => 'ABB6',
                 'msa_id' => 9,
                 'contract_added_by' => 4,
-                'contract_type' => "Fixed Fee",
+                'contract_type' => "FF",
                 'date_of_signature' => now()->subMonths(25),
                 'comments' => "view document to see further milestone data",
                 'start_date' => now()->subMonths(24),
@@ -238,45 +246,14 @@ class ContractController extends Controller
         foreach ($contractsDataArray as $contractData) {
             $contractsData = new Contracts($contractData);
             $contractsData->save();
-        }
-        
-        return response()->json(['Data inserted']);
-    }
-    
-    /**
-     * Retrieve contract data based on the provided parameters.
-     *
-     * If an ID is provided, it fetches individual contract details along with associated milestones, addendums,
-     * and associated users. If no ID is provided, it retrieves a list of contracts based on the request parameters.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int|null $id (optional) The ID of the contract to retrieve individual details.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     *
-     * @throws \Exception if an error occurs during data retrieval.
-     */
-    public function getContractData(Request $request, $id = null)
-    {
-        return $this->contractService->getContractData($request, $id);
+        }    
     }
 
     /**
-     * Function to update a contract.
-     *
-     * @param \Illuminate\Http\Request $request The incoming request containing updated contract data.
-     * @param int $contractId The ID of the contract to be updated.
-     * @return \Illuminate\Http\JsonResponse|string JSON response indicating the status of the update or an error message.
+     * Reverse the migrations.
      */
-    public function updateContractData(Request $request, $contractId)
+    public function down(): void
     {
-        return $this->contractService->updateContractData($request, $contractId);
+        Schema::dropIfExists('contracts');
     }
-
-    public function addContract(Request $request)
-    {
-        return $this->contractService->addContract($request);
-    }
-
-
-}
+};
