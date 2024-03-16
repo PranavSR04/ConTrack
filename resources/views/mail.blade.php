@@ -36,12 +36,10 @@
         <h1>Hello!</h1>
         <p>This is to inform you about some recent activities:</p>
         
-        @if ($contract_id!=null)
-            <p>Contract ID: {{ $contract_id }} has been processed</p>
-        @endif
-        
-        @if ($msa_id!=null)
-            <p>MSA ID: {{ $msa_id }} has been processed.</p>
+        @if ($contract_id)
+        <p>Contract ID: {{ $contract_id }} has been processed</p>
+        @elseif ($msa_id)
+        <p>MSA ID: {{ $msa_id }} has been processed.</p>
         @endif
         @if ($action)
             <p>{{ ucfirst($action) }} action has been taken by</p>
@@ -52,12 +50,11 @@
 
         <!-- Signature -->
         <div class="signature">
-            <p><strong>GOKUL SURENDRAN</strong></p>
-            <p>TRAINEE</p>
+            <p><strong>CONTRACK</strong></p>
             <p>EXPERION TECHNOLOGIES</p>
             <div class="contact-info">
                 <p>P: <a href="tel:+917510552095">+91 7510552095</a></p>
-                <p>E: <a href="mailto:gokul.surendran@experionglobal.com">gokul.surendran@experionglobal.com</a></p>
+                <p>E: <a href="mailto:contrack@experionglobal.com">contrack@experionglobal.com</a></p>
                 <p>W: <a href="https://experionglobal.com">experionglobal.com</a></p>
             </div>
         </div>
