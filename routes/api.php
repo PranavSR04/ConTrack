@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
     Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
     Route::get('/contracts/revenue', [ContractController::class, 'getAllContractsRevenue']);
+    Route::get('/contracts/topRevenueRegions', [ContractController::class, 'topRevenueRegions']);
 
 
 
@@ -104,6 +105,7 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
     // Routes accessible only to admins or superadmins
 
 });
+
 
 Route::get('/msa/list', [MSAController::class, 'MSAList']);
 Route::get('/view-blade/{filename}', function ($filename) {
