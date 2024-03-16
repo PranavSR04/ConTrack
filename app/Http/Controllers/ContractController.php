@@ -285,5 +285,10 @@ class ContractController extends Controller
         return $this->contractService->getAllContractsRevenue();
     }
 
+    public function topRevenueRegions()
+    {
+        return $this->contractService->topRevenueRegions();
+    }
+
 
 }
