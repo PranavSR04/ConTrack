@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/notAuth', [UserCheckController::class, 'notauth'])->name('notauth');
 
 Route::group([
-    'middleware' => 'api',
+    // 'middleware' => 'api',
     'prefix' => 'auth'
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'login']);
@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
     Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
     Route::get('/contracts/revenue', [ContractController::class, 'getAllContractsRevenue']);
+    Route::get('/contracts/topRevenueRegions', [ContractController::class, 'topRevenueRegions']);
 
     Route::get('/contract/topRegions', [ContractController::class, 'getTopContractRegions']);
     Route::get('/contract/count', [ContractController::class, 'getContractCount']);
@@ -105,6 +106,7 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
     // Routes accessible only to admins or superadmins
 
 });
+
 
 Route::get('/msa/list', [MSAController::class, 'MSAList']);
 Route::get('/view-blade/{filename}', function ($filename) {

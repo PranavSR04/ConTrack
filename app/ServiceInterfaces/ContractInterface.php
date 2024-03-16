@@ -12,5 +12,6 @@ interface ContractInterface
     public function getContractCount(Request $request);
     
     public function getAllContractsRevenue();
+    public function topRevenueRegions();
     public function getTopContractRegions();
 }

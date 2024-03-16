@@ -693,6 +693,18 @@ class ContractService implements ContractInterface
 
         return response()->json($contractDetails);
     }
+
+    public function topRevenueRegions()
+    {
+        $regions = Contracts::selectRaw('msas.region, SUM(contracts.estimated_amount) as total_amount')
+        ->join('msas', 'contracts.msa_id', '=', 'msas.id')
+        ->groupBy('msas.region')
+        ->orderByDesc('total_amount')
+        ->limit(5)
+        ->get();
+
+return response()->json($regions);
+    }
     public function getContractCount(Request $request){
         try{
             $querydata = DB::table('contracts')

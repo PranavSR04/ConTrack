@@ -39,9 +39,9 @@ class UserController extends Controller
         return $this->userService->updateUser($request,$user_id);
     }
 
-    public function myContracts($user_id)
+    public function myContracts(Request $request, $user_id)
     {
-        return $this->userService->myContracts($user_id);
+        return $this->userService->myContracts($request,$user_id);
     }
 
     public function create()

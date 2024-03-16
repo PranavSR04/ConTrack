@@ -69,5 +69,10 @@ class ContractController extends Controller
         return $this->contractService->getTopContractRegions();
     }
 
+    public function topRevenueRegions()
+    {
+        return $this->contractService->topRevenueRegions();
+    }
+
 
 }
