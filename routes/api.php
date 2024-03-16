@@ -68,7 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
     Route::get('/contracts/revenue', [ContractController::class, 'getAllContractsRevenue']);
 
-
+    Route::get('/contract/topRegions', [ContractController::class, 'getTopContractRegions']);
     Route::get('/contract/count', [ContractController::class, 'getContractCount']);
 
     // Revenue routes

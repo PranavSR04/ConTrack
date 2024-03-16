@@ -13,8 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 use Carbon\Carbon;
-
-
+use Illuminate\Support\Facades\DB;
 
 class ContractService implements ContractInterface
 {
@@ -696,19 +695,35 @@ class ContractService implements ContractInterface
     }
     public function getContractCount(Request $request){
         try{
-            if($request->status){
-                $querydata= Contracts::where('contract_status','=',$request->status)
-                ->count();
-                return response()->json(["count" => $querydata]);
-            }
-            // return default of Active status
-            $querydata= Contracts::where('contract_status','=','Active')
-                ->count();
-            return response()->json(["count" => $querydata]);
+            $querydata = DB::table('contracts')
+            ->select(
+                DB::raw('COUNT(*) as total'),
+                DB::raw('SUM(contract_status = "Active") as active'),
+                DB::raw('SUM(contract_status = "On Progress") as progress'),
+                DB::raw('SUM(contract_status = "Expiring") as expiring'),
+                DB::raw('SUM(contract_status = "Closed") as closed'),
+                DB::raw('SUM(contract_status = "Expired") as Expired')
+            )
+            ->first();
+            return response()->json(["data" => $querydata]);
         }
         catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
+
+    }
+    public function getTopContractRegions(){
+        try{
+            $querydata=Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
+            ->select('region', DB::raw('COUNT(*) AS contractCount'))
+            ->groupBy('region')
+            ->orderByDesc('contractCount')
+            ->limit(5)->get();
+            return response()->json(["data" => $querydata]);
+        }
+      catch (Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+       }    
 
     }
 }
