@@ -15,7 +15,6 @@ return new class extends Migration
         Schema::create('experion_employees', function (Blueprint $table) {
             $table->id();
             $table->string('email_id',100);
-            $table->string('password',100);
             $table->string('first_name',50);
             $table->string('middle_name',50)->nullable();
             $table->string('last_name',50)->nullable();
@@ -24,64 +23,55 @@ return new class extends Migration
 
         $dataArray = [
             [
-                "email_id" => "gokul.surendran@experionglobal.com",
-                "password" => bcrypt("password1"),
+                "email_id" => "gokul.surendran@sreegcloudgmail.onmicrosoft.com",
                 "first_name" => "Gokul",
                 "middle_name" => "",
                 "last_name" => "Surendran",
             ],
             [
-                "email_id" => "athul.nair@experionglobal.com",
-                "password" => bcrypt("password2"),
+                "email_id" => "athul.nair@sreegcloudgmail.onmicrosoft.com",
                 "first_name" => "Athul",
                 "middle_name" => "",
                 "last_name" => "Nair",
             ],
             [
-                "email_id" => "dantus.tom@experionglobal.com",
-                "password" => bcrypt("password3"),
+                "email_id" => "dantus.tom@sreegcloudgmail.onmicrosoft.com",
                 "first_name" => "Dantus",
                 "middle_name" => "George",
                 "last_name" => "Tom",
             ],
             [
-                "email_id" => "aneeka.geo@experionglobal.com",
-                "password" => bcrypt("password4"),
+                "email_id" => "aneeka.geo@sreegcloudgmail.onmicrosoft.com",
                 "first_name" => "Aneeka",
                 "middle_name" => "",
                 "last_name" => "Geo",
             ],
             [
-                "email_id" => "treesa.james@experionglobal.com",
-                "password" => bcrypt("password5"),
+                "email_id" => "treesa.james@sreegcloudgmail.onmicrosoft.com",
                 "first_name" => "Treesa",
                 "middle_name" => "",
                 "last_name" => "James",
             ],
             [
-                "email_id" => "pranav.sr@experionglobal.com",
-                "password" => bcrypt("password6"),
+                "email_id" => "pranav.sr@sreegcloudgmail.onmicrosoft.com",
                 "first_name" => "Pranav",
                 "middle_name" => "S",
                 "last_name" => "R",
             ],
             [
-                "email_id" => "boby.benny@experionglobal.com",
-                "password" => bcrypt("password7"),
+                "email_id" => "boby.benny@sreegcloudgmail.onmicrosoft.com",
                 "first_name" => "Boby",
                 "middle_name" => "",
                 "last_name" => "Benny",
             ],
             [
                 "email_id" => "gokulsurendran29@gmail.com",
-                "password" => bcrypt("password8"),
                 "first_name" => "Gokul",
-                "middle_name" => "S",
-                "last_name" => "K",
+                "middle_name" => "K",
+                "last_name" => "Radakrishnan",
             ],
             [
                 "email_id" => "dantusgeorgetom@gmail.com",
-                "password" => bcrypt("password9"),
                 "first_name" => "George",
                 "middle_name" => "",
                 "last_name" => "Tom",

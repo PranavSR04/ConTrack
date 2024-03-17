@@ -30,10 +30,9 @@ class UserService implements UserInterface
                 throw new Exception('There can be only one Super Admin');
             }
 
-
             // Check if the user already exists in the users table
             $existingUser = User::where('experion_id', $request->experion_id)->first();
-
+            
             if ($existingUser) {
                 // If the user was soft-deleted, restore the user
                 if ($existingUser->is_active === 0) {
@@ -109,7 +108,7 @@ class UserService implements UserInterface
                 'success' => true,
                 'message' => 'Data retrieved successfully',
                 'data' => $users
-            ]);
+            ],200);
 
         } catch (QueryException $e) {
             // Handle database query exceptions
@@ -176,13 +175,18 @@ class UserService implements UserInterface
                 return response()->json(['error' => $validator->errors()], 400);
             }
 
-            // Continue with query if validation passes
-            $myContracts = User::where('user_id', $user_id)
-                ->leftJoin('associated_users', 'users.id', '=', 'associated_users.user_id')
-                ->leftJoin('contracts', 'associated_users.contract_id', '=', 'contracts.id')
-                ->leftJoin('msas', 'msas.id', '=', 'contracts.msa_id')
-                ->select('contracts.id', 'contracts.contract_ref_id', 'msas.client_name', 'contracts.start_date', 'contracts.end_date', 'contracts.contract_type', 'contracts.contract_status')
-                ->get();
+            $myContracts = User::where('users.id', $user_id)
+            ->leftJoin('associated_users', 'users.id', '=', 'associated_users.user_id')
+            ->leftJoin('contracts', function ($join) {
+                $join->on('associated_users.contract_id', '=', 'contracts.id')
+                    ->orOn('contracts.contract_added_by', '=', 'users.id');
+            })
+            ->leftJoin('msas', 'msas.id', '=', 'contracts.msa_id')
+            ->select('contracts.id', 'contracts.contract_ref_id', 'msas.client_name', 'contracts.start_date', 'contracts.end_date', 'contracts.contract_type', 'contracts.contract_status','contracts.du')
+            ->where('users.id', $user_id)
+            ->orderBy('contracts.updated_at', 'desc') // Sort by updated_at column in descending order
+            ->distinct()
+            ->get();
 
             return response()->json(["data" => $myContracts]);
         } catch (QueryException $e) {
