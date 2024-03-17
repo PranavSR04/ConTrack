@@ -224,7 +224,7 @@ class MsaService implements MsaInterface
             $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
                 ->select('users.user_name as added_by_user')
                 ->first();
-            $action = "Updated ";
+            $action = "Edited";
             $msa->update($validated);
             $activityLogInsertService = new ActivityLogInsertService();
             $insertController = new ActivityLogInsertController($activityLogInsertService);
@@ -293,7 +293,7 @@ class MsaService implements MsaInterface
                     ]));
                 }
                 $added_by = $user_id;
-                $action = "Renew";
+                $action = "Renewed";
                 $activityLogInsertService = new ActivityLogInsertService();
                 $insertController = new ActivityLogInsertController($activityLogInsertService);
                 $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
