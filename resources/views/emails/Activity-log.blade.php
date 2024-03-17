@@ -34,7 +34,7 @@
 <body>
     <div class="container">
         <h1>Hello!</h1>
-        <p>This is to inform you about some recent activities:</p>
+        <p>This:</p>
         
         @if ($contract_id!=null)
             <p>Contract ID: {{ $contract_ref_id }} has been processed</p>

@@ -2,7 +2,6 @@
 namespace App\Services;
 
 use App\Http\Controllers\ActivityLogInsertController;
-use App\Http\Controllers\GoogleDriveController;
 use App\Models\ActivityLogs;
 use App\Models\MSAs;
 use App\ServiceInterfaces\MsaInterface;
@@ -49,7 +48,7 @@ class MsaService implements MsaInterface
                         $msas_query->where($key, 'like','%'. $value . '%');
                         break;
                     case 'added_by_user':
-                        $added_by_user
+                        $msas_query
                             ->where($key, 'like', '%' . $value . '%'); // Fetch the first matching record
                         break;
                     case 'sort_by':

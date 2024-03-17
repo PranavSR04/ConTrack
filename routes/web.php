@@ -26,5 +26,5 @@ Route::resource('/files',GoogleDriveController::class);
 
 // MICROSOFT LOGIN
 // Route::get('/',[MicrosoftAuthController::class,'signInForm'])->name('sigin.in');
-Route::get('microsoft-oAuth',[MicrosoftAuthController::class,'microsoftOAuth'])->name('microsoft.oAuth');
+Route::get('microsoft-oAuth',[MicrosoftAuthController::class,'loginAzure'])->name('microsoft.oAuth');
 Route::get('callback',[MicrosoftAuthController::class,'microsoftOAuthCallback'])->name('microsoft.oAuth.callback');
