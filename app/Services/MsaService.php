@@ -313,4 +313,16 @@ class MsaService implements MsaInterface
             return response()->json(['error' => 'Failed to create MSA', 'message' => $e->getMessage()], 500);
         }
     }
+    public function msaCount(Request $request){
+            try {
+                $activeMSACount = MSAs::where('is_active', true)->count();
+        
+                return response()->json(['active_msa_count' => $activeMSACount]);
+            } catch (QueryException $e) {
+                return response()->json(['error' => 'Query error'], 500);
+            } catch (Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+        
+    }
 }
