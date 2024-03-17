@@ -106,7 +106,7 @@ class UserService implements UserInterface
                 'success' => true,
                 'message' => 'Data retrieved successfully',
                 'data' => $users
-            ]);
+            ],200);
 
         } catch (QueryException $e) {
             // Handle database query exceptions
