@@ -8,4 +8,5 @@ public function editMsa(Request $request,$user_id);
 public function renewMsa(Request $request,$user_id);
 
 public function MSAList(Request $request);
+public function msaCount(Request $request);
 }
