@@ -2,7 +2,6 @@
 namespace App\Services;
 
 use App\Http\Controllers\ActivityLogInsertController;
-use App\Http\Controllers\GoogleDriveController;
 use App\Models\ActivityLogs;
 use App\Models\MSAs;
 use App\ServiceInterfaces\MsaInterface;
@@ -42,6 +41,8 @@ class MsaService implements MsaInterface
                         break;
                    
                     case 'client_name':
+                        $msas_query->where($key, 'like', $value . '%');
+                        break;
                     case 'region':
                     case 'start_date':
                     case 'end_date':
@@ -69,10 +70,11 @@ class MsaService implements MsaInterface
                 $msas=$msa;
             } 
             else {
-                // Otherwise, paginate the results
+
                 $msas =  $msas_query
+                ->orderByDesc('is_active')
             ->orderByDesc('updated_at')
-            //  ->orderByDesc('is_active')
+        
              ->paginate(10);
             }
 
@@ -134,12 +136,12 @@ class MsaService implements MsaInterface
                 ->first();
             $start_date = $request->start_date;
             $end_date = $request->end_date;
-            // if ($end_date <= $start_date) {
-            //     $response = [
-            //         'error' => 'End date must be greater than ' . $start_date
-            //     ];
-            //     return response()->json($response, 400);
-            // } else {
+            if ($end_date <= $start_date) {
+                $response = [
+                    'error' => 'End date must be greater than ' . $start_date
+                ];
+                return response()->json($response, 400);
+            } else {
 
                 $googleDrive = new GoogleDriveService();
                 $fileLink = $googleDrive->store($request);
@@ -165,7 +167,7 @@ class MsaService implements MsaInterface
 
 
             return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 200);
-            // }
+            }
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Validation failed', 'message' => $e->validator->errors()], 422);
         } catch (QueryException $e) {
@@ -310,5 +312,17 @@ class MsaService implements MsaInterface
         } catch (Exception $e) {
             return response()->json(['error' => 'Failed to create MSA', 'message' => $e->getMessage()], 500);
         }
+    }
+    public function msaCount(Request $request){
+            try {
+                $activeMSACount = MSAs::where('is_active', true)->count();
+        
+                return response()->json(['active_msa_count' => $activeMSACount]);
+            } catch (QueryException $e) {
+                return response()->json(['error' => 'Query error'], 500);
+            } catch (Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+        
     }
 }
