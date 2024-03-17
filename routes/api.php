@@ -65,7 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/contracts/add', [ContractController::class, 'addContract']);
     // Route::post('/contracts/edit/{id}', [ContractController::class, 'updateContractData']);
     Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
-    Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
+    
     Route::get('/contracts/revenue', [ContractController::class, 'getAllContractsRevenue']);
     Route::get('/contracts/topRevenueRegions', [ContractController::class, 'topRevenueRegions']);
 
@@ -79,7 +79,7 @@ Route::middleware('auth')->group(function () {
    
 
 
-    Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
+  
 
 
     // Fixed fee route
@@ -106,6 +106,8 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
     // Routes accessible only to admins or superadmins
 
 });
+Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
+Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
 Route::get('/msa/list', [MSAController::class, 'MSAList']);
 Route::get('/notification/list', [NotificationController::class, 'getUserNotification']); 
 Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
@@ -122,3 +124,4 @@ Route::get('/',[MicrosoftAuthController::class,'signInForm'])->name('sign.in');
 Route::post('/loginAzure', [MicrosoftAuthController::class,'loginAzure']);
 Route::get('/microsoft-oAuth',[MicrosoftAuthController::class,'microsoftOAuth'])->name('microsoft.oAuth');
 Route::get('callback',[MicrosoftAuthController::class,'microsoftOAuthCallback'])->name('microsoft.oAuth.callback');
+Route::get('/msa/count', [MSAController::class, 'msaCount']);

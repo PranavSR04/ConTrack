@@ -204,5 +204,8 @@ class MsaController extends Controller
     public function renewMsa(Request $request,$user_id=null){
         return $this->MsaService->renewMsa($request,$user_id);
     }
+    public function msaCount(Request $request){
+        return $this->MsaService->msaCount($request);
 
+     }
 }
