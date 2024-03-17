@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Contracts;
 use Carbon\Carbon;
@@ -15,45 +16,39 @@ class RevenueProjectionService implements RevenueProjectionInterface
     public function revenueProjection(Request $request, $contract_id = null)
     {
         $contracts = new Collection();
+        $conFiltred = new Collection();
         $projectionType = $request->type;
         $revenueProjections = [];
         $totalAmount = 0;
         $duFilters = $request->du;
         $ctypeFilters = $request->ctype;
-        // return response()->json([$request->all()]);
-        // var_dump($ctypeFilters);
 
 
 
-        if ($contract_id === null) {
 
-            if ($duFilters || $ctypeFilters) {
-                // $contracts = Contracts::where('du', $duFilter)->get();
-                if ($duFilters) {
-                    foreach ($duFilters as $duFilter) {
-                        // Retrieve contracts for the current DU value
-                        $filteredContracts = Contracts::where('du', $duFilter)->get();
+        if ($contract_id == null) {
 
-                        // Merge the results into the main contracts collection
-                        $contracts = $contracts->merge($filteredContracts);
-                    }
-
-                    if ($contracts->isEmpty()) {
-                        return response()->json(['error' => 'No contracts found for the specified DU'], 404);
-                    }
-                }
-                if($ctypeFilters){
+            if ($duFilters && $ctypeFilters) {
+                foreach ($duFilters as $duFilter) {
                     foreach ($ctypeFilters as $ctypeFilter) {
-                        $filteredContracts = Contracts::where('contract_type',$ctypeFilter)->get();
+                        $filteredContracts = Contracts::where('du', $duFilter)
+                            ->where('contract_type', $ctypeFilter)
+                            ->get();
+            
                         $contracts = $contracts->merge($filteredContracts);
-
-                    }
-                    if ($contracts->isEmpty()) {
-                        return response()->json(['error' => 'No contracts found for the specified Type'], 404);
                     }
                 }
-
-            } else {
+            } elseif ($duFilters) {
+                foreach ($duFilters as $duFilter) {
+                    $filteredContracts = Contracts::where('du', $duFilter)->get();
+                    $contracts = $contracts->merge($filteredContracts);
+                }
+            } elseif ($ctypeFilters) {
+                foreach ($ctypeFilters as $ctypeFilter) {
+                    $filteredContracts = Contracts::where('contract_type', $ctypeFilter)->get();
+                    $contracts = $contracts->merge($filteredContracts);
+                }
+            }else {
                 $contracts = Contracts::all();
                 if ($contracts->isEmpty()) {
                     return response()->json(['error' => 'No contracts found'], 404);
@@ -61,6 +56,15 @@ class RevenueProjectionService implements RevenueProjectionInterface
                 // return response()->json([$contracts]);
 
             }
+            
+            if ($contracts->isEmpty()) {
+                return response()->json(['error' => 'No contracts found for the specified DU or Type'], 404);
+            }
+            
+            // return response()->json($contracts);
+            
+
+            
 
             foreach ($contracts as $contract) {
                 if ($contract->contract_type === 'FF') {
@@ -199,6 +203,5 @@ class RevenueProjectionService implements RevenueProjectionInterface
             ], 200);
         }
     }
-
 
 }
