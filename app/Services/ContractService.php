@@ -752,7 +752,7 @@ class ContractService implements ContractInterface
         ->join('msas', 'contracts.msa_id', '=', 'msas.id')
         ->groupBy('msas.region')
         ->orderByDesc('total_amount')
-        ->limit(5)
+        ->limit(3)
         ->get();
 
 return response()->json($regions);
