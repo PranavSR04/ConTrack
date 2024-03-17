@@ -94,6 +94,7 @@ class UserService implements UserInterface
                         ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
                         ->select('users.id','users.user_name', 'roles.role_access', \DB::raw('COUNT(associated_users.contract_id) as contracts_count'))
                         ->where('users.is_active', 1)
+                        ->where('users.role_id', '!=', 1) 
                         ->when($searchTerm, function ($query) use ($searchTerm) {
                             return $query->where('users.user_name', 'like', "%$searchTerm%");
                         })
@@ -101,9 +102,6 @@ class UserService implements UserInterface
                         ->groupBy('users.user_name', 'roles.role_access', 'users.id')
                         ->paginate(10);
            
-
-
-
             return response()->json([
                 'success' => true,
                 'message' => 'Data retrieved successfully',
