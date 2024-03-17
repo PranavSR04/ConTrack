@@ -30,10 +30,9 @@ class UserService implements UserInterface
                 throw new Exception('There can be only one Super Admin');
             }
 
-
             // Check if the user already exists in the users table
             $existingUser = User::where('experion_id', $request->experion_id)->first();
-
+            
             if ($existingUser) {
                 // If the user was soft-deleted, restore the user
                 if ($existingUser->is_active === 0) {
@@ -100,7 +99,7 @@ class UserService implements UserInterface
                         })
                         ->orderBy($sortColumn, $sortOrder)
                         ->groupBy('users.user_name', 'roles.role_access', 'users.id')
-                        ->paginate(3);
+                        ->paginate(10);
            
 
 
@@ -162,7 +161,7 @@ class UserService implements UserInterface
         }
     }
 
-    public function myContracts($user_id)
+    public function myContracts(Request $request, $user_id)
     {
 
         try {
@@ -176,16 +175,59 @@ class UserService implements UserInterface
                 return response()->json(['error' => $validator->errors()], 400);
             }
 
-            // Continue with query if validation passes
-            $myContracts = User::where('user_id', $user_id)
-                ->leftJoin('associated_users', 'users.id', '=', 'associated_users.user_id')
-                ->leftJoin('contracts', 'associated_users.contract_id', '=', 'contracts.id')
-                ->leftJoin('msas', 'msas.id', '=', 'contracts.msa_id')
-                ->select('contracts.id', 'contracts.contract_ref_id', 'msas.client_name', 'contracts.start_date', 'contracts.end_date', 'contracts.contract_type', 'contracts.contract_status')
-                ->get();
+            $requestData = $request->all();
 
-            return response()->json(["data" => $myContracts]);
-        } catch (QueryException $e) {
+            $myContracts = User::where('users.id', $user_id)
+            ->leftJoin('associated_users', 'users.id', '=', 'associated_users.user_id')
+            ->leftJoin('contracts', function ($join) use ($requestData) {
+                if (isset($requestData['added_by_me'])) {
+                    $join->on('contracts.contract_added_by', '=', 'users.id');
+                } 
+                else if
+                    (isset($requestData['associated_by_me'])) {
+                    $join->on('associated_users.contract_id', '=', 'contracts.id');
+                }
+                else {
+                    $join->on('contracts.contract_added_by', '=', 'users.id')
+                         ->oron('associated_users.contract_id', '=', 'contracts.id');
+                }
+            })
+            ->leftJoin('msas', 'msas.id', '=', 'contracts.msa_id')
+            ->select('contracts.id', 'contracts.contract_ref_id', 'msas.client_name', 'contracts.start_date', 'contracts.end_date', 'contracts.contract_type', 'contracts.contract_status', 'contracts.du')
+            ->where('users.id', $user_id)
+            ->orderBy('contracts.updated_at', 'desc'); // Sort by updated_at column in descending order
+            // ->distinct();
+            // ->get();
+
+            $myContracts->distinct('contracts.id');
+
+            if (empty($requestData)) {
+                return $myContracts->paginate(10);
+            } else {
+                foreach ($requestData as $key => $value) {
+ 
+                    if (in_array($key, ['contract_ref_id', 'client_name', 'du', 'contract_type', 'msa_ref_id', 'contract_status'])) {
+                        $myContracts->where($key, 'LIKE', '%' . $value . '%');
+                    }
+                    if ($key == 'sort_by') {
+                        $myContracts->orderBy($value, $request->sort_value);
+                    }
+                    if (in_array($key, ['start_date', 'end_date'])) {
+                        $myContracts->where('contracts.' . $key, 'LIKE', '%' . $value . '%');
+                    }
+                }
+                if ($myContracts->count() == 0) {
+                    return response()->json(['error' => 'Data not found'], 404);
+                }
+ 
+                return $myContracts->paginate(10);
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
+            // return response()->json(["data" => $myContracts]);
+         catch (QueryException $e) {
             // Handle database query exceptions
             return response()->json(['error' => 'Database error: ' . $e->getMessage()], 500);
         } catch (Exception $e) {
