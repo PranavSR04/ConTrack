@@ -41,6 +41,8 @@ class MsaService implements MsaInterface
                         break;
                    
                     case 'client_name':
+                        $msas_query->where($key, 'like',$value . '%');
+                        break;
                     case 'region':
                     case 'start_date':
                     case 'end_date':
