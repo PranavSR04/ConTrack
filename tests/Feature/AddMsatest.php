@@ -41,14 +41,12 @@ class AddMsatest extends TestCase
                 'file' => $file,
                 'user_id'=>$user_id
 
-    ]
-    {
-        $response = $this->JSON('POST','/api/msa/add',$payload);
+    ];
+    $this->JSON('POST','/api/msa/add',$payload)
 
-        $response->assertStatus(200)->assertJson([
+        ->assertStatus(200)->assertJson([
             "code"=>"401",
             "message"=>"Msa is added"
         ]);
     }
-}
 } 

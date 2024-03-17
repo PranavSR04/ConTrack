@@ -73,7 +73,7 @@ class MsaService implements MsaInterface
                 $msas =  $msas_query
             ->orderByDesc('updated_at')
             //  ->orderByDesc('is_active')
-             ->paginate(10);
+             ->paginate(8);
             }
 
             return response()->json($msas);
@@ -141,7 +141,7 @@ class MsaService implements MsaInterface
                     'added_by' => $added_by,//session()->get(user_id)
                     'client_name' => $request->client_name,
                     'region' => $request->region,
-                    'start_date' => $request->start_date,
+                    'start_date' =>$request->start_date,
                     'end_date' => $request->end_date,
                     'msa_doclink'=>$fileLink,
                     'comments' => $request->comments,
@@ -149,9 +149,9 @@ class MsaService implements MsaInterface
 
             $msa->added_by_user = $added_by_user->added_by_user;
             $action = "Added ";
-            $activityLogInsertService = new ActivityLogInsertService();
-            $insertController = new ActivityLogInsertController($activityLogInsertService);
-            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            // $activityLogInsertService = new ActivityLogInsertService();
+            // $insertController = new ActivityLogInsertController($activityLogInsertService);
+            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
 
 
 
@@ -179,7 +179,7 @@ class MsaService implements MsaInterface
                 'start_date' => 'date',
                 'end_date' => 'date',
                 'comments' => 'string',
-
+                'file' => 'file',
             ]);
 
             // Check if validation fails
@@ -188,14 +188,18 @@ class MsaService implements MsaInterface
                 // Return validation errors if validation fails
                 return $validator->errors();
             }
-
+            
             // Get the validated data
             $validated = $validator->validated();
             $msa_ref_id = $request->msa_ref_id;
             $msa = MSAs::where('msa_ref_id', $msa_ref_id)
                 ->where('is_active', 1)
                 ->first();
-
+                if(isset($validated['file'])){
+                    $googleDrive = new GoogleDriveService();
+                    $fileLink = $googleDrive->store($request);
+                    $msa->update(['msa_doclink' => $fileLink]);
+                    }
             // Check if both start_date and end_date are provided
             if (isset($validated['start_date']) && isset($validated['end_date'])) {
                 if ($validated['start_date'] >= $validated['end_date']) {
@@ -219,10 +223,10 @@ class MsaService implements MsaInterface
                 ->first();
             $action = "Updated ";
             $msa->update($validated);
-            $activityLogInsertService = new ActivityLogInsertService();
-            $insertController = new ActivityLogInsertController($activityLogInsertService);
-            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
-            // Return success response
+            // $activityLogInsertService = new ActivityLogInsertService();
+            // $insertController = new ActivityLogInsertController($activityLogInsertService);
+            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            // // Return success response
             return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Validation failed', 'message' => $e->validator->errors()], 422);
