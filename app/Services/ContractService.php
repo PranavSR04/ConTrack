@@ -704,15 +704,11 @@ class ContractService implements ContractInterface
                     \DB::raw('SUM(CASE WHEN contract_type = "TM" THEN 1 ELSE 0 END) as TM'),
                     \DB::raw('SUM(CASE WHEN contract_type = "FF" THEN 1 ELSE 0 END) as FF')
                 )
-                ->where('contract_status', '=', 'Active')
+                // ->where('contract_status', '=', 'Active')
                 ->groupBy('du')
                 ->orderBy('du')
                 ->get();
-    
-            // Additional query to get the total count of all active contracts
-            $totalContractsCount = Contracts::where('contract_status', '=', 'Active')->count();
-    
-            // Return both the DU counts and the total contract count
+            $totalContractsCount = Contracts::count();
             return response()->json([
                 'duCounts' => $duCounts,
                 'totalContractsCount' => $totalContractsCount
