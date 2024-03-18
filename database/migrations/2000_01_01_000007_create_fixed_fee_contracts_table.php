@@ -151,9 +151,23 @@ return new class extends Migration
             [
                 'contract_id' => 13,
                 'milestone_desc' => 'On completion of testing',
-                'milestone_enddate' => now()->addMonths(5),
+                'milestone_enddate' => now(),
                 'percentage' => 50,
                 'amount' => 1000000.00,
+            ],
+            [
+                'contract_id' => 14,
+                'milestone_desc' => 'On Project Planning and demo',
+                'milestone_enddate' => now()->subMonths(4),
+                'percentage' => 50,
+                'amount' => 1300000.00,
+            ],
+            [
+                'contract_id' => 14,
+                'milestone_desc' => 'On completion of UI and UAT',
+                'milestone_enddate' => now()->subMonths(9),
+                'percentage' => 50,
+                'amount' => 1300000.00,
             ]
 
         ];
