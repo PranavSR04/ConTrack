@@ -97,7 +97,6 @@ Route::middleware('auth')->group(function () {
 
 
 
-
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
     // Routes accessible only to super admins
 
