@@ -78,7 +78,7 @@ class MsaService implements MsaInterface
              ->paginate(10);
             }
 
-            return response()->json($msas);
+            return response()->json($msas,200);
         } catch (QueryException $e) {
             return response()->json(['error' => 'Querry error'], 500);
         } catch (ValidationException $e) {
@@ -166,8 +166,8 @@ class MsaService implements MsaInterface
 
 
 
-            return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 201);
-             }
+            return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 200);
+            }
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Validation failed', 'message' => $e->validator->errors()], 422);
         } catch (QueryException $e) {

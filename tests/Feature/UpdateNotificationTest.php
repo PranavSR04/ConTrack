@@ -25,3 +25,4 @@ class UpdateNotificationTest extends TestCase
     }
 }
 
+
