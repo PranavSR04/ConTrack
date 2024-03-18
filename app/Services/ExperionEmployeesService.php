@@ -40,8 +40,8 @@ class ExperionEmployeesService implements ExperionEmployeesInterface
                 // 404 Not Found: No records found
                 return response()->json(['error' => 'No records found.'], 404);
             }
-            
-            return response()->json($users);
+
+            return response()->json($users, 200);
         } catch (ValidationException $e) {
             // 422 Unprocessable Entity: Validation error
             return response()->json(['error' => $e->validator->errors()], 422);
