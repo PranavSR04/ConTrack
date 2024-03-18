@@ -740,7 +740,7 @@ class ContractService implements ContractInterface
             ];
         }
 
-        return response()->json($contractDetails);
+        return response()->json($contractDetails,200);
     }
 
     public function topRevenueRegions()
@@ -763,7 +763,7 @@ class ContractService implements ContractInterface
             }
         }
     }
-    public function getContractCount(Request $request)
+    public function getContractCount()
     {
         try {
             $querydata = DB::table('contracts')
@@ -776,7 +776,7 @@ class ContractService implements ContractInterface
                     DB::raw('SUM(contract_status = "Expired") as Expired')
                 )
                 ->first();
-            return response()->json(["data" => $querydata]);
+            return response()->json(["data" => $querydata],200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
