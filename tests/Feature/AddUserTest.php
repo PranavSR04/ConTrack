@@ -17,7 +17,7 @@ class AddUserTest extends TestCase
         $this->withoutMiddleware();
 
         // Create a mock experion employee
-        $experionEmployeeId = 14; 
+        $experionEmployeeId = 10; 
         $experionEmployeeData = [
             'id' => $experionEmployeeId,
             'first_name' => 'Sarah',
