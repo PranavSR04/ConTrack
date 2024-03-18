@@ -707,11 +707,7 @@ class ContractService implements ContractInterface
                 ->groupBy('du')
                 ->orderBy('du')
                 ->get();
-    
-            // Additional query to get the total count of all active contracts
-            $totalContractsCount = Contracts::where('contract_status', '=', 'Active')->count();
-    
-            // Return both the DU counts and the total contract count
+            $totalContractsCount = Contracts::count();
             return response()->json([
                 'duCounts' => $duCounts,
                 'totalContractsCount' => $totalContractsCount
@@ -721,28 +717,6 @@ class ContractService implements ContractInterface
         }
     }
     
-    
-//  public function getDuCount(Request $request)
-//     {
-//         try{          
-//             $duCounts = Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
-//     ->join('users', 'contracts.contract_added_by', '=', 'users.id')
-//     ->select(
-//         'du',
-//         \DB::raw('SUM(CASE WHEN contract_type = "TM" THEN 1 ELSE 0 END) as TM'),
-//         \DB::raw('SUM(CASE WHEN contract_type = "FF" THEN 1 ELSE 0 END) as FF')
-//     )
-//     ->where('contract_status', '=', 'Active')
-//     ->groupBy('du')
-//     ->orderBy('du')
-//     ->get();
-//     return response()->json([$duCounts]);
-//         }catch(Exception $e)
-//         {
-//             return response()->json(["message"=> $e->getMessage()],500);
-//         }   
-       
-//     }
 
     public function getAllContractsRevenue()
     {

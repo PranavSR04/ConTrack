@@ -315,7 +315,7 @@ class MsaService implements MsaInterface
     }
     public function msaCount(Request $request){
             try {
-                $activeMSACount = MSAs::where('is_active', true)->count();
+                $activeMSACount = MSAs::count();
         
                 return response()->json(['active_msa_count' => $activeMSACount]);
             } catch (QueryException $e) {
