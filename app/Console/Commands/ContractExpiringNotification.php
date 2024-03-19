@@ -1,10 +1,8 @@
 <?php
 
 namespace App\Console\Commands;
-
 use App\Models\ActivityLogs;
 use App\Models\Contracts;
-use App\Models\UserNotifications;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -18,18 +16,22 @@ class ContractExpiringNotification extends Command
     {
         try {
         // Get contracts ending in 2 weeks
-        $contracts = Contracts::where('end_date', '=', today()->addDays(14)) 
+        $contracts =  Contracts::whereBetween('end_date', [today() , today()->addDays(14)])
+        ->where('contract_status', '!=', 'Closed')
+        ->where('contract_status', '!=', 'Expiring')
             ->get();
         if (!$contracts->isEmpty()) {
         foreach ($contracts as $contract) {
             ActivityLogs::create([
                 'contract_id' => $contract->id,
-                'action' => 'Expiring ',
+                'action' => 'Expiring',
                 'msa_id' => $contract->msa_id,
             ]);
         }
     }
-        $contracts = Contracts::where('end_date', '=', today()->subDays(1)) //if ended yesterday
+        $contracts = Contracts::whereDate('end_date', '<', today())
+        ->where('contract_status', '!=', 'Closed')
+        ->where('contract_status', '!=', 'Expired')
             ->get();
         if (!$contracts->isEmpty()) {
         foreach ($contracts as $contract) {

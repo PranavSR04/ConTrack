@@ -30,7 +30,9 @@ class ContractStatusUpdate extends Command
     {
         try {
     // Update status to "On Progress" for contracts starting today
-    Contracts::where('start_date', today())
+    Contracts::where('start_date','<=', today())
+    ->where('contract_status', '!=', 'On Progress')
+    ->where('contract_status', '!=', 'Expiring')
     ->where('contract_status', '!=', 'Closed') // Only update if status isn't closed
     ->update(['contract_status' => 'On Progress']);
 
@@ -39,6 +41,12 @@ class ContractStatusUpdate extends Command
         ->where('contract_status', '!=', 'Closed')
         ->where('contract_status', '!=', 'Expired')
         ->update(['contract_status' => 'Expired']);
+
+        //Update status to "Expiring" for contracts where end date is in 2 weeks
+        Contracts::whereBetween('end_date', [today() , today()->addDays(14)])
+        ->where('contract_status', '!=', 'Closed')
+        ->where('contract_status', '!=', 'Expiring')
+        ->update(['contract_status' => 'Expiring']);
 
         $this->info('Contract status updated succesfully.');
         Log::info('Contract status updated succesfully.');
