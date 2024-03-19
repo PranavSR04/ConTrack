@@ -40,7 +40,7 @@ public function getRole()
 {
     try {
         $role_data = Roles::all();
-        return response()->json($role_data);
+        return response()->json($role_data,200);
     } catch (\Exception $e) {
         return response()->json(["error" => "Error occurred: " . $e->getMessage()], 500);
     }

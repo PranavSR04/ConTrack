@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class ContractService implements ContractInterface
 {
@@ -38,7 +39,8 @@ class ContractService implements ContractInterface
                             ->select('*');
                     } elseif ($contractType == 'FF') {
                         $milestones = FixedFeeContracts::where('ff_contracts.contract_id', '=', $id)
-                            ->select('*');
+                            ->select('id','contract_id','milestone_desc', 'milestone_enddate',
+                            'percentage','amount');;
                     }
                     $data = $milestones->get();
                     //joining with contract data
@@ -70,7 +72,7 @@ class ContractService implements ContractInterface
                     return response()->json(["data" => $combinedData]);
                 }
             } catch (Exception $e) {
-                return response()->json(['error' => $e->getMessage()]);
+                return response()->json(['error' => $e->getMessage()],404);
             }
         }
         try {
@@ -86,13 +88,10 @@ class ContractService implements ContractInterface
                     'contracts.contract_type',
                     'contracts.date_of_signature',
                     'contracts.contract_ref_id',
-                    'contracts.comments',
                     'contracts.start_date',
                     'contracts.end_date',
-                    'du',
-                    'estimated_amount',
-                    'contract_doclink',
-                    'contract_status'
+                    'contracts.du',
+                    'contracts.contract_status'
                 )
                 ->orderBy('contracts.updated_at', 'desc');
             if (empty ($requestData)) {
@@ -670,46 +669,24 @@ class ContractService implements ContractInterface
                     \DB::raw('SUM(CASE WHEN contract_type = "TM" THEN 1 ELSE 0 END) as TM'),
                     \DB::raw('SUM(CASE WHEN contract_type = "FF" THEN 1 ELSE 0 END) as FF')
                 )
-                ->where('contract_status', '=', 'Active')
+                // ->where('contract_status', '=', 'Active')
                 ->groupBy('du')
                 ->orderBy('du')
                 ->get();
-
-            // Additional query to get the total count of all active contracts
-            $totalContractsCount = Contracts::where('contract_status', '=', 'Active')->count();
-
-            // Return both the DU counts and the total contract count
+            $totalContractsCount = Contracts::count();
             return response()->json([
                 'duCounts' => $duCounts,
                 'totalContractsCount' => $totalContractsCount
             ]);
         } catch (Exception $e) {
-            return response()->json(["message" => $e->getMessage()], 500);
+            if (strpos($e->getMessage(), 'Unknown column') !== false) {
+                return response()->json(['error' => 'Database error: Column not found'], 500);
+            } else {
+                // If it's not the specific error, return a generic database error message
+                return response()->json(['error' => 'Database error'], 500);
+            }
         }
     }
-
-
-    //  public function getDuCount(Request $request)
-//     {
-//         try{          
-//             $duCounts = Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
-//     ->join('users', 'contracts.contract_added_by', '=', 'users.id')
-//     ->select(
-//         'du',
-//         \DB::raw('SUM(CASE WHEN contract_type = "TM" THEN 1 ELSE 0 END) as TM'),
-//         \DB::raw('SUM(CASE WHEN contract_type = "FF" THEN 1 ELSE 0 END) as FF')
-//     )
-//     ->where('contract_status', '=', 'Active')
-//     ->groupBy('du')
-//     ->orderBy('du')
-//     ->get();
-//     return response()->json([$duCounts]);
-//         }catch(Exception $e)
-//         {
-//             return response()->json(["message"=> $e->getMessage()],500);
-//         }   
-
-    //     }
 
     public function getAllContractsRevenue()
     {
@@ -728,50 +705,57 @@ class ContractService implements ContractInterface
             ];
         }
 
-        return response()->json($contractDetails);
+        return response()->json($contractDetails,200);
     }
 
     public function topRevenueRegions()
     {
-        $regions = Contracts::selectRaw('msas.region, SUM(contracts.estimated_amount) as total_amount')
-            ->join('msas', 'contracts.msa_id', '=', 'msas.id')
-            ->groupBy('msas.region')
-            ->orderByDesc('total_amount')
-            ->limit(3)
-            ->get();
-
-        return response()->json($regions);
+        try {
+            $regions = Contracts::selectRaw('msas.region, SUM(contracts.estimated_amount) as total_amount')
+                ->join('msas', 'contracts.msa_id', '=', 'msas.id')
+                ->groupBy('msas.region')
+                ->orderByDesc('total_amount')
+                ->limit(3)
+                ->get();
+    
+            return response()->json($regions);
+        } catch (QueryException $e) {
+            if (strpos($e->getMessage(), 'Unknown column') !== false) {
+                return response()->json(['error' => 'Database error: Column not found'], 500);
+            } else {
+                // If it's not the specific error, return a generic database error message
+                return response()->json(['error' => 'Database error'], 500);
+            }
+        }
     }
-    public function getContractCount(Request $request)
+    public function getContractCount()
     {
         try {
-            $querydata = DB::table('contracts')
-                ->select(
-                    DB::raw('COUNT(*) as total'),
-                    DB::raw('SUM(contract_status = "Active") as active'),
-                    DB::raw('SUM(contract_status = "On Progress") as progress'),
-                    DB::raw('SUM(contract_status = "Expiring") as expiring'),
-                    DB::raw('SUM(contract_status = "Closed") as closed'),
-                    DB::raw('SUM(contract_status = "Expired") as Expired')
-                )
-                ->first();
+            $querydata = Contracts::selectRaw('
+            COUNT(*) as total,
+            SUM(contract_status = "Active") as active,
+            SUM(contract_status = "On Progress") as progress,
+            SUM(contract_status = "Expiring") as expiring,
+            SUM(contract_status = "Closed") as closed,
+            SUM(contract_status = "Expired") as Expired ')
+    ->first();
             return response()->json(["data" => $querydata]);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
 
     }
-    public function getTopContractRegions()
+    public function getTopContractRegions() 
     {
-        try {
+        try { 
             $querydata = Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
-                ->select('region', DB::raw('COUNT(*) AS contractCount'))
+                ->select('region', DB::raw('COUNT(*) AS contractCount')) 
                 ->groupBy('region')
                 ->orderByDesc('contractCount')
                 ->limit(5)->get();
             return response()->json(["data" => $querydata]);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+        } catch (Exception $e) { 
+            return response()->json(['error' => $e->getMessage()], 500); 
         }
 
     }

@@ -45,7 +45,7 @@ Route::group([
 Route::middleware('auth')->group(function () {
     // Roles routes
     Route::post('/role/insertrole', [RoleController::class, 'insertRole']);
-    Route::get('/role/details', [RoleController::class, 'getRole']);
+    // Route::get('/role/details', [RoleController::class, 'getRole']);
 
     // Users routes
     Route::post('/user/insert', [UserController::class, 'create']);
@@ -97,7 +97,6 @@ Route::middleware('auth')->group(function () {
 
 
 
-
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
     // Routes accessible only to super admins
 
@@ -108,20 +107,21 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
 });
 Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
 Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
-Route::get('/msa/list', [MSAController::class, 'MSAList']);
+// Route::get('/msa/list', [MSAController::class, 'MSAList']);
 Route::get('/notification/list', [NotificationController::class, 'getUserNotification']);
-Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
+// Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
 Route::get('/contract/ducount', [ContractController::class, 'getDuCount']);
 Route::get('/contracts/revenue', [ContractController::class, 'getAllContractsRevenue']);
 Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
-Route::get('/msa/list', [MSAController::class, 'MSAList']);
+Route::get('/msa/count', [MSAController::class, 'msaCount']);
+// Route::get('/msa/list', [MSAController::class, 'MSAList']);
 Route::get('/view-blade/{filename}', function ($filename) {
     return view($filename);
 });
 
 // MICROSOFT LOGIN
-Route::get('/',[MicrosoftAuthController::class,'signInForm'])->name('sign.in');
+
 Route::post('/loginAzure', [MicrosoftAuthController::class,'loginAzure']);
-Route::get('/microsoft-oAuth',[MicrosoftAuthController::class,'microsoftOAuth'])->name('microsoft.oAuth');
-Route::get('callback',[MicrosoftAuthController::class,'microsoftOAuthCallback'])->name('microsoft.oAuth.callback');
 Route::get('/msa/count', [MSAController::class, 'msaCount']);
+
+Route::get('/role/details', [RoleController::class, 'getRole']);
