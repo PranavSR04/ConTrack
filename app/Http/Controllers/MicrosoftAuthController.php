@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\ExperionEmployees;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use myPHPnotes\Microsoft\Auth;
 use myPHPnotes\Microsoft\Models\User;
 use App\Models\User as ContrackUser;

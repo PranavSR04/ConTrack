@@ -45,7 +45,7 @@ Route::group([
 Route::middleware('auth')->group(function () {
     // Roles routes
     Route::post('/role/insertrole', [RoleController::class, 'insertRole']);
-    Route::get('/role/details', [RoleController::class, 'getRole']);
+    // Route::get('/role/details', [RoleController::class, 'getRole']);
 
     // Users routes
     Route::post('/user/insert', [UserController::class, 'create']);
@@ -124,3 +124,5 @@ Route::post('/loginAzure', [MicrosoftAuthController::class,'loginAzure']);
 Route::get('/microsoft-oAuth',[MicrosoftAuthController::class,'microsoftOAuth'])->name('microsoft.oAuth');
 Route::get('callback',[MicrosoftAuthController::class,'microsoftOAuthCallback'])->name('microsoft.oAuth.callback');
 Route::get('/msa/count', [MSAController::class, 'msaCount']);
+
+Route::get('/role/details', [RoleController::class, 'getRole']);

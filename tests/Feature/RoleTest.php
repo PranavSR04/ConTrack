@@ -14,8 +14,19 @@ class RoleTest extends TestCase
     public function test_list_roles()
     {
         $this->withoutMiddleware();
-        $response =$this->getJson('api/role/details');
+        $response =$this->getJson('/api/role/details');
+        dump($response);
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+                ->assertJsonStructure([
+                    [
+                            "id",
+                            "role_name",
+                            "role_access",
+                            "is_active",
+                            "created_at",
+                            "updated_at"
+        ]
+    ]);
     }
 }

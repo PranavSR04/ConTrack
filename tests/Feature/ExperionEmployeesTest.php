@@ -14,11 +14,6 @@ class ExperionEmployeesTest extends TestCase
      */
     public function test_show_endpoint_returns_users_matching_name()
     {
-        // Using Factory
-        // $user = factory(ExperionEmployees::class)->create([
-        //     'first_name' => 'John',
-        //     'last_name' => 'Doe',
-        // ]);
         $this->withoutMiddleware();
 
         // Creating a test user

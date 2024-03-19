@@ -62,9 +62,9 @@ class ContractController extends Controller
 
 
 
-    public function getContractCount(Request $request)
+    public function getContractCount()
     {
-        return $this->contractService->getContractCount($request);
+        return $this->contractService->getContractCount();
 
     }
 

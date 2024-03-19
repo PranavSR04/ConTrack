@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class ContractService implements ContractInterface
 {
@@ -713,10 +714,14 @@ class ContractService implements ContractInterface
                 'totalContractsCount' => $totalContractsCount
             ]);
         } catch (Exception $e) {
-            return response()->json(["message" => $e->getMessage()], 500);
+            if (strpos($e->getMessage(), 'Unknown column') !== false) {
+                return response()->json(['error' => 'Database error: Column not found'], 500);
+            } else {
+                // If it's not the specific error, return a generic database error message
+                return response()->json(['error' => 'Database error'], 500);
+            }
         }
     }
-    
 
     public function getAllContractsRevenue()
     {
@@ -735,21 +740,30 @@ class ContractService implements ContractInterface
             ];
         }
 
-        return response()->json($contractDetails);
+        return response()->json($contractDetails,200);
     }
 
     public function topRevenueRegions()
     {
-        $regions = Contracts::selectRaw('msas.region, SUM(contracts.estimated_amount) as total_amount')
-        ->join('msas', 'contracts.msa_id', '=', 'msas.id')
-        ->groupBy('msas.region')
-        ->orderByDesc('total_amount')
-        ->limit(3)
-        ->get();
-
-        return response()->json($regions);
+        try {
+            $regions = Contracts::selectRaw('msas.region, SUM(contracts.estimated_amount) as total_amount')
+                ->join('msas', 'contracts.msa_id', '=', 'msas.id')
+                ->groupBy('msas.region')
+                ->orderByDesc('total_amount')
+                ->limit(3)
+                ->get();
+    
+            return response()->json($regions);
+        } catch (QueryException $e) {
+            if (strpos($e->getMessage(), 'Unknown column') !== false) {
+                return response()->json(['error' => 'Database error: Column not found'], 500);
+            } else {
+                // If it's not the specific error, return a generic database error message
+                return response()->json(['error' => 'Database error'], 500);
+            }
+        }
     }
-    public function getContractCount(Request $request)
+    public function getContractCount()
     {
         try {
             $querydata = DB::table('contracts')
@@ -762,7 +776,7 @@ class ContractService implements ContractInterface
                     DB::raw('SUM(contract_status = "Expired") as Expired')
                 )
                 ->first();
-            return response()->json(["data" => $querydata]);
+            return response()->json(["data" => $querydata],200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
