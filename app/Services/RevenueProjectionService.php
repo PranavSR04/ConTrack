@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Services;
-
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Contracts;
 use Carbon\Carbon;
@@ -15,14 +13,26 @@ class RevenueProjectionService implements RevenueProjectionInterface
     //Function to Retrive the Revenue Projection of Contracts
     public function revenueProjection(Request $request, $contract_id = null)
     {
+        // return response()->json($request->all());
         $contracts = new Collection();
-        $conFiltred = new Collection();
         $projectionType = $request->type;
         $revenueProjections = [];
         $totalAmount = 0;
         $duFilters = $request->du;
         $ctypeFilters = $request->ctype;
 
+        if (strlen($request->startdate) === 4 && strlen($request->enddate) === 4) {
+            $filterStartDate = (int) $request->startdate;
+            $filterEndDate = (int) $request->enddate;
+        } else if (strpos($request->startdate, 'Q')) {
+            $filterStartDate = $request->startdate;
+            $filterEndDate = $request->enddate;
+
+        } else {
+            $filterStartDate = $request->filled('startdate') ? Carbon::parse($request->startdate)->format('Y-m') : null;
+            $filterEndDate = $request->filled('enddate') ? Carbon::parse($request->enddate)->format('Y-m') : null;
+        }
+        // return response()->json([$filterStartDate, $filterEndDate]);
 
 
 
@@ -34,7 +44,7 @@ class RevenueProjectionService implements RevenueProjectionInterface
                         $filteredContracts = Contracts::where('du', $duFilter)
                             ->where('contract_type', $ctypeFilter)
                             ->get();
-            
+
                         $contracts = $contracts->merge($filteredContracts);
                     }
                 }
@@ -48,7 +58,7 @@ class RevenueProjectionService implements RevenueProjectionInterface
                     $filteredContracts = Contracts::where('contract_type', $ctypeFilter)->get();
                     $contracts = $contracts->merge($filteredContracts);
                 }
-            }else {
+            } else {
                 $contracts = Contracts::all();
                 if ($contracts->isEmpty()) {
                     return response()->json(['error' => 'No contracts found'], 404);
@@ -56,15 +66,15 @@ class RevenueProjectionService implements RevenueProjectionInterface
                 // return response()->json([$contracts]);
 
             }
-            
+
             if ($contracts->isEmpty()) {
                 return response()->json(['error' => 'No contracts found for the specified DU or Type'], 404);
             }
-            
-            // return response()->json($contracts);
-            
 
-            
+            // return response()->json($contracts);
+
+
+
 
             foreach ($contracts as $contract) {
                 if ($contract->contract_type === 'FF') {
@@ -88,7 +98,7 @@ class RevenueProjectionService implements RevenueProjectionInterface
                 }
             }
 
-            return $this->getResponse($projectionType, $revenueProjections, $totalAmount);
+            return $this->getResponse($projectionType, $revenueProjections, $totalAmount, $filterEndDate, $filterStartDate);
         } else {
             // Code for fetching revenue projections for a specific contract
             try {
@@ -129,7 +139,7 @@ class RevenueProjectionService implements RevenueProjectionInterface
         foreach ($Milestones as $milestone) {
             $formattedDate = Carbon::parse($milestone->milestone_enddate)->format('Y'); //formating date to year only format
             $totalAmount += $milestone->amount;
-            if (!isset($revenueProjections[$formattedDate])) {
+            if (!isset ($revenueProjections[$formattedDate])) {
                 $revenueProjections[$formattedDate] = 0;
             }
             $revenueProjections[$formattedDate] += $milestone->amount;
@@ -145,7 +155,8 @@ class RevenueProjectionService implements RevenueProjectionInterface
             $quarter = ceil($formattedDate->month / 3);
             $key = $formattedDate->year . '-Q' . $quarter; //Creating an index for Quraters
             // Initialize the revenue projection for the quarter if it doesn't exist
-            if (!isset($revenueProjections[$key])) {
+
+            if (!isset ($revenueProjections[$key])) {
                 $revenueProjections[$key] = 0;
             }
             $revenueProjections[$key] += $milestone->amount;
@@ -162,7 +173,7 @@ class RevenueProjectionService implements RevenueProjectionInterface
             // $formattedDate = Carbon::parse($milestone->milestone_enddate)->format('F, Y');
             $formattedDate = Carbon::parse($milestone->milestone_enddate)->format('Y-m');
             $totalAmount += $milestone->amount;
-            if (!isset($revenueProjections[$formattedDate])) {
+            if (!isset ($revenueProjections[$formattedDate])) {
                 $revenueProjections[$formattedDate] = 0;
             }
             $revenueProjections[$formattedDate] += $milestone->amount;
@@ -170,30 +181,105 @@ class RevenueProjectionService implements RevenueProjectionInterface
         return [$revenueProjections, $totalAmount];
     }
 
-    public function getResponse($projectionType, $revenueProjections, $totalAmount)
+    public function getResponse($projectionType, $revenueProjections, $totalAmount, $filterEndDate = null, $filterStartDate = null)
     {
         ksort($revenueProjections);
         if ($projectionType === 'yearly') {
+            $revenueProjectionsFormatted = [];
 
-            return response()->json([
-                'message' => "Yearly Revenue Projection ",
-                'data' => $revenueProjections,
-                'Total Revenue' => $totalAmount
-            ], 200);
-        } elseif ($projectionType === 'quarterly') {
-            return response()->json([
-                'message' => "Quarterly Revenue Projection ",
-                'data' => $revenueProjections,
-                'Total Revenue' => $totalAmount,
+            if ($filterStartDate && $filterEndDate) {
+                // return response()->json([$filterEndDate, $filterStartDate]);
 
-            ], 200);
-        } else {
-            //Formating keys to desired formate
-            foreach (array_keys($revenueProjections) as $key) {
-                $formattedDate = Carbon::parse($key)->format('F, Y');
-                $revenueProjectionsFormatted[$formattedDate] = $revenueProjections[$key];
+                foreach (array_keys($revenueProjections) as $key) {
+                    // $date = Carbon::parse($key);
+                    $date = (int) $key;
+                    if ($date >= $filterStartDate && $date <= $filterEndDate) {
+                        // $formattedDate = Carbon::parse($key)->format('F, Y');
+                        $revenueProjectionsFormatted[$key] = $revenueProjections[$key];
+                    }
+                }
+                return response()->json([
+                    'message' => "Yearly Revenue Projection ",
+                    'data' => $revenueProjectionsFormatted,
+                    'Total Revenue' => $totalAmount
+                ], 200);
+
+            } else {
+                return response()->json([
+                    'message' => "Yearly Revenue Projection ",
+                    'data' => $revenueProjections,
+                    'Total Revenue' => $totalAmount
+                ], 200);
             }
 
+            
+        } elseif ($projectionType === 'quarterly') {
+
+            if ($filterStartDate && $filterEndDate) {
+                // Extract year and quarter from the start date
+                $startParts = explode('-', $filterStartDate);
+                $startYear = $startParts[0];
+                $startQuarter = substr($startParts[1], 1); // Remove 'Q' from quarter
+
+                // Extract year and quarter from the end date
+                $endParts = explode('-', $filterEndDate);
+                $endYear = $endParts[0];
+                $endQuarter = substr($endParts[1], 1); // Remove 'Q' from quarter
+                foreach ($revenueProjections as $key => $value) {
+                    // Extract year and quarter from the key
+                    $parts = explode('-', $key);
+                    $year = $parts[0];
+                    $quarter = substr($parts[1], 1); // Remove 'Q' from quarter
+
+                    // Check if the year is within the range of start and end years
+                    if ($year >= $startYear && $year <= $endYear) {
+                        // Check if the quarter is within the range of start and end quarters
+                        if (
+                            ($year === $startYear && $quarter >= $startQuarter) ||
+                            ($year === $endYear && $quarter <= $endQuarter) ||
+                            ($year > $startYear && $year < $endYear)
+                        ) {
+                            // Key falls within the selected quarter range, include it in the response
+                            $filteredProjections[$key] = $revenueProjections[$key];
+                        }
+                    }
+                }
+
+                return response()->json([
+                    'message' => "Quarterly Revenue Projection within the specified quarter range",
+                    'data' => $filteredProjections,
+                    'Total Revenue' => $totalAmount,
+                ], 200);
+
+            } else {
+                return response()->json([
+                    'message' => "Quarterly Revenue Projection ",
+                    'data' => $revenueProjections,
+                    'Total Revenue' => $totalAmount,
+
+                ], 200);
+            }
+        } else {
+            //Formating keys to desired formate
+            // return response()->json($revenueProjections);
+            $revenueProjectionsFormatted = [];
+            // return response()->json([$filterEndDate, $filterStartDate]);
+            if ($filterStartDate && $filterEndDate) {
+                foreach (array_keys($revenueProjections) as $key) {
+                    $date = Carbon::parse($key);
+
+                    if ($date->gte($filterStartDate) && $date->lte($filterEndDate)) {
+                        $formattedDate = Carbon::parse($key)->format('F, Y');
+                        $revenueProjectionsFormatted[$formattedDate] = $revenueProjections[$key];
+                    }
+                }
+
+            } else {
+                foreach (array_keys($revenueProjections) as $key) {
+                    $formattedDate = Carbon::parse($key)->format('F, Y');
+                    $revenueProjectionsFormatted[$formattedDate] = $revenueProjections[$key];
+                }
+            }
 
             return response()->json([
                 'message' => "Monthly Revenue Projection ",

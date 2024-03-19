@@ -6,24 +6,24 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class UpdateNotificationTest extends TestCase
+class ContractRevenueTest extends TestCase
 {
     /**
      * A basic feature test example.
      */
     public function test_example(): void
-    {
+    {        
         $this->withoutMiddleware();
-        $response = $this->putJson('/api/notification/statusupdate?user_id=5', [
-            'status' => 0,
-        ]);
+
+        $response = $this->get('/api/contracts/revenue');
+
         $response->assertStatus(200);
-        $this->assertDatabaseHas('user_notifications', [
-            'sendto_id' => 5,
-           'status'=>0
+        $response->assertJsonStructure([
+            [
+                'contract_id',
+                'duration_months',
+                'estimated_amount',
+            ]
         ]);
-        $response->assertStatus(200);
     }
 }
-
-

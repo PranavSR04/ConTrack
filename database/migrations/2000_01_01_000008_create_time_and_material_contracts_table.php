@@ -153,6 +153,72 @@ return new class extends Migration
                 'milestone_enddate' => now()->addMonths(38),
                 'amount' => 500000.00,
             ],
+            [
+                'contract_id' => 15,
+                'milestone_desc' => 'On Deployment',
+                'milestone_enddate' => now()->subMonths(9),
+                'amount' => 800000.00,
+            ],
+            [
+                'contract_id' => 15,
+                'milestone_desc' => 'On Production',
+                'milestone_enddate' => now()->subMonths(5),
+                'amount' => 800000.00,
+            ],
+            [
+                'contract_id' => 16,
+                'milestone_desc' => 'On completion of Demo',
+                'milestone_enddate' => now()->addMonths(1),
+                'amount' => 800000.00,
+            ],
+            [
+                'contract_id' => 16,
+                'milestone_desc' => 'On completion of Frontend',
+                'milestone_enddate' => now()->addMonths(2),
+                'amount' => 800000.00,
+            ],
+            [
+                'contract_id' => 17,
+                'milestone_desc' => 'On completion of Demo',
+                'milestone_enddate' => now()->subMonths(19),
+                'amount' => 800000.00,
+            ],
+            [
+                'contract_id' => 17,
+                'milestone_desc' => 'On completion of Frontend',
+                'milestone_enddate' => now()->subMonths(20),
+                'amount' => 800000.00,
+            ],
+            [
+                'contract_id' => 18,
+                'milestone_desc' => 'On completion of Frontend',
+                'milestone_enddate' => now()->subMonths(4),
+                'amount' => 1000000.00,
+            ],
+            [
+                'contract_id' => 18,
+                'milestone_desc' => 'On completion of Backend',
+                'milestone_enddate' => now()->subMonths(1),
+                'amount' => 500000.00,
+            ],
+            [
+                'contract_id' => 18,
+                'milestone_desc' => 'On Deployment',
+                'milestone_enddate' => now()->addMonths(2),
+                'amount' => 500000.00,
+            ],
+            [
+                'contract_id' => 19,
+                'milestone_desc' => 'On Demo',
+                'milestone_enddate' => now()->subMonths(4),
+                'amount' => 2000000.00,
+            ],
+            [
+                'contract_id' => 19,
+                'milestone_desc' => 'On Deployment',
+                'milestone_enddate' => now()->subMonths(1),
+                'amount' => 200000.00,
+            ],
     
         ];
     
