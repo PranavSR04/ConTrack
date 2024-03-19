@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Jobs\SendActivityLogEmail;
 use App\Mail\SendMailNotification;
 use App\Models\ActivityLogs;
 use App\Models\User;
@@ -22,14 +23,14 @@ class ActivityLogObserver
                 Mail::to($user->user_mail)->send(new SendMailNotification($activityLogs));
                 // Log::info('Email sent successfully to: ' . $user->user_mail);
            
-        }
-            if(!empty($failedEmails)) {
+        // }
+        //     if(!empty($failedEmails)) {
                 
-                Log::warning('Failed to send emails to: ' . implode(', ', $failedEmails));
-            }
-            else{
-                Log::info('All emails sent successfully');
-            }
+        //         Log::warning('Failed to send emails to: ' . implode(', ', $failedEmails));
+        //     }
+        //     else{
+        //         Log::info('All emails sent successfully');
+           }
            
     }
 

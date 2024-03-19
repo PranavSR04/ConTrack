@@ -163,47 +163,70 @@ class MsaController extends Controller
         return 'Values inserted';
     }
 
+  
     /**
-     * Retrieve a list of MSAs based on specified filters or sorting criteria.
+     * Msa constructor.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param MsaInterface $MsaService An instance of MsaInterface for managing MSAs.
      */
-
     public function __construct(MsaInterface $MsaService)
     {
         $this->MsaService=$MsaService;
     }
+
     /**
-     * Add a new MSA (Master Service Agreement).
+     * Retrieve a list of MSAs based on the provided parameters.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  \Illuminate\Http\Request  $request The HTTP request object containing parameters.
+     * @return \Illuminate\Http\JsonResponse Response containing the list of MSAs.
      */
      public function MSAList(Request $request){
         return $this->MsaService->MSAList($request);
 
      }
+
+      /**
+     * Add a new MSA to the database.
+     *
+     * @param  \Illuminate\Http\Request  $request The HTTP request object containing MSA data.
+     * @param  int|null  $user_id The ID of the user adding the MSA (optional).
+     * @return \Illuminate\Http\JsonResponse Response containing the result of the operation.
+     */
     public function addMsa(Request $request,$user_id=null)
     {
         return $this->MsaService->addMsa($request,$user_id);
 
     }
-
+    
     /**
-     * Update an existing MSA.
+     * Edit an existing MSA in the database.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param  \Illuminate\Http\Request  $request The HTTP request object containing updated MSA data.
+     * @param  int|null  $user_id The ID of the user editing the MSA (optional).
+     * @return \Illuminate\Http\JsonResponse Response containing the result of the operation.
      */
     public function editMsa(Request $request,$user_id=null)
     {
         return $this->MsaService->editMsa($request,$user_id);
     }
+
+     /**
+     * Renew an existing MSA in the database.
+     *
+     * @param  \Illuminate\Http\Request  $request The HTTP request object containing data for MSA renewal.
+     * @param  int|null  $user_id The ID of the user renewing the MSA (optional).
+     * @return \Illuminate\Http\JsonResponse Response containing the result of the operation.
+     */
     public function renewMsa(Request $request,$user_id=null){
         return $this->MsaService->renewMsa($request,$user_id);
     }
+
+    /**
+     * Get the count of MSAs based on the provided parameters.
+     *
+     * @param  \Illuminate\Http\Request  $request The HTTP request object containing parameters.
+     * @return \Illuminate\Http\JsonResponse Response containing the count of MSAs.
+     */
     public function msaCount(Request $request){
         return $this->MsaService->msaCount($request);
 
