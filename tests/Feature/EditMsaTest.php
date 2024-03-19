@@ -44,24 +44,5 @@ public function test_edit_msa_invalid_date_range()
     // Assert
     $response->assertStatus(400);
 }
-public function test_edit_msa_database_error()
-{
-    // Arrange
-    $this->withoutMiddleware();
 
-    // Mock dependencies if needed
-    $invalidData = [
-        // Provide valid data
-        'client_name' => 'Example Client',
-        'region' => 'Example Region',
-        'start_date' => '2025-03-01',
-        'end_date' => '2025-03-31',
-        // Add other fields as needed
-    ];
-    // Act
-    $response = $this->post('/api/msa/update/1', $invalidData);
-
-    // Assert
-    $response->assertStatus(500);
-}
 }

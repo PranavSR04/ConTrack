@@ -81,9 +81,9 @@ class MsaService implements MsaInterface
         } catch (QueryException $e) {
             return response()->json(['error' => 'Querry error'], 500);
         } catch (ValidationException $e) {
-            return response()->json(['error' => $e->getMessage()], 405);
+            return response()->json(['error' => $e->getMessage()], 422);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'MSA not found'], 405);
+            return response()->json(['error' => 'MSA not found'], 404);
         } catch (Exception $e) {
             return response()->json($e, 500);
         }
@@ -114,7 +114,7 @@ class MsaService implements MsaInterface
         if ($validator->fails()) {
 
             // Return validation errors if validation fails
-            return $validator->errors();
+            return response()->json($validator->errors());
         }
 
         // Get the validated data
@@ -165,7 +165,7 @@ class MsaService implements MsaInterface
 
             return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 200);
         } catch (ValidationException $e) {
-            return response()->json(['error' => 'Validation failed', 'message' => $e->validator->errors()], 422);
+            return response()->json(['error' => 'Validation failed'], 422);
         } catch (QueryException $e) {
             return response()->json(['error' => 'Database error', 'message' => $e->getMessage()], 500);
         } catch (ModelNotFoundException $e) {
@@ -239,7 +239,7 @@ class MsaService implements MsaInterface
             // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
             return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
         } catch (ValidationException $e) {
-            return response()->json(['error' => 'Validation failed', 'message' => $e->validator->errors()], 422);
+            return response()->json(['error' => 'Validation failed'], 422);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'MSA not found'], 404);
         } catch (QueryException $e) {

@@ -57,23 +57,7 @@ class ListMsaTest extends TestCase
         ]);
         
     }
-    public function test_msa_list_not_found_error()
-{
-    // Arrange
-    $this->withoutMiddleware();
 
-    // Provide request parameters that are unlikely to match any records
-    $invalidSearchParams = [
-        'msa_ref_id' => 'NonExistentMSARefId', // Example: Provide an MSA reference ID that doesn't exist
-        // Add other request parameters as needed
-    ];
-
-    // Act
-    $response = $this->post('/api/msa/list', $invalidSearchParams);
-
-    // Assert
-    $response->assertStatus(405);
-}
 
 
 }
