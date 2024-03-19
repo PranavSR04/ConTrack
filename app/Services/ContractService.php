@@ -763,7 +763,7 @@ class ContractService implements ContractInterface
             }
         }
     }
-    public function getContractCount(Request $request)
+    public function getContractCount()
     {
         try {
             $querydata = Contracts::selectRaw('
