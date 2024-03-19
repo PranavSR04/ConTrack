@@ -90,7 +90,7 @@ class ContractService implements ContractInterface
                     'contracts.comments',
                     'contracts.start_date',
                     'contracts.end_date',
-                    'du',
+                    'msas.du',
                     'estimated_amount',
                     'contract_doclink',
                     'contract_status'
