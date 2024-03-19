@@ -11,7 +11,7 @@ class ContractListTest extends TestCase
     /**
      * A basic feature test example.
      */
-    public function test_example(): void
+    public function test_contract_list(): void
     {
         $this->withoutMiddleware();
         $response = $this->getJson('/api/contract/list?1');
