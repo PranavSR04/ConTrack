@@ -16,11 +16,13 @@ class Kernel extends ConsoleKernel
         $schedule->command('app:update-user-data')->everyFiveMinutes(); //daily 12:18pm 
         $schedule->command('contract-expiring-notification')->everyFiveMinutes();
         $schedule->command('app:contract-status-update')->everyFiveMinutes();
+        $schedule->command('app:msa-expiring-check')->everyFiveMinutes();
     }
     protected $commands = [
         // Other commands...
         \App\Console\Commands\ContractExpiringNotification::class,
         \App\Console\Commands\ContractStatusUpdate::class,
+        \App\Console\Commands\MsaExpiringCheck::class,
     ];
     /**
      * Register the commands for the application.
