@@ -304,6 +304,38 @@ return new class extends Migration {
                 "created_at" => now(),
                 "updated_at" => now()
             ],
+            [
+                'contract_ref_id' => 'DEP5',
+                'msa_id' => 9,
+                'contract_added_by' => 4,
+                'contract_type' => "TM",
+                'date_of_signature' => now()->subMonths(10),
+                'comments' => "view document to see further milestone data",
+                'start_date' => now()->subMonths(9),
+                'end_date' => now()->addMonths(4),
+                'du' => 'DU4',
+                'estimated_amount' => 2000000.00,
+                'contract_doclink' => "https://drive.google.com/file/d/1s5547VlMkoachZprsufLs2eWIAPNsbZG/view?usp=drive_link",
+                'contract_status' => 'Active',
+                "created_at" => now(),
+                "updated_at" => now()
+            ],
+            [
+                'contract_ref_id' => 'PIP5',
+                'msa_id' => 3,
+                'contract_added_by' => 2,
+                'contract_type' => "TM",
+                'date_of_signature' => now()->subMonths(10),
+                'comments' => "view document to see further milestone data",
+                'start_date' => now()->subMonths(9),
+                'end_date' => now()->addMonths(4),
+                'du' => 'DU4',
+                'estimated_amount' => 2200000.00,
+                'contract_doclink' => "https://drive.google.com/file/d/1s5547VlMkoachZprsufLs2eWIAPNsbZG/view?usp=drive_link",
+                'contract_status' => 'Active',
+                "created_at" => now(),
+                "updated_at" => now()
+            ],
         ];
 
         foreach ($contractsDataArray as $contractData) {
