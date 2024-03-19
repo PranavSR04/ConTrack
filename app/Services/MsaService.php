@@ -316,10 +316,9 @@ class MsaService implements MsaInterface
     public function msaCount(Request $request){
             try {
                 $activeMSACount = MSAs::count();
-        
-                return response()->json(['active_msa_count' => $activeMSACount]);
+                return response()->json(['active_msa_count' => $activeMSACount],200);
             } catch (QueryException $e) {
-                return response()->json(['error' => 'Query error'], 500);
+                return response()->json(['error' => 'Query error'], 502);
             } catch (Exception $e) {
                 return response()->json(['error' => $e->getMessage()], 500);
             }
