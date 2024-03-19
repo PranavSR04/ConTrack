@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
  
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
+ 
 <head>
     <title></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"><!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]--><!--[if !mso]><!-->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;600;700;800;900" rel="stylesheet" type="text/css"><!--<![endif]-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:wght@300&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+ 
         * {
             box-sizing: border-box;
         }
@@ -20,6 +29,72 @@
             color: inherit !important;
             text-decoration: inherit !important;
         }
+ 
+        a[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: inherit !important;
+        }
+ 
+        #MessageViewBody a {
+            color: inherit;
+            text-decoration: none;
+        }
+ 
+        p {
+            line-height: inherit
+        }
+ 
+        .desktop_hide,
+        .desktop_hide table {
+            mso-hide: all;
+            display: none;
+            max-height: 0px;
+            overflow: hidden;
+        }
+ 
+        .image_block img+div {
+            display: none;
+        }
+ 
+        @media (max-width:620px) {
+            .desktop_hide table.icons-inner {
+                display: inline-block !important;
+            }
+ 
+            .icons-inner {
+                text-align: center;
+            }
+ 
+            .icons-inner td {
+                margin: 0 auto;
+            }
+ 
+            .mobile_hide {
+                display: none;
+            }
+ 
+            .row-content {
+                width: 100% !important;
+            }
+ 
+            .stack .column {
+                width: 100%;
+                display: block;
+            }
+ 
+            .mobile_hide {
+                min-height: 0;
+                max-height: 0;
+                max-width: 0;
+                overflow: hidden;
+                font-size: 0px;
+            }
+ 
+            .desktop_hide,
+            .desktop_hide table {
+                display: table !important;
+                max-height: none !important;
+            }
  
         #MessageViewBody a {
             color: inherit;
@@ -100,31 +175,9 @@
                                                 <td class="column column-1" width="100%" style="font-weight: 400; text-align: left; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
                                                     <table class="heading_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                                                         <tr>
-                                                            <td class="pad">
-                                                                <h1 style="margin: 0; color: #012970; direction: ltr; font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif; font-size: 38px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 45.6px;"><span class="tinyMce-placeholder">CONTRACK</span></h1>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="row row-2" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 600px; margin: 0 auto;" width="600">
-                                        <tbody>
-                                            <tr>
-                                                <td class="column column-1" width="100%" style="font-weight: 400; text-align: left; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
-                                                    <table class="heading_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                                                        <tr>
-                                                            <td class="pad">
-                                                                <h2 style="margin: 0; color: #012970; direction: ltr; font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif; font-size: 30px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 36px;"><span class="tinyMce-placeholder">Hi! This is to inform you about some recent activities:</span></h2>
+                                                            <td class="pad" style="display: flex;">
+                                                                <img src="./Subtract.png" alt="ContracK-icon-subtract">
+                                                                <h1 style="margin: 0 20px; color: #000; direction: ltr; font-size: 38px; font-weight: 700; letter-spacing: normal; line-height: 120%; font-family: Montserrat, sans-serif; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 45.6px;"><span class="tinyMce-placeholder">CONTRACK</span></h1>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -150,10 +203,33 @@
                                                                 <div class="alignment" align="center">
                                                                     <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                                                                         <tr>
-                                                                            <td class="divider_inner" style="font-size: 1px; line-height: 1px; border-top: 1px solid #5a6acf;"><span>&#8202;</span></td>
+                                                                            <td class="divider_inner" style="font-size: 1px; line-height: 1px; border-top: 1px solid #000;"><span>&#8202;</span></td>
                                                                         </tr>
                                                                     </table>
                                                                 </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="row row-2" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 600px; margin: 0 auto;" width="600">
+                                        <tbody>
+                                            <tr>
+                                                <td class="column column-1" width="100%" style="font-weight: 400; text-align: left; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+                                                    <table class="heading_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                                        <tr>
+                                                            <td class="pad">
+                                                                <h2 style="margin: 0; color: #000; direction: ltr; font-family: Montserrat, sans-serif; font-size: 30px; font-weight: 600; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 36px;"><span class="tinyMce-placeholder">Your alert for the activities performed on Contrack</span></h2>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -176,7 +252,7 @@
                                                     <table class="paragraph_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
                                                         <tr>
                                                             <td class="pad">
-                                                                <div style="color:#012970;direction:ltr;font-family:'Roboto', Tahoma, Verdana, Segoe, sans-serif;font-size:18px;font-weight:500;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:21.599999999999998px;">
+                                                                <div style="color:#000;direction:ltr; font-family: Montserrat, sans-serif; font-size:18px;font-weight:500;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:21.599999999999998px;">
                                                                     <!-- <p style="margin: 0;">Transfer Details :&nbsp;</p> -->
                                                                 </div>
                                                             </td>
@@ -202,17 +278,17 @@
                                                         <tr>
                                                             <td class="pad">
                                                                 <div class="levelTwo" style="margin-left: 30px;">
-                                                                    <ul class="leftList" start="1" style="margin-top: 0; margin-bottom: 0; padding: 0; padding-left: 20px; font-weight: 400; text-align: left; color: #012970; direction: ltr; font-family: Roboto,Tahoma,Verdana,Segoe,sans-serif; font-size: 16px; letter-spacing: 0; line-height: 120%; mso-line-height-alt: 19.2px; list-style-type: square;">
-                                                                       
+                                                                    <ul class="leftList" start="1" style="margin-top: 0; margin-bottom: 0; padding: 0; padding-left: 20px; font-weight: 500; text-align: left; color: #000; direction: ltr; font-family: Montserrat, sans-serif; font-size: 16px; letter-spacing: 0; line-height: 120%; mso-line-height-alt: 19.2px; list-style-type: square;">
+                                                                        
                                                                         @if ($contract_id!=null)
-                                                                        <li style="margin-bottom: 0; text-align: left;">Contract ID: {{ $contract_ref_id }} is
-                                                                            {{ ucfirst($action) }} @if ($performed_by) by
+                                                                        <li style="margin-bottom: 0; text-align: left;">Contract ID: {{ $contract_ref_id }} is 
+                                                                            {{ ucfirst($action) }} @if ($performed_by) by 
                                                                             {{ ucfirst($user_name) }}
                                                                         @endif
                                                                        </li>
                                                                        @elseif ($msa_id)
-                                                                       <li style="margin-bottom: 0; text-align: left;">MSA ID: {{ $msa_id }} is
-                                                                        {{ ucfirst($action) }} @if ($performed_by) by
+                                                                       <li style="margin-bottom: 0; text-align: left;">MSA ID: {{ $msa_ref_id }} is 
+                                                                        {{ ucfirst($action) }} @if ($performed_by) by 
                                                                         {{ ucfirst($user_name) }}
                                                                          @endif
                                                                       </li>
@@ -270,5 +346,6 @@
         </tbody>
     </table><!-- End -->
 </body>
+ 
  
 </html>
