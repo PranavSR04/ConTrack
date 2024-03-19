@@ -39,7 +39,8 @@ class ContractService implements ContractInterface
                             ->select('*');
                     } elseif ($contractType == 'FF') {
                         $milestones = FixedFeeContracts::where('ff_contracts.contract_id', '=', $id)
-                            ->select('*');
+                            ->select('id','contract_id','milestone_desc', 'milestone_enddate',
+                            'percentage','amount');;
                     }
                     $data = $milestones->get();
                     //joining with contract data
@@ -71,7 +72,7 @@ class ContractService implements ContractInterface
                     return response()->json(["data" => $combinedData]);
                 }
             } catch (Exception $e) {
-                return response()->json(['error' => $e->getMessage()]);
+                return response()->json(['error' => $e->getMessage()],404);
             }
         }
         try {
@@ -87,13 +88,10 @@ class ContractService implements ContractInterface
                     'contracts.contract_type',
                     'contracts.date_of_signature',
                     'contracts.contract_ref_id',
-                    'contracts.comments',
                     'contracts.start_date',
                     'contracts.end_date',
-                    'msas.du',
-                    'estimated_amount',
-                    'contract_doclink',
-                    'contract_status'
+                    'contracts.du',
+                    'contracts.contract_status'
                 )
                 ->orderBy('contracts.updated_at', 'desc');
             if (empty ($requestData)) {
@@ -740,7 +738,7 @@ class ContractService implements ContractInterface
             ];
         }
 
-        return response()->json($contractDetails);
+        return response()->json($contractDetails,200);
     }
 
     public function topRevenueRegions()

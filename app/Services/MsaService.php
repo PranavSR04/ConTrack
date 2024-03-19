@@ -37,7 +37,7 @@ class MsaService implements MsaInterface
                         break;
                     case 'msa_ref_id':
                         
-                        $msas_query->where($key, $value);
+                        $msas_query->where($key,'like',$value);
                         break;
                    
                     case 'client_name':
