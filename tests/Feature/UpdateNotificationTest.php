@@ -22,6 +22,7 @@ class UpdateNotificationTest extends TestCase
             'sendto_id' => 5,
            'status'=>0
         ]);
+        $response->assertStatus(200);
     }
 }
 
