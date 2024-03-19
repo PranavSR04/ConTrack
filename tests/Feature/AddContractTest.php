@@ -14,7 +14,7 @@ class AddContractTest extends TestCase
     public function test_example(): void
     {
         $response = $this->postJson('/api/contracts/add',[
-            $Contractdata=[
+        [
                 'msa_id'=>111,
                 'contract_ref_id' =>'A111',
                 'contract_type' => 'TM',
@@ -24,6 +24,10 @@ class AddContractTest extends TestCase
                 'du' => 'DU1',
                 'estimated_amount' => 10000,
                 'comments' => 'This is a sample comment.',
+                     'associated_users' => [
+                    ['user_id' => 1], // Assuming user with ID 1 exists in the database
+                    ['user_id' => 2]  // Assuming user with ID 2 exists in the database
+                ]
             ],
             // $data = [
             //     'msa_id' => 1, // Assuming MSA ID 1 exists in the database
