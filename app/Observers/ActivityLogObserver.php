@@ -19,10 +19,9 @@ class ActivityLogObserver
         $users=User::all();
         $failedEmails = [];
         foreach ($users as $user) {
-           
-
-                //Mail::to($user->user_mail)->send(new SendMailNotification($activityLogs));
-        //         Log::info('Email sent successfully to: ' . $user->user_mail);
+            
+                Mail::to($user->user_mail)->send(new SendMailNotification($activityLogs));
+                Log::info('Email sent successfully to: ' . $user->user_mail);
            
         // }
         //     if(!empty($failedEmails)) {

@@ -39,7 +39,8 @@ class ContractService implements ContractInterface
                             ->select('*');
                     } elseif ($contractType == 'FF') {
                         $milestones = FixedFeeContracts::where('ff_contracts.contract_id', '=', $id)
-                            ->select('*');
+                            ->select('id','contract_id','milestone_desc', 'milestone_enddate',
+                            'percentage','amount');;
                     }
                     $data = $milestones->get();
                     //joining with contract data
@@ -71,7 +72,7 @@ class ContractService implements ContractInterface
                     return response()->json(["data" => $combinedData]);
                 }
             } catch (Exception $e) {
-                return response()->json(['error' => $e->getMessage()]);
+                return response()->json(['error' => $e->getMessage()],404);
             }
         }
         try {
@@ -87,13 +88,10 @@ class ContractService implements ContractInterface
                     'contracts.contract_type',
                     'contracts.date_of_signature',
                     'contracts.contract_ref_id',
-                    'contracts.comments',
                     'contracts.start_date',
                     'contracts.end_date',
-                    'du',
-                    'estimated_amount',
-                    'contract_doclink',
-                    'contract_status'
+                    'contracts.du',
+                    'contracts.contract_status'
                 )
                 ->orderBy('contracts.updated_at', 'desc');
             if (empty ($requestData)) {
@@ -766,33 +764,31 @@ class ContractService implements ContractInterface
     public function getContractCount()
     {
         try {
-            $querydata = DB::table('contracts')
-                ->select(
-                    DB::raw('COUNT(*) as total'),
-                    DB::raw('SUM(contract_status = "Active") as active'),
-                    DB::raw('SUM(contract_status = "On Progress") as progress'),
-                    DB::raw('SUM(contract_status = "Expiring") as expiring'),
-                    DB::raw('SUM(contract_status = "Closed") as closed'),
-                    DB::raw('SUM(contract_status = "Expired") as Expired')
-                )
-                ->first();
-            return response()->json(["data" => $querydata],200);
+            $querydata = Contracts::selectRaw('
+            COUNT(*) as total,
+            SUM(contract_status = "Active") as active,
+            SUM(contract_status = "On Progress") as progress,
+            SUM(contract_status = "Expiring") as expiring,
+            SUM(contract_status = "Closed") as closed,
+            SUM(contract_status = "Expired") as Expired ')
+    ->first();
+            return response()->json(["data" => $querydata]);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
 
     }
-    public function getTopContractRegions()
+    public function getTopContractRegions() 
     {
-        try {
+        try { 
             $querydata = Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
-                ->select('region', DB::raw('COUNT(*) AS contractCount'))
+                ->select('region', DB::raw('COUNT(*) AS contractCount')) 
                 ->groupBy('region')
                 ->orderByDesc('contractCount')
                 ->limit(5)->get();
             return response()->json(["data" => $querydata]);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+        } catch (Exception $e) { 
+            return response()->json(['error' => $e->getMessage()], 500); 
         }
 
     }
