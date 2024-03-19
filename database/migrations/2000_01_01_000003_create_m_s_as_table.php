@@ -167,7 +167,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA123',
                 'added_by' => 1,
-                'client_name' => 'Feedmix',
+                'client_name' => 'Duracell',
                 'region' => 'Europe',
                 'start_date' => '2020-06-11',
                 'end_date' => '2025-04-20',
@@ -178,7 +178,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA321',
                 'added_by' => 3,
-                'client_name' => 'Centimia',
+                'client_name' => 'DST',
                 'region' => 'America',
                 'start_date' => '2022-05-24',
                 'end_date' => '2027-12-11',
@@ -189,7 +189,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA789',
                 'added_by' => 4,
-                'client_name' => 'Skinix',
+                'client_name' => 'Evermind',
                 'region' => 'Europe',
                 'start_date' => '2021-11-10',
                 'end_date' => '2024-09-20',
@@ -200,7 +200,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA456',
                 'added_by' => 3,
-                'client_name' => 'Twitterwire',
+                'client_name' => 'Onboard',
                 'region' => 'Europe',
                 'start_date' => '2024-03-03',
                 'end_date' => '2024-05-29',
@@ -211,7 +211,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA654',
                 'added_by' => 2,
-                'client_name' => 'Pixoboo',
+                'client_name' => 'Mars',
                 'region' => 'Europe',
                 'start_date' => '2021-01-08',
                 'end_date' => '2027-02-09',
@@ -222,7 +222,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA135',
                 'added_by' => 4,
-                'client_name' => 'Livefish',
+                'client_name' => 'Merck',
                 'region' => 'Europe',
                 'start_date' => '2023-09-03',
                 'end_date' => '2025-10-28',
@@ -233,7 +233,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA813',
                 'added_by' => 4,
-                'client_name' => 'Zoombox',
+                'client_name' => 'Regus',
                 'region' => 'Europe',
                 'start_date' => '2022-08-15',
                 'end_date' => '2028-08-08',
@@ -244,7 +244,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA642',
                 'added_by' => 4,
-                'client_name' => 'Youtags',
+                'client_name' => 'Top Golf',
                 'region' => 'America',
                 'start_date' => '2020-01-15',
                 'end_date' => '2025-11-26',
@@ -255,7 +255,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA654',
                 'added_by' => 4,
-                'client_name' => 'Eabox',
+                'client_name' => 'Sales Boost',
                 'region' => 'Asia',
                 'start_date' => '2020-12-10',
                 'end_date' => '2023-09-05',
@@ -266,7 +266,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA987',
                 'added_by' => 2,
-                'client_name' => 'Twimm',
+                'client_name' => 'Dr.Oetker',
                 'region' => 'America',
                 'start_date' => '2024-02-16',
                 'end_date' => '2028-10-08',
@@ -277,7 +277,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA456',
                 'added_by' => 2,
-                'client_name' => 'Twitterbeat',
+                'client_name' => 'Supreme',
                 'region' => 'America',
                 'start_date' => '2023-01-19',
                 'end_date' => '2023-11-09',
@@ -288,7 +288,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA642',
                 'added_by' => 1,
-                'client_name' => 'Fivechat',
+                'client_name' => 'Tyson',
                 'region' => 'America',
                 'start_date' => '2023-04-11',
                 'end_date' => '2029-07-19',
@@ -299,7 +299,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA123',
                 'added_by' => 2,
-                'client_name' => 'Trilia',
+                'client_name' => 'Bis Industries',
                 'region' => 'Europe',
                 'start_date' => '2022-02-23',
                 'end_date' => '2028-05-26',
@@ -310,7 +310,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA654',
                 'added_by' => 1,
-                'client_name' => 'Ozu',
+                'client_name' => 'Bacardi',
                 'region' => 'America',
                 'start_date' => '2023-10-06',
                 'end_date' => '2028-08-29',
@@ -321,7 +321,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA246',
                 'added_by' => 4,
-                'client_name' => 'Twitterwire',
+                'client_name' => 'Aecom',
                 'region' => 'America',
                 'start_date' => '2022-10-05',
                 'end_date' => '2029-02-06',
@@ -332,7 +332,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA642',
                 'added_by' => 1,
-                'client_name' => 'Oba',
+                'client_name' => 'Aegon',
                 'region' => 'Asia',
                 'start_date' => '2022-03-28',
                 'end_date' => '2028-08-05',
@@ -343,7 +343,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA318',
                 'added_by' => 4,
-                'client_name' => 'Yata',
+                'client_name' => 'Adva Health',
                 'region' => 'Europe',
                 'start_date' => '2021-09-20',
                 'end_date' => '2029-10-06',
@@ -354,7 +354,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA987',
                 'added_by' => 1,
-                'client_name' => 'Zoonoodle',
+                'client_name' => 'Cordstrap',
                 'region' => 'Asia',
                 'start_date' => '2024-04-21',
                 'end_date' => '2026-07-01',
@@ -365,7 +365,7 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA789',
                 'added_by' => 3,
-                'client_name' => 'Pixonyx',
+                'client_name' => 'Melbourne Health',
                 'region' => 'Asia',
                 'start_date' => '2023-04-05',
                 'end_date' => '2025-04-21',
@@ -376,11 +376,11 @@ return new class extends Migration {
             [
                 'msa_ref_id' => 'MSA321',
                 'added_by' => 3,
-                'client_name' => 'Rhynyx',
+                'client_name' => 'Map Habit',
                 'region' => 'Asia',
                 'start_date' => '2024-06-11',
                 'end_date' => '2024-10-02',
-                'comments' => 'Let\'s finalize the MSA document.',
+                'comments' => 'Lets finalize the MSA document.',
                 'is_active' => true,
                 'msa_doclink' => 'https://drive.google.com/file/d/1dQHUpREY_FGcr6eIlhAvO32B-FRA-XM_/view?usp=sharing'
             ]
