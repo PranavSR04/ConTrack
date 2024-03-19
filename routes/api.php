@@ -107,13 +107,14 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
 });
 Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
 Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
-Route::get('/msa/list', [MSAController::class, 'MSAList']);
+// Route::get('/msa/list', [MSAController::class, 'MSAList']);
 Route::get('/notification/list', [NotificationController::class, 'getUserNotification']);
-Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
+// Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
 Route::get('/contract/ducount', [ContractController::class, 'getDuCount']);
 Route::get('/contracts/revenue', [ContractController::class, 'getAllContractsRevenue']);
 Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
-Route::get('/msa/list', [MSAController::class, 'MSAList']);
+Route::get('/msa/count', [MSAController::class, 'msaCount']);
+// Route::get('/msa/list', [MSAController::class, 'MSAList']);
 Route::get('/view-blade/{filename}', function ($filename) {
     return view($filename);
 });
