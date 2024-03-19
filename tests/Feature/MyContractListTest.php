@@ -8,10 +8,7 @@ use Tests\TestCase;
 
 class MyContractListTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function test_example(): void
+    public function test_list_contracts(): void
     {
         $this->withoutMiddleware();
         $response = $this->getJson('/api/contracts/myContracts/1');
@@ -48,8 +45,6 @@ class MyContractListTest extends TestCase
             'to',
             'total',
         ]);
-        
-                
         $response->assertStatus(200);
     }
 }
