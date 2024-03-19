@@ -42,7 +42,7 @@ class ContractStatusUpdate extends Command
         ->where('contract_status', '!=', 'Expired')
         ->update(['contract_status' => 'Expired']);
 
-        //Update status to "Expiring" for contracts where end date is in 2 weeks
+    //Update status to "Expiring" for contracts where end date is within 2 weeks
         Contracts::whereBetween('end_date', [today() , today()->addDays(14)])
         ->where('contract_status', '!=', 'Closed')
         ->where('contract_status', '!=', 'Expiring')

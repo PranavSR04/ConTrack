@@ -29,6 +29,7 @@ class ContractExpiringNotification extends Command
             ]);
         }
     }
+    // Get expired contracts
         $contracts = Contracts::whereDate('end_date', '<', today())
         ->where('contract_status', '!=', 'Closed')
         ->where('contract_status', '!=', 'Expired')

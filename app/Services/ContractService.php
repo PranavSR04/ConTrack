@@ -766,33 +766,31 @@ class ContractService implements ContractInterface
     public function getContractCount(Request $request)
     {
         try {
-            $querydata = DB::table('contracts')
-                ->select(
-                    DB::raw('COUNT(*) as total'),
-                    DB::raw('SUM(contract_status = "Active") as active'),
-                    DB::raw('SUM(contract_status = "On Progress") as progress'),
-                    DB::raw('SUM(contract_status = "Expiring") as expiring'),
-                    DB::raw('SUM(contract_status = "Closed") as closed'),
-                    DB::raw('SUM(contract_status = "Expired") as Expired')
-                )
-                ->first();
+            $querydata = Contracts::selectRaw('
+            COUNT(*) as total,
+            SUM(contract_status = "Active") as active,
+            SUM(contract_status = "On Progress") as progress,
+            SUM(contract_status = "Expiring") as expiring,
+            SUM(contract_status = "Closed") as closed,
+            SUM(contract_status = "Expired") as Expired ')
+    ->first();
             return response()->json(["data" => $querydata]);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
 
     }
-    public function getTopContractRegions()
+    public function getTopContractRegions() 
     {
-        try {
+        try { 
             $querydata = Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
-                ->select('region', DB::raw('COUNT(*) AS contractCount'))
+                ->select('region', DB::raw('COUNT(*) AS contractCount')) 
                 ->groupBy('region')
                 ->orderByDesc('contractCount')
                 ->limit(5)->get();
             return response()->json(["data" => $querydata]);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+        } catch (Exception $e) { 
+            return response()->json(['error' => $e->getMessage()], 500); 
         }
 
     }

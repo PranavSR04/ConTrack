@@ -29,7 +29,7 @@ class MsaExpiringCheck extends Command
     public function handle()
     {
         try {
-    //Update status to "Expired" for contracts where end date has passed
+    //get MSA where end date has passed
     MSAs::whereDate('end_date', '<', today())
         ->where('is_active', '!=', 0)
         ->update(['is_active' => 0]);
