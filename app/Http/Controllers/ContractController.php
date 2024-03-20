@@ -37,24 +37,6 @@ class ContractController extends Controller
      *
      * @throws \Exception if an error occurs during data retrieval.
      */
-
-
-
-
-
-    /**
-     * Retrieve contract data based on the provided parameters.
-     *
-     * If an ID is provided, it fetches individual contract details along with associated milestones, addendums,
-     * and associated users. If no ID is provided, it retrieves a list of contracts based on the request parameters.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int|null $id (optional) The ID of the contract to retrieve individual details.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     *
-     * @throws \Exception if an error occurs during data retrieval.
-     */
     public function getContractData(Request $request, $id = null)
     {
         return $this->contractService->getContractData($request, $id);
@@ -69,7 +51,6 @@ class ContractController extends Controller
     }
 
     /**
-     * Function to update a contract.
      * Function to update a contract.
      *
      * @param \Illuminate\Http\Request $request The incoming request containing updated contract data.
