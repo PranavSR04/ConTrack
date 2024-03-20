@@ -26,17 +26,4 @@ class TopRevenueRegionsTest extends TestCase
         ]);
 
     }
-
-    // public function test_unknowncolumn_error_topRevenueRegions()
-    // {
-    //     $this->withoutMiddleware();
-    //     // Mock a query error by changing the table name
-    //     $response = $this->json('GET', '/api/contracts/topRevenueRegions');
-
-    //     // Assert the response status code and content
-    //     $response->assertStatus(500)
-    //         ->assertJson([
-    //             'error' => 'Database error: Column not found',
-    //         ]);
-    // }
 }

@@ -11,67 +11,152 @@ use Tests\TestCase;
 class ContractTest extends TestCase
 {
     /**
-     * A basic feature test example.
+     * A basic feature test for contract listing.
      */
-    public function test_get_active_hotel_by_id()
-    {
-        $contract_id = Contracts::where('contract_status', 'Active')->get()->random()->id;
-        $response = $this->get('/api/contract/list/' . $contract_id)
+    public function test_get_contractlist(){
+        $this->withoutMiddleware();
+        $response = $this->get('/api/contract/list/' )
             ->assertStatus(200)
-            ->assertJsonStructure(
-                [
-                    // 'code',
-                    // 'message',
-                    'data' => [
-                        "id",
-                        "msa_id",
-                        "contract_added_by",
-                        "contract_ref_id",
-                        "contract_type",
-                        "date_of_signature",
-                        "comments",
-                        "start_date",
-                        "end_date",
-                        "du",
-                        "contract_doclink",
-                        "estimated_amount",
-                        "contract_status",
-                        "created_at",
-                        "updated_at",
-                        "client_name",
-                        "user_name",
-                        "region",
-                        "milestones"=> [
-                            '*' => [
-                                "id",
-                                "contract_id",
-                                "milestone_desc",
-                                "milestone_enddate",
-                                "percentage",
-                                "amount",
-                                "created_at",
-                                "updated_at"
-                            ], 
-                        ],
-                        "addendum"=> [
-                            '*' => [
-                                "id",
-                                "contract_id",
-                                "addendum_doclink",
-                                "created_at",
-                                "updated_at"
-                        ], 
+            ->assertJsonStructure([
+            
+                'data' => [
+                    '*' => [
+                        'id',
+                        'client_name',
+                        'user_name',
+                        'contract_type',
+                        'date_of_signature',
+                        'contract_ref_id',
+                        'start_date',
+                        'end_date',
+                        'du',
+                        'contract_status',
                     ],
-                        "associated_users"=> [
-                            '*' => [
-                                "id",
-                                "contract_id",
-                                "user_name",
-                                "user_mail"
-                            ],
-                        ],  
                 ],
-                ]
-            );
+                
+            ]);
+                
+                    
+}
+//list individual contract of type ff
+public function test_get_individual_contractlist(){
+    $this->withoutMiddleware();
+    $response = $this->get('/api/contract/list/1' )
+        ->assertStatus(200)
+        ->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'client_name',
+                    'user_name',
+                    'contract_type',
+                    'date_of_signature',
+                    'contract_ref_id',
+                    'start_date',
+                    'end_date',
+                    'du',
+                    'contract_status',
+                    'created_at',
+                    'updated_at',
+                    'milestones' => [
+                        '*' => [
+                            'id',
+                            'contract_id',
+                            'milestone_desc',
+                            'milestone_enddate',
+                            'percentage',
+                            'amount'
+                        ],
+                    ],
+                    'addendum' => [
+                        '*' => [
+                            'id',
+                            'contract_id',
+                            'addendum_doclink',
+                        ],
+                    ],
+                    'associated_users' => [
+                        '*' => [
+                            'id',
+                            'contract_id',
+                            'user_name',
+                            'user_mail'
+                        ],
+                    ],
+                ],
+            ]
+        ]);                        
+}
+//get individual contract error for invalid id
+public function test_get_individual_contractlist_error(){
+    $this->withoutMiddleware();
+    $response = $this->get('/api/contract/list/0' )
+        ->assertStatus(404)
+     ->assertJson(['error' => 'Id not found in the database']);
+                
+}
+
+//list individual contract of type TM
+public function test_get_individual_contractlist_TM(){
+    $this->withoutMiddleware();
+    $response = $this->get('/api/contract/list/6' )
+        ->assertStatus(200)
+        ->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'client_name',
+                    'user_name',
+                    'contract_type',
+                    'date_of_signature',
+                    'contract_ref_id',
+                    'start_date',
+                    'end_date',
+                    'du',
+                    'contract_status',
+                    'created_at',
+                    'updated_at',
+                    'milestones' => [
+                        '*' => [
+                            'id',
+                            'contract_id',
+                            'milestone_desc',
+                            'milestone_enddate',
+                            'amount'
+                        ],
+                    ],
+                    'addendum' => [
+                        '*' => [
+                            'id',
+                            'contract_id',
+                            'addendum_doclink',
+                        ],
+                    ],
+                    'associated_users' => [
+                        '*' => [
+                            'id',
+                            'contract_id',
+                            'user_name',
+                            'user_mail'
+                        ],
+                    ],
+                ],
+            ]
+        ]);                        
+}
+//check contract counts by region
+public function test_contract_counts_by_region()
+{
+    $this->withoutMiddleware();
+    $response = $this->get('/api/contract/topRegions')
+        ->assertStatus(200)
+        ->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'region',
+                    'contractCount',
+                ],
+            ],
+        ]);
 }
 }
