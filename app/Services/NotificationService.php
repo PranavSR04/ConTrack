@@ -35,7 +35,7 @@ class NotificationService implements NotificationInterface
         }
 
         $user_id = $request->input('sendto_id');
-        $pageSize = $request->input('pageSize', 15); 
+        $pageSize = $request->input('pageSize', 10); 
 
         $user = User::where('id', $user_id)->first();
         if (!$user) {
@@ -94,7 +94,7 @@ public function notificationStatusUpdate(Request $request){
         ]);
         if($validator->fails())
             {
-                return response()->json(['message'=> $validator->errors()],422);//unprocessable
+                return response()->json(['message'=> $validator->errors()],405);//unprocessable
             }
         $user_id = $request->get('user_id');
         $user = UserNotifications::where('sendto_id', $user_id)->first();

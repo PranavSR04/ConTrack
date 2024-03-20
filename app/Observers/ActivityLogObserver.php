@@ -21,15 +21,15 @@ class ActivityLogObserver
         foreach ($users as $user) {
             
                 Mail::to($user->user_mail)->send(new SendMailNotification($activityLogs));
-                // Log::info('Email sent successfully to: ' . $user->user_mail);
+                Log::info('Email sent successfully to: ' . $user->user_mail);
            
-        // }
-        //     if(!empty($failedEmails)) {
+        }
+            if(!empty($failedEmails)) {
                 
-        //         Log::warning('Failed to send emails to: ' . implode(', ', $failedEmails));
-        //     }
-        //     else{
-        //         Log::info('All emails sent successfully');
+                Log::warning('Failed to send emails to: ' . implode(', ', $failedEmails));
+            }
+            else{
+                Log::info('All emails sent successfully');
            }
            
     }

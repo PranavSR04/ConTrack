@@ -12,7 +12,7 @@ class ListNotificationTest extends TestCase
     /**
      * A basic feature test example.
      */
-    public function test_get(): void
+    public function test_notificationlist_api_get(): void
     {
         $this->withoutMiddleware();
         $response = $this->getJson('/api/notification/list?sendto_id=1');
@@ -40,20 +40,18 @@ class ListNotificationTest extends TestCase
         $response->assertStatus(200);
        
     }
-    public function test_validate(): void
+    public function test_it_returns_unprocessable_entity_if_validation_fails(): void
     {
         $this->withoutMiddleware();
         $page='hello';
         $response = $this->getJson('/api/notification/list',[
             'page'=>$page
         ]);
-     
-           
         $response->assertStatus(422);
        
     }
 
-    public function test_userinvalid(): void
+    public function test_invalidUserId(): void
     {
         $this->withoutMiddleware();
         $response = $this->getJson('/api/notification/list?sendto_id=999999');
@@ -64,7 +62,7 @@ class ListNotificationTest extends TestCase
         ]);
         $response->assertStatus(404);
     }
-    public function test_user_noNotification():void{
+    public function test_validUserId_NoNotificationsFound():void{
         $this->withoutMiddleware();
         $response = $this->getJson('/api/notification/list?sendto_id=7');
         $response->assertStatus(404);

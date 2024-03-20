@@ -157,10 +157,10 @@ class MsaService implements MsaInterface
             $msa->added_by_user = $added_by_user->added_by_user;
 
 
-            // $action = "Added";
-            // $activityLogInsertService = new ActivityLogInsertService();
-            // $insertController = new ActivityLogInsertController($activityLogInsertService);
-            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            $action = "Added";
+            $activityLogInsertService = new ActivityLogInsertService();
+            $insertController = new ActivityLogInsertController($activityLogInsertService);
+            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
 
 
             return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 200);
