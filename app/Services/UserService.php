@@ -15,7 +15,7 @@ use Validator;
 
 class UserService implements UserInterface
 {
-
+    
     public function addUser(Request $request)
     {
 
@@ -81,11 +81,7 @@ class UserService implements UserInterface
     public function getUsers(Request $request)
     {
         try {
-
-            // Default values for parameters
-            // $perPage = $request->input('pageSize', 10); // default per page is 10
-            // $page = $request->input('current', 1); // page number
-
+            //to search and sort the user
             $searchTerm = $request->input('search', '');
             $sortColumn = $request->input('sort', 'user_name');
             $sortOrder = $request->input('sort_order', 'asc');
@@ -194,8 +190,6 @@ class UserService implements UserInterface
             ->select('contracts.id', 'contracts.contract_ref_id', 'msas.client_name', 'contracts.start_date', 'contracts.end_date', 'contracts.contract_type', 'contracts.contract_status', 'contracts.du')
             ->where('users.id', $user_id)
             ->orderBy('contracts.updated_at', 'desc'); // Sort by updated_at column in descending order
-            // ->distinct();
-            // ->get();
 
             $myContracts->distinct('contracts.id');
 
