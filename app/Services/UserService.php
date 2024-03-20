@@ -83,8 +83,8 @@ class UserService implements UserInterface
         try {
 
             // Default values for parameters
-            $perPage = $request->input('pageSize', 10); // default per page is 10
-            $page = $request->input('current', 1); // page number
+            // $perPage = $request->input('pageSize', 10); // default per page is 10
+            // $page = $request->input('current', 1); // page number
 
             $searchTerm = $request->input('search', '');
             $sortColumn = $request->input('sort', 'user_name');

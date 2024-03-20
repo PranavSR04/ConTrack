@@ -91,7 +91,7 @@ Route::middleware('auth')->group(function () {
     // Experion Routes
     Route::post('/experion/insertData', [ExperionEmployeeController::class, 'store']);
     Route::post('/experion/generateData', [ExperionEmployeeController::class, 'generateRandomData']);
-    Route::get('/experion/list', [ExperionEmployeeController::class, 'show']);
+    // Route::get('/experion/list', [ExperionEmployeeController::class, 'show']);
 
 });
 
@@ -105,6 +105,7 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
     // Routes accessible only to admins or superadmins
 
 });
+Route::get('/experion/list', [ExperionEmployeeController::class, 'show']);
 Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
 Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
 Route::get('/msa/list', [MSAController::class, 'MSAList']);
