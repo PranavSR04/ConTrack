@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Services\GoogleDriveService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -13,9 +14,7 @@ class AddMsatest extends TestCase
     {
         $this->withoutMiddleware();
 
-        $file = \Illuminate\Http\Testing\File::create('C:\Users\athul.nair\Downloads\Online Gantt 20240313.pdf', 'MSAfile.txt');
-
-        $response = $this->withHeaders([
+              $response = $this->withHeaders([
             'Content-Type' => 'multipart/form-data',
         ])->post('/api/msa/add/1', [
             'msa_ref_id' => 'MSA099',
@@ -24,11 +23,14 @@ class AddMsatest extends TestCase
             'start_date' => '2024-03-15',
             'end_date' => '2025-03-31',
             'comments' => 'Msa Added',
-            'file' => $file,
+            'file' => 'MSA File',
         ]);
         
 
         $response->assertStatus(200);
 
     }
+    
+   
+
 }

@@ -18,7 +18,11 @@ class NotificationService implements NotificationInterface
 {
     public function getUserNotification(Request $request)
     {  
-       
+      //validate the incoming request data
+      //Check whether the user exists
+      //calculate the active notification count
+      //In the activity log table , iterate through each log id
+      // Store the details of each logid 
     try {
         $validator = Validator::make($request->all(), [
             "sendto_id" => "required|numeric",
@@ -72,7 +76,7 @@ class NotificationService implements NotificationInterface
                     'client_name'=>$msa->client_name,
                     'performed_by' => $actionLog->performed_by,
                     'action' => $actionLog->action,
-                    'updated_at'=>$actionLog->updated_at,
+                    'updated_at'=>$actionLog->created_at,
                 ];
                 $finalNotifications["NotificationListdisplay"][] = $notificationDetails;
             }
