@@ -132,10 +132,9 @@ class ContractService implements ContractInterface
      */
     public function updateContractData(Request $request, $contractId)
     {
-        // return response()->json($request->all());
         try {
             $contract = Contracts::find($contractId);
-            // return response()->json([$contract]);
+
             if (!$contract) {
                 return response()->json(['error' => 'Contract not found'], 404);
             }
@@ -147,7 +146,7 @@ class ContractService implements ContractInterface
             }
 
             $contract_type = Contracts::where('id', $contractId)->value('contract_type');
-            // return response()->json([$contract_type]);
+
             if ($contract_type === 'FF') {
                 // Parsing string data into array   
                 // $decodedMilestones = $request->milestones;
@@ -259,14 +258,15 @@ class ContractService implements ContractInterface
                             $contractResult = Contracts::where('id', $contractId)->get();
 
                             // For enterting data into Associated Users table
-                            // if (!empty($request->associated_users)) {
-                            //     foreach ($decodedAssociatedUsers as $user) {
-                            //         $userId = $user['user_id'];
+                            $associated_users = "nil";
+                            if (!empty($request->associated_users)) {
+                                foreach ($decodedAssociatedUsers as $user) {
+                                    $userId = $user['user_id'];
 
-                            //         AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
-                            //         $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
-                            //     }
-                            // }
+                                    AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
+                                    $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
+                                }
+                            }
 
                             // For enterting data into Fixed fee table
                             foreach ($milestonesUpdateData as $milestoneData) {
@@ -300,7 +300,7 @@ class ContractService implements ContractInterface
                                 "data" => [
                                     'contract_result' => $contractResult,
                                     'milestones_result' => $ffResult,
-                                    // 'associatedusers_result' => $associated_users,
+                                    'associatedusers_result' => $associated_users,
                                 ]
                             ]);
                         } else {
@@ -423,14 +423,15 @@ class ContractService implements ContractInterface
                         $contractResult = Contracts::where('id', $contractId)->get();
 
                         // For enterting data into Associated Users table
-                        // if (!empty ($request->associated_users)) {
-                        //     foreach ($decodedAssociatedUsers as $user) {
-                        //         $userId = $user['user_id'];
+                        $associated_users="nil";
+                        if (!empty ($request->associated_users)) {
+                            foreach ($decodedAssociatedUsers as $user) {
+                                $userId = $user['user_id'];
 
-                        //         AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
-                        //         $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
-                        //     }
-                        // }
+                                AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
+                                $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
+                            }
+                        }
 
                         foreach ($milestonesUpdateData as $milestoneData) {
                             $tmResult = TimeAndMaterialContracts::updateOrCreate(
@@ -449,17 +450,17 @@ class ContractService implements ContractInterface
                             $addendum->store($request, $contractId);
                         }
 
-                        // $action = "Edited";
-                        // $activityLogInsertService = new ActivityLogInsertService();
-                        // $insertController = new ActivityLogInsertController($activityLogInsertService);
-                        // $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
+                        $action = "Edited";
+                        $activityLogInsertService = new ActivityLogInsertService();
+                        $insertController = new ActivityLogInsertController($activityLogInsertService);
+                        $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
 
                         return response()->json([
                             "message" => "Contract edited successfully",
                             "data" => [
                                 'contract_result' => $contractResult,
                                 'milestones_result' => $tmResult,
-                                // 'associatedusers_result' => $associated_users,
+                                'associatedusers_result' => $associated_users,
                             ]
                         ]);
                     } else {
@@ -660,7 +661,7 @@ class ContractService implements ContractInterface
     public function getDuCount(Request $request)
     {
         try {
-            // Your existing aggregation query
+           // Fetch DU counts and contract types
             $duCounts = Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
                 ->join('users', 'contracts.contract_added_by', '=', 'users.id')
                 ->select(
@@ -668,22 +669,20 @@ class ContractService implements ContractInterface
                     \DB::raw('SUM(CASE WHEN contract_type = "TM" THEN 1 ELSE 0 END) as TM'),
                     \DB::raw('SUM(CASE WHEN contract_type = "FF" THEN 1 ELSE 0 END) as FF')
                 )
-                // ->where('contract_status', '=', 'Active')
                 ->groupBy('du')
                 ->orderBy('du')
                 ->get();
+
+            // Count total number of contracts
             $totalContractsCount = Contracts::count();
+             // Return JSON response with DU counts and total contracts count
             return response()->json([
                 'duCounts' => $duCounts,
                 'totalContractsCount' => $totalContractsCount
             ]);
         } catch (Exception $e) {
-            if (strpos($e->getMessage(), 'Unknown column') !== false) {
-                return response()->json(['error' => 'Database error: Column not found'], 500);
-            } else {
-                // If it's not the specific error, return a generic database error message
                 return response()->json(['error' => 'Database error'], 500);
-            }
+            
         }
     }
 
