@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+
 use Illuminate\Http\Request;
 use App\Models\Contracts;
 use Carbon\Carbon;
@@ -13,7 +14,7 @@ class RevenueProjectionService implements RevenueProjectionInterface
     //Function to Retrive the Revenue Projection of Contracts
     public function revenueProjection(Request $request, $contract_id = null)
     {
-        // return response()->json($request->all());
+
         $contracts = new Collection();
         $projectionType = $request->type;
         $revenueProjections = [];
@@ -32,12 +33,12 @@ class RevenueProjectionService implements RevenueProjectionInterface
             $filterStartDate = $request->filled('startdate') ? Carbon::parse($request->startdate)->format('Y-m') : null;
             $filterEndDate = $request->filled('enddate') ? Carbon::parse($request->enddate)->format('Y-m') : null;
         }
-        // return response()->json([$filterStartDate, $filterEndDate]);
 
 
 
+        //Checks if the requested for individual contract revenue
         if ($contract_id == null) {
-
+            //checks for du and contract type filters
             if ($duFilters && $ctypeFilters) {
                 foreach ($duFilters as $duFilter) {
                     foreach ($ctypeFilters as $ctypeFilter) {
@@ -63,17 +64,13 @@ class RevenueProjectionService implements RevenueProjectionInterface
                 if ($contracts->isEmpty()) {
                     return response()->json(['error' => 'No contracts found'], 404);
                 }
-                // return response()->json([$contracts]);
+
 
             }
 
             if ($contracts->isEmpty()) {
                 return response()->json(['error' => 'No contracts found for the specified DU or Type'], 404);
             }
-
-            // return response()->json($contracts);
-
-
 
 
             foreach ($contracts as $contract) {
@@ -133,9 +130,9 @@ class RevenueProjectionService implements RevenueProjectionInterface
         }
     }
 
+    // Yearly projection calculation logic
     public function calculateYearlyProjection($Milestones, $revenueProjections, $totalAmount)
     {
-        // Yearly projection calculation logic
         foreach ($Milestones as $milestone) {
             $formattedDate = Carbon::parse($milestone->milestone_enddate)->format('Y'); //formating date to year only format
             $totalAmount += $milestone->amount;
@@ -147,9 +144,10 @@ class RevenueProjectionService implements RevenueProjectionInterface
         return [$revenueProjections, $totalAmount];
     }
 
+
+    // Quarterly projection calculation logic
     public function calculateQuarterlyProjection($Milestones, $revenueProjections, $totalAmount)
     {
-        // Quarterly projection calculation logic
         foreach ($Milestones as $milestone) {
             $formattedDate = Carbon::parse($milestone->milestone_enddate);
             $quarter = ceil($formattedDate->month / 3);
@@ -166,11 +164,11 @@ class RevenueProjectionService implements RevenueProjectionInterface
         return [$revenueProjections, $totalAmount];
     }
 
+    // Monthly projection calculation logic
     public function calculateMonthlyProjection($Milestones, $revenueProjections, $totalAmount)
     {
-        // Monthly projection calculation logic
+
         foreach ($Milestones as $milestone) {
-            // $formattedDate = Carbon::parse($milestone->milestone_enddate)->format('F, Y');
             $formattedDate = Carbon::parse($milestone->milestone_enddate)->format('Y-m');
             $totalAmount += $milestone->amount;
             if (!isset ($revenueProjections[$formattedDate])) {
@@ -181,6 +179,9 @@ class RevenueProjectionService implements RevenueProjectionInterface
         return [$revenueProjections, $totalAmount];
     }
 
+
+
+    //Funtion for getting the Responce as required
     public function getResponse($projectionType, $revenueProjections, $totalAmount, $filterEndDate = null, $filterStartDate = null)
     {
         ksort($revenueProjections);
@@ -188,21 +189,24 @@ class RevenueProjectionService implements RevenueProjectionInterface
             $revenueProjectionsFormatted = [];
 
             if ($filterStartDate && $filterEndDate) {
-                // return response()->json([$filterEndDate, $filterStartDate]);
 
                 foreach (array_keys($revenueProjections) as $key) {
-                    // $date = Carbon::parse($key);
                     $date = (int) $key;
                     if ($date >= $filterStartDate && $date <= $filterEndDate) {
-                        // $formattedDate = Carbon::parse($key)->format('F, Y');
                         $revenueProjectionsFormatted[$key] = $revenueProjections[$key];
                     }
                 }
-                return response()->json([
-                    'message' => "Yearly Revenue Projection ",
-                    'data' => $revenueProjectionsFormatted,
-                    'Total Revenue' => $totalAmount
-                ], 200);
+                if (!empty ($revenueProjectionsFormatted)) {
+                    return response()->json([
+                        'message' => "Yearly Revenue Projection ",
+                        'data' => $revenueProjectionsFormatted,
+                        'Total Revenue' => $totalAmount
+                    ], 200);
+                } else {
+                    return response()->json(['error' => 'No contracts found for the specified Year'], 404);
+
+                }
+
 
             } else {
                 return response()->json([
@@ -212,8 +216,9 @@ class RevenueProjectionService implements RevenueProjectionInterface
                 ], 200);
             }
 
-            
+
         } elseif ($projectionType === 'quarterly') {
+            $filteredProjections = [];
 
             if ($filterStartDate && $filterEndDate) {
                 // Extract year and quarter from the start date
@@ -244,12 +249,17 @@ class RevenueProjectionService implements RevenueProjectionInterface
                         }
                     }
                 }
+                if (!empty ($filteredProjections)) {
+                    return response()->json([
+                        'message' => "Quarterly Revenue Projection within the specified quarter range",
+                        'data' => $filteredProjections,
+                        'Total Revenue' => $totalAmount,
+                    ], 200);
+                } else {
+                    return response()->json(['error' => 'No contracts found for the specified Quarter'], 404);
 
-                return response()->json([
-                    'message' => "Quarterly Revenue Projection within the specified quarter range",
-                    'data' => $filteredProjections,
-                    'Total Revenue' => $totalAmount,
-                ], 200);
+                }
+
 
             } else {
                 return response()->json([
@@ -261,9 +271,7 @@ class RevenueProjectionService implements RevenueProjectionInterface
             }
         } else {
             //Formating keys to desired formate
-            // return response()->json($revenueProjections);
             $revenueProjectionsFormatted = [];
-            // return response()->json([$filterEndDate, $filterStartDate]);
             if ($filterStartDate && $filterEndDate) {
                 foreach (array_keys($revenueProjections) as $key) {
                     $date = Carbon::parse($key);
@@ -280,14 +288,17 @@ class RevenueProjectionService implements RevenueProjectionInterface
                     $revenueProjectionsFormatted[$formattedDate] = $revenueProjections[$key];
                 }
             }
+            if (!empty ($revenueProjectionsFormatted)) {
+                return response()->json([
+                    'message' => "Monthly Revenue Projection ",
+                    'data' => $revenueProjectionsFormatted,
+                    'Total Revenue' => $totalAmount,
 
-            return response()->json([
-                'message' => "Monthly Revenue Projection ",
-                'data' => $revenueProjectionsFormatted,
-                'Total Revenue' => $totalAmount,
+                ], 200);
+            } else {
+                return response()->json(['error' => 'No contracts found for the specified Month'], 404);
 
-            ], 200);
+            }
         }
     }
-
 }
