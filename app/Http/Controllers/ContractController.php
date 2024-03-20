@@ -44,9 +44,9 @@ class ContractController extends Controller
 
 
 
-    public function getContractCount(Request $request)
+    public function getContractCount()
     {
-        return $this->contractService->getContractCount($request);
+        return $this->contractService->getContractCount();
 
     }
 
@@ -63,6 +63,12 @@ class ContractController extends Controller
 
     }
 
+    /**
+     * Add a new contract.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function addContract(Request $request)
     {
         return $this->contractService->addContract($request);

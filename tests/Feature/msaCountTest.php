@@ -6,19 +6,19 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class ContractListTest extends TestCase
+class msaCountTest extends TestCase
 {
     /**
      * A basic feature test example.
      */
-    public function test_contract_list(): void
+    public function test_example(): void
     {
         $this->withoutMiddleware();
-        $response = $this->getJson('/api/contract/list?1');
-        // dump($response);
+        $response = $this->get('/api/contract/ducount');
         $response->assertJsonStructure([
-            'data',]);
-                
+            'duCounts',
+            'totalContractsCount'
+        ]);
         $response->assertStatus(200);
     }
 }
