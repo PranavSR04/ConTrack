@@ -560,11 +560,11 @@ class ContractService implements ContractInterface
             }
             // Validate milestone amounts for FF contract
             if ($request->contract_type === 'FF' && ($totalPercentage !== 100 || floatval($totalAmount) !== floatval($request->estimated_amount))) {
-                return response()->json(['error in milestone amount calculation' => 'Invalid milestones for Fixed Fee contract.'], 422);
+                return response()->json(['error in milestone amount calculation' => 'Invalid milestones for Fixed Fee contract.'], 404);
             }
             // Validate milestone amounts for TM contract
             if ($request->contract_type === 'TM' && $totalAmount !== (int) $request->estimated_amount) {
-                return response()->json(['error' => 'Invalid milestones for Time and Material contract.'], 422);
+                return response()->json(['error' => 'Invalid milestones for Time and Material contract.'], 404);
             }
             $googleDrive = new GoogleDriveService();
             $fileLink = $googleDrive->store($request);
