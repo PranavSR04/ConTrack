@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use App\Http\Controllers\ActivityLogInsertController;
@@ -17,8 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 
 class ContractService implements ContractInterface
-{
-
+{ 
     public function getContractData(Request $request, $id = null)
     {
         if ($id != null) { //get individual contracts data if id is passed.
@@ -36,11 +34,11 @@ class ContractService implements ContractInterface
                     //get milestone based on contract type  
                     if ($contractType == 'TM') {
                         $milestones = TimeAndMaterialContracts::where('tm_contracts.contract_id', '=', $id)
-                            ->select('*');
+                        ->select('id','contract_id','milestone_desc', 'milestone_enddate','amount');
                     } elseif ($contractType == 'FF') {
                         $milestones = FixedFeeContracts::where('ff_contracts.contract_id', '=', $id)
                             ->select('id','contract_id','milestone_desc', 'milestone_enddate',
-                            'percentage','amount');;
+                            'percentage','amount');
                     }
                     $data = $milestones->get();
                     //joining with contract data
@@ -51,7 +49,7 @@ class ContractService implements ContractInterface
 
                     //get all addendums
                     $addendum = Addendums::where('contract_id', '=', $id)
-                        ->select('*')
+                    ->select('id','contract_id','addendum_doclink')
                         ->get();
                     //join the data
                     $combinedData = $combinedData->map(function ($contract) use ($addendum) {
@@ -69,7 +67,7 @@ class ContractService implements ContractInterface
                         $contract['associated_users'] = $associatedUsers->where('contract_id', $contract['id'])->values()->all();
                         return $contract;
                     });
-                    return response()->json(["data" => $combinedData]);
+                    return response()->json(["data" => $combinedData],200);
                 }
             } catch (Exception $e) {
                 return response()->json(['error' => $e->getMessage()],404);
@@ -97,6 +95,7 @@ class ContractService implements ContractInterface
             if (empty ($requestData)) {
                 return $querydata->paginate($paginate);
             } else {
+                //add search conditions
                 foreach ($requestData as $key => $value) {
                     if (in_array($key, ['contract_ref_id', 'client_name', 'du', 'contract_type', 'msa_ref_id', 'contract_status'])) {
                         $querydata->where($key, 'LIKE', '%' . $value . '%');
@@ -111,12 +110,12 @@ class ContractService implements ContractInterface
                 if ($request->status) {
                     $querydata->where('contract_status', '=', $request->status);
                 } else {
+                    //exclude expired default
                     $querydata->where('contract_status', '!=', 'Expired');
                 }
                 if ($querydata->count() == 0) {
                     return response()->json(['error' => 'Data not found'], 404);
                 }
-
                 return $querydata->paginate($paginate);
             }
         } catch (Exception $e) {
@@ -729,7 +728,7 @@ class ContractService implements ContractInterface
         }
     }
     public function getContractCount()
-    {
+    { 
         try {
             $querydata = Contracts::selectRaw('
             COUNT(*) as total,
@@ -739,13 +738,13 @@ class ContractService implements ContractInterface
             SUM(contract_status = "Closed") as closed,
             SUM(contract_status = "Expired") as Expired ')
     ->first();
-            return response()->json(["data" => $querydata]);
+            return response()->json(["data" => $querydata],200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
 
     }
-    public function getTopContractRegions() 
+    public function getTopContractRegions() //region with highest contracts
     {
         try { 
             $querydata = Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
@@ -753,7 +752,7 @@ class ContractService implements ContractInterface
                 ->groupBy('region')
                 ->orderByDesc('contractCount')
                 ->limit(5)->get();
-            return response()->json(["data" => $querydata]);
+            return response()->json(["data" => $querydata],200);
         } catch (Exception $e) { 
             return response()->json(['error' => $e->getMessage()], 500); 
         }
