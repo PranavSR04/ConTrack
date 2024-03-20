@@ -660,7 +660,7 @@ class ContractService implements ContractInterface
     public function getDuCount(Request $request)
     {
         try {
-            // Your existing aggregation query
+           // Fetch DU counts and contract types
             $duCounts = Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
                 ->join('users', 'contracts.contract_added_by', '=', 'users.id')
                 ->select(
@@ -668,22 +668,20 @@ class ContractService implements ContractInterface
                     \DB::raw('SUM(CASE WHEN contract_type = "TM" THEN 1 ELSE 0 END) as TM'),
                     \DB::raw('SUM(CASE WHEN contract_type = "FF" THEN 1 ELSE 0 END) as FF')
                 )
-                // ->where('contract_status', '=', 'Active')
                 ->groupBy('du')
                 ->orderBy('du')
                 ->get();
+
+            // Count total number of contracts
             $totalContractsCount = Contracts::count();
+             // Return JSON response with DU counts and total contracts count
             return response()->json([
                 'duCounts' => $duCounts,
                 'totalContractsCount' => $totalContractsCount
             ]);
         } catch (Exception $e) {
-            if (strpos($e->getMessage(), 'Unknown column') !== false) {
-                return response()->json(['error' => 'Database error: Column not found'], 500);
-            } else {
-                // If it's not the specific error, return a generic database error message
                 return response()->json(['error' => 'Database error'], 500);
-            }
+            
         }
     }
 
