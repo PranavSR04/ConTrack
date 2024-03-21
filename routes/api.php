@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/notAuth', [UserCheckController::class, 'notauth'])->name('notauth');
 
 Route::group([
-    // 'middleware' => 'api',
+    'middleware' => 'api',
     'prefix' => 'auth'
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'login']);
@@ -43,7 +43,7 @@ Route::group([
 Route::middleware('auth')->group(function () {
     // Roles routes
     Route::post('/role/insertrole', [RoleController::class, 'insertRole']);
-    // Route::get('/role/details', [RoleController::class, 'getRole']);
+    Route::get('/role/details', [RoleController::class, 'getRole']);
 
     // Users routes
     Route::post('/user/insert', [UserController::class, 'create']);
@@ -88,6 +88,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
     // Routes accessible only to super admins
 
+
 });
 Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
     // Routes accessible only to admins or superadmins
@@ -108,8 +109,8 @@ Route::get('/view-blade/{filename}', function ($filename) {
     return view($filename);
 });
 
-// MICROSOFT LOGIN
 
+// MICROSOFT LOGIN
 Route::post('/loginAzure', [MicrosoftAuthController::class,'loginAzure']);
 Route::get('/msa/count', [MSAController::class, 'msaCount']);
 

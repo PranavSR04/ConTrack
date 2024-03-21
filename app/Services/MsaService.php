@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Http\Controllers\ActivityLogInsertController;
+use App\Models\ActivityLogs;
 use App\Models\MSAs;
 use App\ServiceInterfaces\MsaInterface;
 use Dotenv\Exception\ValidationException;
@@ -158,9 +159,15 @@ class MsaService implements MsaInterface
 
 
             $action = "Added";
-            $activityLogInsertService = new ActivityLogInsertService();
-            $insertController = new ActivityLogInsertController($activityLogInsertService);
-            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            // $activityLogInsertService = new ActivityLogInsertService();
+            // $insertController = new ActivityLogInsertController($activityLogInsertService);
+            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            ActivityLogs::create([
+                'contract_id'=> null,
+                'msa_id'=> $msa->id,
+                'performed_by'=>$added_by,
+                'action'=>$action
+            ]);
 
 
             return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 200);
