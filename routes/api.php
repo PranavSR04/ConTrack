@@ -62,8 +62,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
     Route::post('/contracts/add', [ContractController::class, 'addContract']);
     Route::post('/contracts/edit/{id}', [ContractController::class, 'updateContractData']);
-    Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
-    Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
     Route::get('/contracts/revenue', [ContractController::class, 'getAllContractsRevenue']);
     Route::get('/contracts/topRevenueRegions', [ContractController::class, 'topRevenueRegions']);
     Route::get('/contract/ducount', [ContractController::class, 'getDuCount']);
@@ -115,3 +113,6 @@ Route::post('/loginAzure', [MicrosoftAuthController::class,'loginAzure']);
 Route::get('/msa/count', [MSAController::class, 'msaCount']);
 
 Route::get('/role/details', [RoleController::class, 'getRole']);
+Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
+Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
+      
