@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogInsertController;
 use App\Http\Controllers\MicrosoftAuthController;
 use App\Http\Controllers\MsaController;
 use App\Http\Controllers\NotificationController;
@@ -126,3 +127,4 @@ Route::post('/loginAzure', [MicrosoftAuthController::class,'loginAzure']);
 Route::get('/msa/count', [MSAController::class, 'msaCount']);
 
 Route::get('/role/details', [RoleController::class, 'getRole']);
+Route::post("/activitylog/insert",[ActivityLogInsertController::class,'addToActivityLog']);
