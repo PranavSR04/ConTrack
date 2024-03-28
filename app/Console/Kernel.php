@@ -13,10 +13,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('app:update-user-data')->everySixHours(); 
-        $schedule->command('contract-expiring-notification')->everySixHours();
-        $schedule->command('app:contract-status-update')->everySixHours();
-        $schedule->command('app:msa-expiring-check')->everySixHours();
+        $schedule->command('app:update-user-data')->everyMinute(); 
+        $schedule->command('contract-expiring-notification')->everyMinute(); 
+        $schedule->command('app:contract-status-update')->everyMinute(); 
+        $schedule->command('app:msa-expiring-check')->everyMinute(); 
     }
     protected $commands = [
         // Other commands...

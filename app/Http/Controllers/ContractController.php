@@ -23,6 +23,7 @@ class ContractController extends Controller
         $this->contractService = $contractService;
     }
 
+
     /**
      * Retrieve contract data based on the provided parameters.
      *

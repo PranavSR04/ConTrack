@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Http\Middleware;
-
-use Closure;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,9 +16,7 @@ class RoleMiddleware
     public function handle(Request $request,$role=null): Response
     {
         $user = Auth::user();
-        var_dump($user);
         $contrackUser = User::where("experion_id", $user->id )->where("is_active", 1)->first(); 
-        var_dump($contrackUser);
         // Check if the user is authenticated
         if (!$contrackUser) {
             return response()->json(['error' => 'Unauthorized, Access Denied'], 401);
