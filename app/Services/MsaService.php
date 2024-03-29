@@ -232,7 +232,7 @@ class MsaService implements MsaInterface
                 ->select('users.user_name as added_by_user')
                 ->first();
             
-            $msa->update($validated);
+             $msa->update($validated);
             $action = "Edited";
             $activityLogInsertService = new ActivityLogInsertService();
             $insertController = new ActivityLogInsertController($activityLogInsertService);
