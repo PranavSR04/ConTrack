@@ -209,9 +209,9 @@ class MsaService implements MsaInterface
             $action = "Edited";
             $msa->update($validated);
 
-            // $activityLogInsertService = new ActivityLogInsertService();
-            // $insertController = new ActivityLogInsertController($activityLogInsertService);
-            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            $activityLogInsertService = new ActivityLogInsertService();
+            $insertController = new ActivityLogInsertController($activityLogInsertService);
+            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
             return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Validation failed'], 422);

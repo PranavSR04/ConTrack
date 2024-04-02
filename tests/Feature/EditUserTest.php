@@ -11,7 +11,7 @@ use Illuminate\Http\Response;
 class EditUserTest extends TestCase
 {
     /**
-     * A basic feature test example.
+     * A  test to check edit user functionality.
      */
     public function test_edit_user(): void
     {
