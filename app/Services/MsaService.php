@@ -25,35 +25,20 @@ class MsaService implements MsaInterface
 
             $params = $request->all();
             $is_active = (bool) $request->input('is_active');
-            $msas_query = MSAs::join('users', 'users.id', '=', 'msas.added_by')
-                ->select('msas.*', 'users.user_name as added_by_user');
-
+            $msas_query = MSAs::query();
             foreach ($params as $key => $value) {
                 // Check if the parameter is a filtering or sorting criterion
                 switch ($key) {
-
                     case 'is_active':
-
-                        $msa = MSAs::query()
-                            ->where('is_active', $is_active)->get();
+                        $msas_query->where('is_active',$is_active);
                         break;
                     case 'msa_ref_id':
-
-                        $msas_query->where($key, $value);
-                        break;
-
                     case 'client_name':
-                        $msas_query->where($key, 'like', $value . '%');
-                        break;
+                         $msas_query->where($key,'like', $value.'%');
                     case 'region':
                     case 'start_date':
                     case 'end_date':
-
                         $msas_query->where($key, 'like', '%' . $value . '%');
-                        break;
-                    case 'added_by_user':
-                        $msas_query
-                            ->where($key, 'like', '%' . $value . '%');
                         break;
                     case 'sort_by':
                         $sort_order = isset ($params['sort_order']) && strtolower($params['sort_order']) === 'desc' ? 'desc' : 'asc';
@@ -63,19 +48,9 @@ class MsaService implements MsaInterface
                         break;
                 }
             }
-
-            if (isset ($params['msa_ref_id'])) {
-                $msas = $msas_query->first();
-            } else if (isset ($params['is_active'])) {
-                $msas = $msa;
-            } else {
-
                 $msas = $msas_query
-                    ->orderByDesc('is_active')
                     ->orderByDesc('updated_at')
-
                     ->paginate(10);
-            }
 
             return response()->json($msas, 200);
         } catch (QueryException $e) {

@@ -17,6 +17,7 @@ class EditMsaTest extends TestCase
 
         $response = $this->post('/api/msa/update/1', [
             // Provide valid data for editing an MSA
+            'msa_ref_id'=>'MSA949',
             'client_name' => 'Sun Solutions',
             'region' => 'Italy'
         ]);
