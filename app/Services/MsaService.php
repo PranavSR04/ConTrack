@@ -9,6 +9,7 @@ use Dotenv\Exception\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Validiator;
 use Exception;
 
@@ -76,7 +77,7 @@ class MsaService implements MsaInterface
     {
 
         // Validate the incoming request data
-        $validator = Validator::make($request->all(), [
+        $validator = validator::make($request->all(), [
             'msa_ref_id' => 'required|string|max:25',
             'client_name' => 'required|string',
             'region' => 'required|string|max:100',
@@ -137,12 +138,12 @@ class MsaService implements MsaInterface
             // $activityLogInsertService = new ActivityLogInsertService();
             // $insertController = new ActivityLogInsertController($activityLogInsertService);
             // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
-            ActivityLogs::create([
-                'contract_id'=> null,
-                'msa_id'=> $msa->id,
-                'performed_by'=>$added_by,
-                'action'=>$action
-            ]);
+            // ActivityLogs::create([
+            //     'contract_id'=> null,
+            //     'msa_id'=> $msa->id,
+            //     'performed_by'=>$added_by,
+            //     'action'=>$action
+            // ]);
 
 
             return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 200);
@@ -175,7 +176,6 @@ class MsaService implements MsaInterface
                 'start_date' => 'date',
                 'end_date' => 'date',
                 'comments' => 'string',
-
             ]);
 
             // Check if validation fails
@@ -185,12 +185,12 @@ class MsaService implements MsaInterface
                 return response()->json($validator->errors());
             }
 
+
             // Get the validated data
             $validated = $validator->validated();
+
             $msa_ref_id = $request->msa_ref_id;
-            $msa = MSAs::where('msa_ref_id', $msa_ref_id)
-                ->where('is_active', 1)
-                ->first();
+            $msa = MSAs::where('msa_ref_id', $msa_ref_id);
 
             // Check if both start_date and end_date are provided
             if (isset ($validated['start_date']) && isset ($validated['end_date'])) {
@@ -214,12 +214,13 @@ class MsaService implements MsaInterface
                 ->select('users.user_name as added_by_user')
                 ->first();
             
-             $msa->update($validated);
-            $action = "Edited";
-            $activityLogInsertService = new ActivityLogInsertService();
-            $insertController = new ActivityLogInsertController($activityLogInsertService);
-            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
-            return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
+            $msa->update($validated);
+
+            // $action = "Edited";
+            // $activityLogInsertService = new ActivityLogInsertService();
+            // $insertController = new ActivityLogInsertController($activityLogInsertService);
+            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+         return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Validation failed'], 422);
         } catch (ModelNotFoundException $e) {
@@ -254,7 +255,6 @@ class MsaService implements MsaInterface
 
             // Check if validation fails
             if ($validator->fails()) {
-
                 // Return validation errors if validation fails
                 return response()->json($validator->errors());
             }
@@ -262,21 +262,7 @@ class MsaService implements MsaInterface
             // Get the validated data
             $validated = $validator->validated();
             $msa_ref_id = $request->msa_ref_id;
-            $msa = MSAs::where('msa_ref_id', $msa_ref_id)->first();
-            $msaId = $msa->id;
-
-            $previous_end_date = $msa->end_date;
-            $start_date = $request->start_date;
-            $end_date = $request->end_date;
-
-            if ($start_date > $previous_end_date) {
-                if ($end_date <= $start_date) {
-                    $response = [
-                        'error' => 'End date must be greater than ' . $start_date
-                    ];
-                    return response()->json($response, 400);
-                }
-            } else {
+            $msa = MSAs::where('msa_ref_id', $msa_ref_id);
 
                 $googleDrive = new GoogleDriveService();
                 $fileLink = $googleDrive->store($request);
@@ -289,12 +275,11 @@ class MsaService implements MsaInterface
                     'comments' => $request->comments,
                     'is_active' => 1
                 ]));
-            }
             $added_by = $user_id;
-            $action = "Renewed";
-            $activityLogInsertService = new ActivityLogInsertService();
-            $insertController = new ActivityLogInsertController($activityLogInsertService);
-            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            // $action = "Renewed";
+            // $activityLogInsertService = new ActivityLogInsertService();
+            // $insertController = new ActivityLogInsertController($activityLogInsertService);
+            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
 
             return response()->json(['message' => 'MSA renewed successfully', 'msa' => $msa], 200);
 

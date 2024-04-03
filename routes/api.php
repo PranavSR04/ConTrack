@@ -53,11 +53,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/users/update/{user_id}', [UserController::class, 'updateUser']);
 
     // MSA routes
-    // Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
-    // Route::get('/msa/list', [MSAController::class, 'MSAList']);
-    // Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
-    // Route::post('/msa/update/{id}', [MSAController::class, 'editMsa']);
-    // Route::post('/msa/renew/{id}', [MsaController::class, 'renewMsa']);
+    Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
+    Route::get('/msa/list', [MSAController::class, 'MSAList']);
+    Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
+    Route::post('/msa/update/{id}', [MSAController::class, 'editMsa']);
+    Route::post('/msa/renew/{id}', [MsaController::class, 'renewMsa']);
 
     // Contracts routes
     Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
