@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogInsertController;
 use App\Http\Controllers\MicrosoftAuthController;
 use App\Http\Controllers\MsaController;
 use App\Http\Controllers\NotificationController;
@@ -116,3 +117,4 @@ Route::get('/role/details', [RoleController::class, 'getRole']);
 Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
 Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
       
+Route::post("/activitylog/insert",[ActivityLogInsertController::class,'addToActivityLog']);
