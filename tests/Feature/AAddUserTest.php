@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Http\Response;
 
-class AddUserTest extends TestCase
+class AAddUserTest extends TestCase
 {
     /**
      * Test to check if user is being added correctly.
