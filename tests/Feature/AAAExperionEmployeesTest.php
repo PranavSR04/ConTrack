@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class ExperionEmployeesTest extends TestCase
+class AAAExperionEmployeesTest extends TestCase
 {
     /**
      * Test to check if experion employees are listed
@@ -19,7 +19,6 @@ class ExperionEmployeesTest extends TestCase
         // Creating a test user
         $user = ExperionEmployees::create([
             'email_id' => "sarah.thomas@experionglobal.com",
-            "password" => "sarahmary",
             'first_name' => 'Sarah',
             'middle_name' => 'Mary',
             'last_name' => 'Thomas',

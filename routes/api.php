@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogInsertController;
 use App\Http\Controllers\MicrosoftAuthController;
 use App\Http\Controllers\MsaController;
 use App\Http\Controllers\NotificationController;
@@ -31,7 +32,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/notAuth', [UserCheckController::class, 'notauth'])->name('notauth');
 
 Route::group([
-    // 'middleware' => 'api',
+    'middleware' => 'api',
     'prefix' => 'auth'
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'login']);
@@ -43,7 +44,7 @@ Route::group([
 Route::middleware('auth')->group(function () {
     // Roles routes
     Route::post('/role/insertrole', [RoleController::class, 'insertRole']);
-    // Route::get('/role/details', [RoleController::class, 'getRole']);
+    Route::get('/role/details', [RoleController::class, 'getRole']);
 
     // Users routes
     Route::post('/user/insert', [UserController::class, 'create']);
@@ -62,8 +63,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
     Route::post('/contracts/add', [ContractController::class, 'addContract']);
     Route::post('/contracts/edit/{id}', [ContractController::class, 'updateContractData']);
-    Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
-    Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
     Route::get('/contracts/revenue', [ContractController::class, 'getAllContractsRevenue']);
     Route::get('/contracts/topRevenueRegions', [ContractController::class, 'topRevenueRegions']);
     Route::get('/contract/ducount', [ContractController::class, 'getDuCount']);
@@ -88,6 +87,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
     // Routes accessible only to super admins
 
+
 });
 Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
     // Routes accessible only to admins or superadmins
@@ -108,17 +108,13 @@ Route::get('/view-blade/{filename}', function ($filename) {
     return view($filename);
 });
 
-// MICROSOFT LOGIN
 
+// MICROSOFT LOGIN
 Route::post('/loginAzure', [MicrosoftAuthController::class,'loginAzure']);
 Route::get('/msa/count', [MSAController::class, 'msaCount']);
 
 Route::get('/role/details', [RoleController::class, 'getRole']);
-
-
-//Trial purpose 
-Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
-Route::get('/msa/list', [MSAController::class, 'MSAList']);
-Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
-Route::post('/msa/update/{id}', [MSAController::class, 'editMsa']);
-Route::post('/msa/renew/{id}', [MsaController::class, 'renewMsa']);
+Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
+Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
+      
+Route::post("/activitylog/insert",[ActivityLogInsertController::class,'addToActivityLog']);

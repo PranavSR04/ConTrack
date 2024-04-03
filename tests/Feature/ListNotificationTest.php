@@ -15,7 +15,7 @@ class ListNotificationTest extends TestCase
     public function test_notificationlist_api_get(): void
     {
         $this->withoutMiddleware();
-        $response = $this->getJson('/api/notification/list?sendto_id=1');
+        $response = $this->getJson('/api/notification/list?sendto_id=5');
         $response->assertJsonStructure([
             'data' => [
                 'total_notifications',
@@ -64,7 +64,7 @@ class ListNotificationTest extends TestCase
     }
     public function test_validUserId_NoNotificationsFound():void{
         $this->withoutMiddleware();
-        $response = $this->getJson('/api/notification/list?sendto_id=7');
+        $response = $this->getJson('/api/notification/list?sendto_id=6');
         $response->assertStatus(404);
         $response->assertJson([
             'error' => 'No notifications found.'

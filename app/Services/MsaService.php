@@ -2,13 +2,14 @@
 namespace App\Services;
 
 use App\Http\Controllers\ActivityLogInsertController;
+use App\Models\ActivityLogs;
 use App\Models\MSAs;
 use App\ServiceInterfaces\MsaInterface;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validiator;
 use Exception;
 
 class MsaService implements MsaInterface
@@ -132,10 +133,16 @@ class MsaService implements MsaInterface
             $msa->added_by_user = $added_by_user->added_by_user;
 
 
-            // $action = "Added";
+            $action = "Added";
             // $activityLogInsertService = new ActivityLogInsertService();
             // $insertController = new ActivityLogInsertController($activityLogInsertService);
             // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            ActivityLogs::create([
+                'contract_id'=> null,
+                'msa_id'=> $msa->id,
+                'performed_by'=>$added_by,
+                'action'=>$action
+            ]);
 
 
             return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 200);
@@ -206,12 +213,12 @@ class MsaService implements MsaInterface
             $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
                 ->select('users.user_name as added_by_user')
                 ->first();
+            
+             $msa->update($validated);
             $action = "Edited";
-            $msa->update($validated);
-
-            // $activityLogInsertService = new ActivityLogInsertService();
-            // $insertController = new ActivityLogInsertController($activityLogInsertService);
-            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            $activityLogInsertService = new ActivityLogInsertService();
+            $insertController = new ActivityLogInsertController($activityLogInsertService);
+            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
             return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Validation failed'], 422);
