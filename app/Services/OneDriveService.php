@@ -84,7 +84,7 @@ class OneDriveService implements OneDriveInterface
                 ];
                 
                 $response = Http::withToken($accessToken)->post('https://graph.microsoft.com/v1.0/users', $userData);
-                return $response;
+                // return $response;
 
                 // Upload the file to OneDrive
                 $response = Http::withToken($accessToken)
