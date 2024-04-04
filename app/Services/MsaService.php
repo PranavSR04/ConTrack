@@ -138,12 +138,12 @@ class MsaService implements MsaInterface
             // $activityLogInsertService = new ActivityLogInsertService();
             // $insertController = new ActivityLogInsertController($activityLogInsertService);
             // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
-            // ActivityLogs::create([
-            //     'contract_id'=> null,
-            //     'msa_id'=> $msa->id,
-            //     'performed_by'=>$added_by,
-            //     'action'=>$action
-            // ]);
+            ActivityLogs::create([
+                'contract_id'=> null,
+                'msa_id'=> $msa->id,
+                'performed_by'=>$added_by,
+                'action'=>$action
+            ]);
 
 
             return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 200);
@@ -190,7 +190,7 @@ class MsaService implements MsaInterface
             $validated = $validator->validated();
 
             $msa_ref_id = $request->msa_ref_id;
-            $msa = MSAs::where('msa_ref_id', $msa_ref_id);
+            $msa = MSAs::where('msa_ref_id', $msa_ref_id)->first();
 
             // Check if both start_date and end_date are provided
             if (isset ($validated['start_date']) && isset ($validated['end_date'])) {
@@ -216,7 +216,13 @@ class MsaService implements MsaInterface
             
             $msa->update($validated);
 
-            // $action = "Edited";
+             $action = "Edited";
+             ActivityLogs::create([
+                'contract_id'=> null,
+                'msa_id'=> $msa->id,
+                'performed_by'=>$added_by,
+                'action'=>$action
+            ]);
             // $activityLogInsertService = new ActivityLogInsertService();
             // $insertController = new ActivityLogInsertController($activityLogInsertService);
             // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
@@ -262,7 +268,7 @@ class MsaService implements MsaInterface
             // Get the validated data
             $validated = $validator->validated();
             $msa_ref_id = $request->msa_ref_id;
-            $msa = MSAs::where('msa_ref_id', $msa_ref_id);
+            $msa = MSAs::where('msa_ref_id', $msa_ref_id)->first();
 
                 $googleDrive = new GoogleDriveService();
                 $fileLink = $googleDrive->store($request);
@@ -276,7 +282,13 @@ class MsaService implements MsaInterface
                     'is_active' => 1
                 ]));
             $added_by = $user_id;
-            // $action = "Renewed";
+             $action = "Renewed";
+             ActivityLogs::create([
+                'contract_id'=> null,
+                'msa_id'=> $msa->id,
+                'performed_by'=>$added_by,
+                'action'=>$action
+            ]);
             // $activityLogInsertService = new ActivityLogInsertService();
             // $insertController = new ActivityLogInsertController($activityLogInsertService);
             // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
