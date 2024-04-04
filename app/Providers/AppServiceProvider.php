@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\ServiceInterfaces\OneDriveInterface;
 use App\Services\ActivityLogInsertService;
 use App\ServiceInterfaces\ActivityLogInsertInterface;
 use App\ServiceInterfaces\ContractInterface;
@@ -16,6 +17,7 @@ use App\Services\MsaService;
 use App\Services\ExperionEmployeesService;
 use App\Services\GoogleDriveService;
 use App\Services\NotificationService;
+use App\Services\OneDriveService;
 use App\Services\RevenueProjectionService;
 use App\Services\UserService;
 use Illuminate\Support\ServiceProvider;
@@ -61,6 +63,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             ActivityLogInsertInterface::class,
             ActivityLogInsertService::class
+        );
+        $this->app->bind(
+            OneDriveInterface::class,
+            OneDriveService::class
         );
 
     }

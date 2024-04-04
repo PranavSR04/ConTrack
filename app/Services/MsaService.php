@@ -135,15 +135,9 @@ class MsaService implements MsaInterface
 
 
             $action = "Added";
-            // $activityLogInsertService = new ActivityLogInsertService();
-            // $insertController = new ActivityLogInsertController($activityLogInsertService);
-            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
-            ActivityLogs::create([
-                'contract_id'=> null,
-                'msa_id'=> $msa->id,
-                'performed_by'=>$added_by,
-                'action'=>$action
-            ]);
+            $activityLogInsertService = new ActivityLogInsertService();
+            $insertController = new ActivityLogInsertController($activityLogInsertService);
+            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
 
 
             return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 200);
@@ -217,16 +211,9 @@ class MsaService implements MsaInterface
             $msa->update($validated);
 
             $action = "Edited";
-            // $activityLogInsertService = new ActivityLogInsertService();
-            // $insertController = new ActivityLogInsertController($activityLogInsertService);
-            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
-            ActivityLogs::create([
-                'contract_id'=> null,
-                'msa_id'=> $msa->id,
-                'performed_by'=>$added_by,
-                'action'=>$action
-            ]);
-
+            $activityLogInsertService = new ActivityLogInsertService();
+            $insertController = new ActivityLogInsertController($activityLogInsertService);
+            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
          return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Validation failed'], 422);
