@@ -4,6 +4,7 @@ use App\Http\Controllers\MicrosoftAuthController;
 use App\Http\Controllers\MsaController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OneDriveController;
 use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\UserCheckController;
 use App\Http\Controllers\RoleController;
@@ -114,3 +115,8 @@ Route::post('/loginAzure', [MicrosoftAuthController::class,'loginAzure']);
 Route::get('/msa/count', [MSAController::class, 'msaCount']);
 
 Route::get('/role/details', [RoleController::class, 'getRole']);
+
+
+// Onedrive token check
+// Route::post('/onedrive', [OneDriveController::class, 'token']);
+Route::post('/onedrivefile', [OneDriveController::class, 'store']);
