@@ -455,12 +455,6 @@ class ContractService implements ContractInterface
                         $activityLogInsertService = new ActivityLogInsertService(); 
                         $insertController = new ActivityLogInsertController($activityLogInsertService);
                         $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
-                        // ActivityLogs::create([
-                        //     'contract_id'=> $contractId,
-                        //     'msa_id'=> $request->msa_id,
-                        //     'performed_by'=>$request->contract_added_by,
-                        //     'action'=>$action
-                        // ]);
 
                         return response()->json([
                             "message" => "Contract edited successfully",
@@ -595,15 +589,9 @@ class ContractService implements ContractInterface
             $contractId = $contract->id;
 
             $action = "Added";
-            // $activityLogInsertService = new ActivityLogInsertService();
-            // $insertController = new ActivityLogInsertController($activityLogInsertService);
-            // $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
-            ActivityLogs::create([
-                'contract_id'=> $contractId,
-                'msa_id'=> $request->msa_id,
-                'performed_by'=>$request->contract_added_by,
-                'action'=>$action
-            ]);
+            $activityLogInsertService = new ActivityLogInsertService();
+            $insertController = new ActivityLogInsertController($activityLogInsertService);
+            $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
             // Associate users with the contract
             if (!empty ($request->assoc_users)) {
                 foreach ($request->assoc_users as $users) {

@@ -184,7 +184,7 @@ class MsaService implements MsaInterface
             $validated = $validator->validated();
 
             $msa_ref_id = $request->msa_ref_id;
-            $msa = MSAs::where('msa_ref_id', $msa_ref_id);
+            $msa = MSAs::where('msa_ref_id', $msa_ref_id)->first();
 
             // Check if both start_date and end_date are provided
             if (isset ($validated['start_date']) && isset ($validated['end_date'])) {
@@ -220,9 +220,9 @@ class MsaService implements MsaInterface
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'MSA not found'], 404);
         } catch (QueryException $e) {
-            return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to update MSA -', 'message' => $e->getMessage()], 500);
         } catch (Exception $e) {
-            return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to update MS--', 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -235,6 +235,7 @@ class MsaService implements MsaInterface
  */
     public function renewMsa(Request $request, $user_id)
     {
+        // return response()->json($request->all());
         try {
             // Validate the incoming request data
             $validator = Validator::make($request->all(), [
@@ -256,7 +257,7 @@ class MsaService implements MsaInterface
             // Get the validated data
             $validated = $validator->validated();
             $msa_ref_id = $request->msa_ref_id;
-            $msa = MSAs::where('msa_ref_id', $msa_ref_id);
+            $msa = MSAs::where('msa_ref_id', $msa_ref_id)->first();
 
                 $googleDrive = new GoogleDriveService();
                 $fileLink = $googleDrive->store($request);
