@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validiator;
 use Exception;
 
 class MsaService implements MsaInterface
@@ -26,35 +27,20 @@ class MsaService implements MsaInterface
 
             $params = $request->all();
             $is_active = (bool) $request->input('is_active');
-            $msas_query = MSAs::join('users', 'users.id', '=', 'msas.added_by')
-                ->select('msas.*', 'users.user_name as added_by_user');
-
+            $msas_query = MSAs::query();
             foreach ($params as $key => $value) {
                 // Check if the parameter is a filtering or sorting criterion
                 switch ($key) {
-
                     case 'is_active':
-
-                        $msa = MSAs::query()
-                            ->where('is_active', $is_active)->get();
+                        $msas_query->where('is_active',$is_active);
                         break;
                     case 'msa_ref_id':
-
-                        $msas_query->where($key, $value);
-                        break;
-
                     case 'client_name':
-                        $msas_query->where($key, 'like', $value . '%');
-                        break;
+                         $msas_query->where($key,'like', $value.'%');
                     case 'region':
                     case 'start_date':
                     case 'end_date':
-
                         $msas_query->where($key, 'like', '%' . $value . '%');
-                        break;
-                    case 'added_by_user':
-                        $msas_query
-                            ->where($key, 'like', '%' . $value . '%');
                         break;
                     case 'sort_by':
                         $sort_order = isset ($params['sort_order']) && strtolower($params['sort_order']) === 'desc' ? 'desc' : 'asc';
@@ -64,19 +50,9 @@ class MsaService implements MsaInterface
                         break;
                 }
             }
-
-            if (isset ($params['msa_ref_id'])) {
-                $msas = $msas_query->first();
-            } else if (isset ($params['is_active'])) {
-                $msas = $msa;
-            } else {
-
                 $msas = $msas_query
-                    ->orderByDesc('is_active')
                     ->orderByDesc('updated_at')
-
                     ->paginate(10);
-            }
 
             return response()->json($msas, 200);
         } catch (QueryException $e) {
@@ -101,7 +77,7 @@ class MsaService implements MsaInterface
     {
 
         // Validate the incoming request data
-        $validator = Validator::make($request->all(), [
+        $validator = validator::make($request->all(), [
             'msa_ref_id' => 'required|string|max:25',
             'client_name' => 'required|string',
             'region' => 'required|string|max:100',
@@ -200,7 +176,6 @@ class MsaService implements MsaInterface
                 'start_date' => 'date',
                 'end_date' => 'date',
                 'comments' => 'string',
-
             ]);
 
             // Check if validation fails
@@ -210,12 +185,12 @@ class MsaService implements MsaInterface
                 return response()->json($validator->errors());
             }
 
+
             // Get the validated data
             $validated = $validator->validated();
+
             $msa_ref_id = $request->msa_ref_id;
-            $msa = MSAs::where('msa_ref_id', $msa_ref_id)
-                ->where('is_active', 1)
-                ->first();
+            $msa = MSAs::where('msa_ref_id', $msa_ref_id)->first();
 
             // Check if both start_date and end_date are provided
             if (isset ($validated['start_date']) && isset ($validated['end_date'])) {
@@ -238,21 +213,29 @@ class MsaService implements MsaInterface
             $added_by_user = MSAs::join('users', 'users.id', '=', 'msas.added_by')
                 ->select('users.user_name as added_by_user')
                 ->first();
-            $action = "Edited";
+            
             $msa->update($validated);
 
-            $activityLogInsertService = new ActivityLogInsertService();
-            $insertController = new ActivityLogInsertController($activityLogInsertService);
-            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
-            return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
+            $action = "Edited";
+            // $activityLogInsertService = new ActivityLogInsertService();
+            // $insertController = new ActivityLogInsertController($activityLogInsertService);
+            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            ActivityLogs::create([
+                'contract_id'=> null,
+                'msa_id'=> $msa->id,
+                'performed_by'=>$added_by,
+                'action'=>$action
+            ]);
+
+         return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Validation failed'], 422);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'MSA not found'], 404);
         } catch (QueryException $e) {
-            return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to update MSA -', 'message' => $e->getMessage()], 500);
         } catch (Exception $e) {
-            return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to update MS--', 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -265,6 +248,7 @@ class MsaService implements MsaInterface
  */
     public function renewMsa(Request $request, $user_id)
     {
+        // return response()->json($request->all());
         try {
             // Validate the incoming request data
             $validator = Validator::make($request->all(), [
@@ -279,7 +263,6 @@ class MsaService implements MsaInterface
 
             // Check if validation fails
             if ($validator->fails()) {
-
                 // Return validation errors if validation fails
                 return response()->json($validator->errors());
             }
@@ -288,20 +271,6 @@ class MsaService implements MsaInterface
             $validated = $validator->validated();
             $msa_ref_id = $request->msa_ref_id;
             $msa = MSAs::where('msa_ref_id', $msa_ref_id)->first();
-            $msaId = $msa->id;
-
-            $previous_end_date = $msa->end_date;
-            $start_date = $request->start_date;
-            $end_date = $request->end_date;
-
-            if ($start_date > $previous_end_date) {
-                if ($end_date <= $start_date) {
-                    $response = [
-                        'error' => 'End date must be greater than ' . $start_date
-                    ];
-                    return response()->json($response, 400);
-                }
-            } else {
 
                 $googleDrive = new GoogleDriveService();
                 $fileLink = $googleDrive->store($request);
@@ -314,7 +283,6 @@ class MsaService implements MsaInterface
                     'comments' => $request->comments,
                     'is_active' => 1
                 ]));
-            }
             $added_by = $user_id;
             $action = "Renewed";
             $activityLogInsertService = new ActivityLogInsertService();

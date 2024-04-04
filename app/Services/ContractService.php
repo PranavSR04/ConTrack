@@ -452,7 +452,7 @@ class ContractService implements ContractInterface
                         }
 
                         $action = "Edited";
-                        $activityLogInsertService = new ActivityLogInsertService();
+                        $activityLogInsertService = new ActivityLogInsertService(); 
                         $insertController = new ActivityLogInsertController($activityLogInsertService);
                         $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
                         // ActivityLogs::create([

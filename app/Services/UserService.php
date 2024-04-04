@@ -208,6 +208,12 @@ class UserService implements UserInterface
                         $myContracts->where('contracts.' . $key, 'LIKE', '%' . $value . '%');
                     }
                 }
+                if ($request->status) {
+                    $myContracts->where('contract_status', '=', $request->status);
+                } else {
+                    //exclude expired default
+                    $myContracts->where('contract_status', '!=', 'Expired');
+                }
                 if ($myContracts->count() == 0) {
                     return response()->json(['error' => 'Data not found'], 404);
                 }
