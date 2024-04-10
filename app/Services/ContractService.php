@@ -143,6 +143,10 @@ class ContractService implements ContractInterface
             // Checking whether contract needed to be closed
             if ($request->contract_status === "Closed") {
                 $result = Contracts::where('id', $contractId)->update(['contract_status' => "Closed"]);
+                $action = "Closed";
+                $activityLogInsertService = new ActivityLogInsertService(); 
+                $insertController = new ActivityLogInsertController($activityLogInsertService);
+                $insertController->addToActivityLog($contractId, $contract->msa_id, $request->contract_added_by, "Closed");
                 return response()->json(['message' => 'Contract Closed']);
             }
 
