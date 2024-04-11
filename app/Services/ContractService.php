@@ -91,8 +91,7 @@ class ContractService implements ContractInterface
                     'contracts.end_date',
                     'contracts.du',
                     'contracts.contract_status'
-                )
-                ->orderBy('contracts.updated_at', 'desc');
+                );
             if (empty ($requestData)) {
                 return $querydata->paginate($paginate);
             } else {
@@ -100,9 +99,6 @@ class ContractService implements ContractInterface
                 foreach ($requestData as $key => $value) {
                     if (in_array($key, ['contract_ref_id', 'client_name', 'du', 'contract_type', 'msa_ref_id', 'contract_status'])) {
                         $querydata->where($key, 'LIKE', '%' . $value . '%');
-                    }
-                    if ($key == 'sort_by') {
-                        $querydata->orderBy($value, $request->sort_value);
                     }
                     if (in_array($key, ['start_date', 'end_date'])) {
                         $querydata->where('contracts.' . $key, 'LIKE', '%' . $value . '%');
@@ -113,6 +109,12 @@ class ContractService implements ContractInterface
                 } else {
                     //exclude expired default
                     $querydata->where('contract_status', '!=', 'Expired');
+                }
+                if ($request->sort_by) {
+                    $querydata->orderBy($request->sort_by, $request->sort_value);
+                }
+                else{
+                    $querydata->orderBy('contracts.updated_at', 'desc'); //default sort
                 }
                 if ($querydata->count() == 0) {
                     return response()->json(['error' => 'Data not found'], 404);
