@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\ActivityLogInsertController;
 use App\Http\Controllers\MicrosoftAuthController;
 use App\Http\Controllers\MsaController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OneDriveController;
 use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\UserCheckController;
 use App\Http\Controllers\RoleController;
@@ -57,6 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
     Route::post('/msa/update/{id}', [MSAController::class, 'editMsa']);
     Route::post('/msa/renew/{id}', [MsaController::class, 'renewMsa']);
+    Route::get('/msa/count', [MSAController::class, 'msaCount']);
 
     // Contracts routes
     Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
@@ -92,17 +95,7 @@ Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
     // Routes accessible only to admins or superadmins
 
 });
-Route::get('/experion/list', [ExperionEmployeeController::class, 'show']);
-Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
-Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
-// Route::get('/msa/list', [MSAController::class, 'MSAList']);
-Route::get('/notification/list', [NotificationController::class, 'getUserNotification']);
-// Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
-Route::get('/contract/ducount', [ContractController::class, 'getDuCount']);
-Route::get('/contracts/revenue', [ContractController::class, 'getAllContractsRevenue']);
-Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
-Route::get('/msa/count', [MSAController::class, 'msaCount']);
-// Route::get('/msa/list', [MSAController::class, 'MSAList']);
+
 Route::get('/view-blade/{filename}', function ($filename) {
     return view($filename);
 });
@@ -116,3 +109,8 @@ Route::get('/role/details', [RoleController::class, 'getRole']);
 Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
 Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
       
+Route::post("/activitylog/insert",[ActivityLogInsertController::class,'addToActivityLog']);
+
+// Onedrive token check
+// Route::post('/onedrive', [OneDriveController::class, 'token']);
+Route::post('/onedrivefile', [OneDriveController::class, 'store']);

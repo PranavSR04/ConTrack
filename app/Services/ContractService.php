@@ -145,6 +145,10 @@ class ContractService implements ContractInterface
             // Checking whether contract needed to be closed
             if ($request->contract_status === "Closed") {
                 $result = Contracts::where('id', $contractId)->update(['contract_status' => "Closed"]);
+                $action = "Closed";
+                $activityLogInsertService = new ActivityLogInsertService(); 
+                $insertController = new ActivityLogInsertController($activityLogInsertService);
+                $insertController->addToActivityLog($contractId, $contract->msa_id, $request->contract_added_by, "Closed");
                 return response()->json(['message' => 'Contract Closed']);
             }
 
@@ -454,15 +458,9 @@ class ContractService implements ContractInterface
                         }
 
                         $action = "Edited";
-                        $activityLogInsertService = new ActivityLogInsertService();
+                        $activityLogInsertService = new ActivityLogInsertService(); 
                         $insertController = new ActivityLogInsertController($activityLogInsertService);
                         $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
-                        // ActivityLogs::create([
-                        //     'contract_id'=> $contractId,
-                        //     'msa_id'=> $request->msa_id,
-                        //     'performed_by'=>$request->contract_added_by,
-                        //     'action'=>$action
-                        // ]);
 
                         return response()->json([
                             "message" => "Contract edited successfully",
@@ -597,15 +595,9 @@ class ContractService implements ContractInterface
             $contractId = $contract->id;
 
             $action = "Added";
-            // $activityLogInsertService = new ActivityLogInsertService();
-            // $insertController = new ActivityLogInsertController($activityLogInsertService);
-            // $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
-            ActivityLogs::create([
-                'contract_id'=> $contractId,
-                'msa_id'=> $request->msa_id,
-                'performed_by'=>$request->contract_added_by,
-                'action'=>$action
-            ]);
+            $activityLogInsertService = new ActivityLogInsertService();
+            $insertController = new ActivityLogInsertController($activityLogInsertService);
+            $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
             // Associate users with the contract
             if (!empty ($request->assoc_users)) {
                 foreach ($request->assoc_users as $users) {
