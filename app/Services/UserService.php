@@ -196,13 +196,10 @@ class UserService implements UserInterface
             if (empty($requestData)) {
                 return $myContracts->paginate(10);
             } else {
+                //add search conditions
                 foreach ($requestData as $key => $value) {
- 
                     if (in_array($key, ['contract_ref_id', 'client_name', 'du', 'contract_type', 'msa_ref_id', 'contract_status'])) {
                         $myContracts->where($key, 'LIKE', '%' . $value . '%');
-                    }
-                    if ($key == 'sort_by') {
-                        $myContracts->orderBy($value, $request->sort_value);
                     }
                     if (in_array($key, ['start_date', 'end_date'])) {
                         $myContracts->where('contracts.' . $key, 'LIKE', '%' . $value . '%');
@@ -214,10 +211,15 @@ class UserService implements UserInterface
                     //exclude expired default
                     $myContracts->where('contract_status', '!=', 'Expired');
                 }
+                if ($request->sort_by) {
+                    $myContracts->orderBy($request->sort_by, $request->sort_value);
+                }
+                else{
+                    $myContracts->orderBy('contracts.updated_at', 'desc'); //default sort
+                }
                 if ($myContracts->count() == 0) {
                     return response()->json(['error' => 'Data not found'], 404);
                 }
- 
                 return $myContracts->paginate(10);
             }
         } catch (Exception $e) {
