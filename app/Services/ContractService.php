@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 
 class ContractService implements ContractInterface
-{ 
+{
     public function getContractData(Request $request, $id = null)
     {
         if ($id != null) { //get individual contracts data if id is passed.
@@ -34,11 +34,17 @@ class ContractService implements ContractInterface
                     //get milestone based on contract type  
                     if ($contractType == 'TM') {
                         $milestones = TimeAndMaterialContracts::where('tm_contracts.contract_id', '=', $id)
-                        ->select('id','contract_id','milestone_desc', 'milestone_enddate','amount');
+                            ->select('id', 'contract_id', 'milestone_desc', 'milestone_enddate', 'amount');
                     } elseif ($contractType == 'FF') {
                         $milestones = FixedFeeContracts::where('ff_contracts.contract_id', '=', $id)
-                            ->select('id','contract_id','milestone_desc', 'milestone_enddate',
-                            'percentage','amount');
+                            ->select(
+                                'id',
+                                'contract_id',
+                                'milestone_desc',
+                                'milestone_enddate',
+                                'percentage',
+                                'amount'
+                            );
                     }
                     $data = $milestones->get();
                     //joining with contract data
@@ -49,7 +55,7 @@ class ContractService implements ContractInterface
 
                     //get all addendums
                     $addendum = Addendums::where('contract_id', '=', $id)
-                    ->select('id','contract_id','addendum_doclink')
+                        ->select('id', 'contract_id', 'addendum_doclink')
                         ->get();
                     //join the data
                     $combinedData = $combinedData->map(function ($contract) use ($addendum) {
@@ -67,10 +73,10 @@ class ContractService implements ContractInterface
                         $contract['associated_users'] = $associatedUsers->where('contract_id', $contract['id'])->values()->all();
                         return $contract;
                     });
-                    return response()->json(["data" => $combinedData],200);
+                    return response()->json(["data" => $combinedData], 200);
                 }
             } catch (Exception $e) {
-                return response()->json(['error' => $e->getMessage()],404);
+                return response()->json(['error' => $e->getMessage()], 404);
             }
         }
         try {
@@ -449,10 +455,10 @@ class ContractService implements ContractInterface
                             $addendum->store($request, $contractId);
                         }
 
-                        // $action = "Edited";
-                        // $activityLogInsertService = new ActivityLogInsertService();
-                        // $insertController = new ActivityLogInsertController($activityLogInsertService);
-                        // $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
+                        $action = "Edited";
+                        $activityLogInsertService = new ActivityLogInsertService();
+                        $insertController = new ActivityLogInsertController($activityLogInsertService);
+                        $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
 
                         return response()->json([
                             "message" => "Contract edited successfully",
@@ -560,7 +566,7 @@ class ContractService implements ContractInterface
             }
             // Validate milestone amounts for FF contract
             if ($request->contract_type === 'FF' && ($totalPercentage !== 100 || floatval($totalAmount) !== floatval($request->estimated_amount))) {
-                return response()->json(['error in milestone amount calculation' => 'Invalid milestones for Fixed Fee contract.'], 404);
+                return response()->json(['error' => 'Invalid milestones for Fixed Fee contract.'], 404);
             }
             // Validate milestone amounts for TM contract
             if ($request->contract_type === 'TM' && $totalAmount !== (int) $request->estimated_amount) {
@@ -704,7 +710,7 @@ class ContractService implements ContractInterface
             ];
         }
 
-        return response()->json($contractDetails,200);
+        return response()->json($contractDetails, 200);
     }
 
     public function topRevenueRegions()
@@ -716,7 +722,7 @@ class ContractService implements ContractInterface
                 ->orderByDesc('total_amount')
                 ->limit(3)
                 ->get();
-    
+
             return response()->json($regions);
         } catch (QueryException $e) {
             if (strpos($e->getMessage(), 'Unknown column') !== false) {
@@ -728,7 +734,7 @@ class ContractService implements ContractInterface
         }
     }
     public function getContractCount()
-    { 
+    {
         try {
             $querydata = Contracts::selectRaw('
             COUNT(*) as total,
@@ -737,8 +743,8 @@ class ContractService implements ContractInterface
             SUM(contract_status = "Expiring") as expiring,
             SUM(contract_status = "Closed") as closed,
             SUM(contract_status = "Expired") as Expired ')
-    ->first();
-            return response()->json(["data" => $querydata],200);
+                ->first();
+            return response()->json(["data" => $querydata], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -746,15 +752,15 @@ class ContractService implements ContractInterface
     }
     public function getTopContractRegions() //region with highest contracts
     {
-        try { 
+        try {
             $querydata = Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
-                ->select('region', DB::raw('COUNT(*) AS contractCount')) 
+                ->select('region', DB::raw('COUNT(*) AS contractCount'))
                 ->groupBy('region')
                 ->orderByDesc('contractCount')
                 ->limit(5)->get();
-            return response()->json(["data" => $querydata],200);
-        } catch (Exception $e) { 
-            return response()->json(['error' => $e->getMessage()], 500); 
+            return response()->json(["data" => $querydata], 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
 
     }
