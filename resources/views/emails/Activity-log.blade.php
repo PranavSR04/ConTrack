@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
  
-<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
- 
 <head>
     <title></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -16,10 +14,6 @@
             box-sizing: border-box;
         }
  
-        * {
-            box-sizing: border-box;
-        }
- 
         body {
             margin: 0;
             padding: 0;
@@ -29,72 +23,6 @@
             color: inherit !important;
             text-decoration: inherit !important;
         }
- 
-        a[x-apple-data-detectors] {
-            color: inherit !important;
-            text-decoration: inherit !important;
-        }
- 
-        #MessageViewBody a {
-            color: inherit;
-            text-decoration: none;
-        }
- 
-        p {
-            line-height: inherit
-        }
- 
-        .desktop_hide,
-        .desktop_hide table {
-            mso-hide: all;
-            display: none;
-            max-height: 0px;
-            overflow: hidden;
-        }
- 
-        .image_block img+div {
-            display: none;
-        }
- 
-        @media (max-width:620px) {
-            .desktop_hide table.icons-inner {
-                display: inline-block !important;
-            }
- 
-            .icons-inner {
-                text-align: center;
-            }
- 
-            .icons-inner td {
-                margin: 0 auto;
-            }
- 
-            .mobile_hide {
-                display: none;
-            }
- 
-            .row-content {
-                width: 100% !important;
-            }
- 
-            .stack .column {
-                width: 100%;
-                display: block;
-            }
- 
-            .mobile_hide {
-                min-height: 0;
-                max-height: 0;
-                max-width: 0;
-                overflow: hidden;
-                font-size: 0px;
-            }
- 
-            .desktop_hide,
-            .desktop_hide table {
-                display: table !important;
-                max-height: none !important;
-            }
  
         #MessageViewBody a {
             color: inherit;
@@ -176,8 +104,9 @@
                                                     <table class="heading_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                                                         <tr>
                                                             <td class="pad" style="display: flex;">
-                                                                <img src="./Subtract.png" alt="ContracK-icon-subtract">
-                                                                <h1 style="margin: 0 20px; color: #000; direction: ltr; font-size: 38px; font-weight: 700; letter-spacing: normal; line-height: 120%; font-family: Montserrat, sans-serif; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 45.6px;"><span class="tinyMce-placeholder">CONTRACK</span></h1>
+                                                            <p><b style="font-size: 50px;">experion</b><br> <span style="margin-left: 70px;">technologies</span></p>                                                              
+                                                               
+                                                                <h1 style="margin: 0 50px; color: #000; direction: ltr; font-size: 38px; font-weight: 700; letter-spacing: normal; line-height: 120%; font-family: Montserrat, sans-serif; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 45.6px;"><br><br><span class="tinyMce-placeholder">CONTRACK</span></h1>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -346,6 +275,5 @@
         </tbody>
     </table><!-- End -->
 </body>
- 
  
 </html>

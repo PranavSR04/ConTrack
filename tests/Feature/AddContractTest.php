@@ -8,9 +8,6 @@ use Tests\TestCase;
 
 class AddContractTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
     public function test_example(): void
     {
         $this->withoutMiddleware();

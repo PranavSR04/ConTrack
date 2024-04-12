@@ -16,12 +16,12 @@ class ActivityLogObserver
      */
     public function created(ActivityLogs $activityLogs)
     {
-        $users=User::all();
-        $failedEmails = [];
-        foreach ($users as $user) {
+        // $users=User::all();
+        // $failedEmails = [];
+        // foreach ($users as $user) {
             
-                Mail::to($user->user_mail)->send(new SendMailNotification($activityLogs));
-                // Log::info('Email sent successfully to: ' . $user->user_mail);
+        //         Mail::to($user->user_mail)->send(new SendMailNotification($activityLogs));
+        //         Log::info('Email sent successfully to: ' . $user->user_mail);
            
         // }
         //     if(!empty($failedEmails)) {
@@ -30,8 +30,8 @@ class ActivityLogObserver
         //     }
         //     else{
         //         Log::info('All emails sent successfully');
-           }
-           
+        //    }
+        SendActivityLogEmail::dispatch($activityLogs)->onQueue('emails');
     }
 
     /**

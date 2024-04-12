@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class ExperionEmployeesTest extends TestCase
+class AAAExperionEmployeesTest extends TestCase
 {
     /**
      * Test to check if experion employees are listed
@@ -19,7 +19,6 @@ class ExperionEmployeesTest extends TestCase
         // Creating a test user
         $user = ExperionEmployees::create([
             'email_id' => "sarah.thomas@experionglobal.com",
-            "password"=> "sarahmary",
             'first_name' => 'Sarah',
             'middle_name' => 'Mary',
             'last_name' => 'Thomas',
@@ -43,7 +42,30 @@ class ExperionEmployeesTest extends TestCase
                 'updated_at' => $user->updated_at,
             ]
         ]);
-        
+
+    }
+
+    public function test_returns_not_found_if_no_users_matching_name()
+    {
+        $this->withoutMiddleware();
+        $response = $this->getJson('/api/experion/list?name=NonExistingName');
+
+        $response->assertStatus(404)
+            ->assertJson(['error' => 'No records found.']);
+    }
+
+    public function test_validates_name_parameter()
+    {
+        $this->withoutMiddleware();
+        $response = $this->getJson('/api/experion/list');
+
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'error' => [
+                    'name',
+                ],
+            ]);
+
     }
 
 }

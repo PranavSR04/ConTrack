@@ -11,14 +11,14 @@ use Illuminate\Http\Response;
 class EditUserTest extends TestCase
 {
     /**
-     * A basic feature test example.
+     * A  test to check edit user functionality.
      */
     public function test_edit_user(): void
     {
         $this->withoutMiddleware();
         
         // Selecting a user to update
-        $user = User::where('experion_id', 10)->first();
+        $user = User::where('experion_id', 1)->first();
         // Ensure that the user exists
         if (!$user) {
             throw new \Exception('User not found in the database');
@@ -51,7 +51,7 @@ class EditUserTest extends TestCase
         $this->withoutMiddleware();
         
         // Selecting a user to update
-        $user = User::where('experion_id', 10)->first();
+        $user = User::where('experion_id', 1)->first();
         // Ensure that the user exists
         if (!$user) {
             throw new \Exception('User not found in the database');

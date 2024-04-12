@@ -25,21 +25,21 @@ return new class extends Migration
             [
                 'contract_id' => 1,
                 'milestone_desc' => 'On BRD Signoff',
-                'milestone_enddate' => now()->addMonths(7), //'2024-10-20',
+                'milestone_enddate' => now()->subMonths(2), //'2024-10-20',
                 'percentage' => 20,
                 'amount' => 300000.00,
             ],
             [
                 'contract_id' => 1,
                 'milestone_desc' => 'On API creation',
-                'milestone_enddate' => now()->addMonths(19), //'2025-08-15'
+                'milestone_enddate' => now()->subMonths(1), //'2025-08-15'
                 'percentage' => 40,
                 'amount' => 600000.00,
             ],
             [
                 'contract_id' => 1,
                 'milestone_desc' => 'On Deployment',
-                'milestone_enddate' => now()->addMonths(34), // '2027-01-01'
+                'milestone_enddate' => now()->addMonths(4), // '2027-01-01'
                 'percentage' => 40,
                 'amount' => 600000.00,
             ],
@@ -145,15 +145,15 @@ return new class extends Migration
                 'contract_id' => 13,
                 'milestone_desc' => 'On completion of UI',
                 'milestone_enddate' => now()->subMonths(12) ,
-                'percentage' => 20,
-                'amount' => 400000.00,
+                'percentage' => 5,
+                'amount' => 100000.00,
             ],
             [
                 'contract_id' => 13,
                 'milestone_desc' => 'On completion of testing',
                 'milestone_enddate' => now(),
-                'percentage' => 50,
-                'amount' => 1000000.00,
+                'percentage' => 65,
+                'amount' => 1300000.00,
             ],
             [
                 'contract_id' => 14,

@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Http\Controllers\Controller;
 use App\Models\ExperionEmployees;
 use Illuminate\Http\Request;
@@ -12,24 +11,20 @@ use App\Models\User as ContrackUser;
 
 class MicrosoftAuthController extends Controller
 {
+    //Function for checking whether the Azure Token is valid
     public function loginAzure(Request $request)
     {
         $microsoft = new Auth(env('TENANT_ID'), env('CLIENT_ID'), env('CLIENT_SECRET'), env('CALLBACK_URL'), ["User.Read"]);
         $accessToken = $request->access_token;
         $microsoft->setAccessToken($accessToken);
 
-        $user = new User;
-        // return response()->json([$user]);
+        $user = new User; // if valid returns the user details
         if (!$user) {
             return response()->json(['error' => 'Invalid Email or Password']);
         }
 
         $email_id = $user->data->getUserPrincipalName();
-        // return response()->json([$email_id]);
-        // $u_id = $user->data->getId();
-        $expuser = ExperionEmployees::where('email_id', $email_id)->first();
-        // return response()->json([$expuser]);
-
+        $expuser = ExperionEmployees::where('email_id', $email_id)->first(); //checks if the user is valid in Experion DB
 
         if (!$expuser) {
             return response()->json(['error' => 'Invalid Email or Password. You may not be a registered employee. Please check your credentials or contact your administrator.']);
@@ -38,13 +33,15 @@ class MicrosoftAuthController extends Controller
         $credentials = [
             'email_id' => $email_id
         ];
-        $jwt_token = auth()->attempt($credentials);
-        // return response()->json([$jwt_token]);
-        return $this->handleRoleCheck($jwt_token);
+        $jwt_token = auth()->attempt($credentials); //Creates JWT token with emailid
+
+        return $this->handleRoleCheck($jwt_token); //Cheks if the Experion Employee is Allowed to use our system
 
     }
 
 
+
+    //Funtion returns the complete details of user along with the JWT
     protected function createNewToken($token, $contrackUser,$user)
     {
         return response()->json([
@@ -58,10 +55,7 @@ class MicrosoftAuthController extends Controller
     }
     protected function handleRoleCheck($token)
     {
-
-        $user = auth()->user();
-        // $expuser = ExperionEmployees::where('email_id', $user->email_id)->first();
-
+        $user = auth()->user(); //If valid JWT then returns user details
         $contrackUser = ContrackUser::where("experion_id", $user->id)->where("is_active", 1)->first();
 
         // Check if the user is authenticated
@@ -71,8 +65,5 @@ class MicrosoftAuthController extends Controller
             return $this->createNewToken($token, $contrackUser,$user);
 
         }
-
     }
-
-
 }
