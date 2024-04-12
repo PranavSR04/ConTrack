@@ -217,7 +217,7 @@ return new class extends Migration
                 'contract_id' => 19,
                 'milestone_desc' => 'On Deployment',
                 'milestone_enddate' => now()->subMonths(1),
-                'amount' => 200000.00,
+                'amount' => 2000000.00,
             ],
     
         ];
