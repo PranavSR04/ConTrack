@@ -34,6 +34,9 @@ class MsaService implements MsaInterface
                     case 'is_active':
                         $msas_query->where('is_active',$is_active);
                         break;
+                    case 'id':
+                        $msas_query->where('id',$value);
+                        break;
                     case 'msa_ref_id':
                     case 'client_name':
                          $msas_query->where($key,'like', $value.'%');
@@ -144,6 +147,7 @@ class MsaService implements MsaInterface
                 'performed_by'=>$added_by,
                 'action'=>$action
             ]);
+         
 
 
             return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 200);
@@ -216,25 +220,26 @@ class MsaService implements MsaInterface
             
             $msa->update($validated);
 
-             $action = "Edited";
-             ActivityLogs::create([
+            $action = "Edited";
+            // $activityLogInsertService = new ActivityLogInsertService();
+            // $insertController = new ActivityLogInsertController($activityLogInsertService);
+            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            ActivityLogs::create([
                 'contract_id'=> null,
                 'msa_id'=> $msa->id,
                 'performed_by'=>$added_by,
                 'action'=>$action
             ]);
-            // $activityLogInsertService = new ActivityLogInsertService();
-            // $insertController = new ActivityLogInsertController($activityLogInsertService);
-            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+
          return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Validation failed'], 422);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'MSA not found'], 404);
         } catch (QueryException $e) {
-            return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to update MSA -', 'message' => $e->getMessage()], 500);
         } catch (Exception $e) {
-            return response()->json(['error' => 'Failed to update MSA', 'message' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to update MS--', 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -247,6 +252,7 @@ class MsaService implements MsaInterface
  */
     public function renewMsa(Request $request, $user_id)
     {
+        // return response()->json($request->all());
         try {
             // Validate the incoming request data
             $validator = Validator::make($request->all(), [
@@ -282,16 +288,10 @@ class MsaService implements MsaInterface
                     'is_active' => 1
                 ]));
             $added_by = $user_id;
-             $action = "Renewed";
-             ActivityLogs::create([
-                'contract_id'=> null,
-                'msa_id'=> $msa->id,
-                'performed_by'=>$added_by,
-                'action'=>$action
-            ]);
-            // $activityLogInsertService = new ActivityLogInsertService();
-            // $insertController = new ActivityLogInsertController($activityLogInsertService);
-            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            $action = "Renewed";
+            $activityLogInsertService = new ActivityLogInsertService();
+            $insertController = new ActivityLogInsertController($activityLogInsertService);
+            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
 
             return response()->json(['message' => 'MSA renewed successfully', 'msa' => $msa], 200);
 
