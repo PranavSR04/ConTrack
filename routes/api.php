@@ -5,6 +5,7 @@ use App\Http\Controllers\MicrosoftAuthController;
 use App\Http\Controllers\MsaController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OneDriveController;
 use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\UserCheckController;
 use App\Http\Controllers\RoleController;
@@ -54,11 +55,11 @@ Route::middleware('auth')->group(function () {
 
     // MSA routes
     Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
-    Route::get('/msa/list', [MSAController::class, 'MSAList']);
-    Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
-    Route::post('/msa/update/{id}', [MSAController::class, 'editMsa']);
-    Route::post('/msa/renew/{id}', [MsaController::class, 'renewMsa']);
-    Route::get('/msa/count', [MSAController::class, 'msaCount']);
+    // Route::get('/msa/list', [MSAController::class, 'MSAList']);
+    // Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
+    // Route::post('/msa/update/{id}', [MSAController::class, 'editMsa']);
+    // Route::post('/msa/renew/{id}', [MsaController::class, 'renewMsa']);
+    // Route::get('/msa/count', [MSAController::class, 'msaCount']);
 
     // Contracts routes
     Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
@@ -109,3 +110,13 @@ Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData'
 Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
       
 Route::post("/activitylog/insert",[ActivityLogInsertController::class,'addToActivityLog']);
+
+// Onedrive token check
+// Route::post('/onedrive', [OneDriveController::class, 'token']);
+Route::post('/onedrivefile', [OneDriveController::class, 'store']);
+   Route::get('/msa/list', [MSAController::class, 'MSAList']);
+    Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
+    Route::post('/msa/update/{id}', [MSAController::class, 'editMsa']);
+    Route::post('/msa/renew/{id}', [MsaController::class, 'renewMsa']);
+    Route::get('/msa/count', [MSAController::class, 'msaCount']);
+    Route::get('/msa/page/{id}',[MsaController::class,'msaPage']);
