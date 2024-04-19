@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/user/insert', [UserController::class, 'create']);
     Route::get('/users/get', [UserController::class, 'getUsers']);
     Route::post('/users/add', [UserController::class, 'addUser']);
+    Route::post('/group/add', [UserController::class, 'addGroup']);
     Route::put('/users/update/{user_id}', [UserController::class, 'updateUser']);
 
     // MSA routes
