@@ -326,6 +326,10 @@ class MsaService implements MsaInterface
     public function msaPage($id)
     {
         try {
+            $msa_ref_id = MSAs::where('msas.id', $id)->value('msa_ref_id');
+            
+            $msa_doclinks = MSAs::where('msa_ref_id', $msa_ref_id)->pluck('msa_doclink')->toArray();
+
             $contract_list = Contracts::join('msas', 'msas.id', '=', 'contracts.msa_id')
                 ->select('contract_ref_id', 'contracts.id', 'du', 'contract_type', 'estimated_amount', 'contract_status', 'contracts.start_date', 'contracts.end_date')
                 ->where('msas.id', $id)
@@ -337,8 +341,11 @@ class MsaService implements MsaInterface
                 $contract['contracts'] = $contract_list->where('contracts.id', $contract['contracts.id'])->values()->all();
                 return $contract;
             });
-    
-            return response()->json($combinedMsaData);
+            return response()->json([
+                'msa_data' => $combinedMsaData,
+                'msa_doclink' => $msa_doclinks
+            ]);
+        ;
         } catch (Exception $e) {
             return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
