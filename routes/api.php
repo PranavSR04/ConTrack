@@ -122,3 +122,5 @@ Route::get('users/list', [UserController::class, 'getUsersList']);
 
 Route::post('groups/addUsers', [UserController::class, 'addUsersToIndividualGroup']);
 Route::put('groups/removeUser', [UserController::class, 'deleteUserFromGroup']);
+Route::delete('groups/delete', [UserController::class, 'deleteGroup']);
+

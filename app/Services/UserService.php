@@ -341,10 +341,25 @@ class UserService implements UserInterface
         }
     }
 
-    public function getUsersList()
+    // public function getUsersList()
+    // {
+    //     // Retrieve all users with only 'id' and 'user_name' fields
+    //     return User::select('id', 'user_name')->orderBy('user_name', 'asc')->get();
+    // }
+
+    public function getUsersList(Request $request)
     {
-        // Retrieve all users with only 'id' and 'user_name' fields
-        return User::select('id', 'user_name')->orderBy('user_name', 'asc')->get();
+        $query = User::select('id', 'user_name')
+                        ->where('users.is_active', 1)
+                        ->orderBy('user_name', 'asc');
+
+        // Check if a search query is present
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('user_name', 'like', '%' . $search . '%');
+        }
+
+        return $query->get();
     }
 
     public function addUsersToIndividualGroup(Request $request)
@@ -436,6 +451,20 @@ class UserService implements UserInterface
     }
 
     }
+
+    public function deleteGroup(Request $request) 
+    {
+    $selectedIndividualGroup = $request->input('selectedIndividualGroup');
+
+    // Delete records from user_group_map table
+    UserGroupMap::where('group_id', $selectedIndividualGroup)->delete();
+
+    // Delete record from group table
+    Group::where('id', $selectedIndividualGroup)->delete();
+
+    return response()->json(['message' => 'Group and mappings deleted successfully']);
+}
+
 
 
 

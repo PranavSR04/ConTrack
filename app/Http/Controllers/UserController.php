@@ -60,9 +60,9 @@ class UserController extends Controller
 
     }
 
-    public function getUsersList()
+    public function getUsersList(Request $request)
     {
-        return $this->userService->getUsersList();
+        return $this->userService->getUsersList($request);
     }
 
     public function addUsersToIndividualGroup(Request $request)
@@ -73,6 +73,11 @@ class UserController extends Controller
     public function deleteUserFromGroup(Request $request)
     {
         return $this->userService->deleteUserFromGroup($request);
+    }
+    
+    public function deleteGroup(Request $request)
+    {
+        return $this->userService->deleteGroup($request);
     }
 
     public function create()
