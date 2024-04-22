@@ -50,6 +50,42 @@ class UserController extends Controller
         return $this->userService->myContracts($request,$user_id);
     }
 
+    public function getGroups()
+    {
+        return $this->userService->getGroups();
+    }
+
+    public function assignUserGroups(Request $request)
+    {
+        return $this->userService->assignUserGroups($request);
+    }
+
+    public function getGroupUsers(Request $request)
+    {
+        return $this->userService->getGroupUsers($request);
+
+    }
+
+    public function getUsersList(Request $request)
+    {
+        return $this->userService->getUsersList($request);
+    }
+
+    public function addUsersToIndividualGroup(Request $request)
+    {
+        return $this->userService->addUsersToIndividualGroup($request);
+    }
+
+    public function deleteUserFromGroup(Request $request)
+    {
+        return $this->userService->deleteUserFromGroup($request);
+    }
+    
+    public function deleteGroup(Request $request)
+    {
+        return $this->userService->deleteGroup($request);
+    }
+
     public function create()
     {
         //
