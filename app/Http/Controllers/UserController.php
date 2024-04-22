@@ -28,6 +28,12 @@ class UserController extends Controller
 
     }
 
+
+    public function addGroup(Request $request)
+    {
+        return $this->userService->addGroup($request);
+
+    }
     public function getUsers(Request $request)
     {
         return $this->userService->getUsers($request);
