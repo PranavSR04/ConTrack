@@ -47,4 +47,5 @@ public function MSAList(Request $request);
      * @return mixed The count of MSAs.
      */
 public function msaCount(Request $request);
+public function msaPage($id);
 }

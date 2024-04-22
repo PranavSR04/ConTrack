@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Http\Controllers\ActivityLogInsertController;
 use App\Models\ActivityLogs;
+use App\Models\Contracts;
 use App\Models\MSAs;
 use App\ServiceInterfaces\MsaInterface;
 use Dotenv\Exception\ValidationException;
@@ -34,6 +35,9 @@ class MsaService implements MsaInterface
                     case 'is_active':
                         $msas_query->where('is_active',$is_active);
                         break;
+                    case 'id':
+                        $msas_query->where('id',$value);
+                        break;
                     case 'msa_ref_id':
                     case 'client_name':
                          $msas_query->where($key,'like', $value.'%');
@@ -50,10 +54,13 @@ class MsaService implements MsaInterface
                         break;
                 }
             }
+            if (isset($params['sort_by'])){
+                $msas=$msas_query->paginate(10);
+            }else{
                 $msas = $msas_query
                     ->orderByDesc('updated_at')
                     ->paginate(10);
-
+            }
             return response()->json($msas, 200);
         } catch (QueryException $e) {
             return response()->json(['error' => 'Querry error'], 500);
@@ -135,9 +142,16 @@ class MsaService implements MsaInterface
 
 
             $action = "Added";
-            $activityLogInsertService = new ActivityLogInsertService();
-            $insertController = new ActivityLogInsertController($activityLogInsertService);
-            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            // $activityLogInsertService = new ActivityLogInsertService();
+            // $insertController = new ActivityLogInsertController($activityLogInsertService);
+            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            ActivityLogs::create([
+                'contract_id'=> null,
+                'msa_id'=> $msa->id,
+                'performed_by'=>$added_by,
+                'action'=>$action
+            ]);
+         
 
 
             return response()->json(['message' => 'MSA created successfully', 'msa' => $msa], 200);
@@ -261,15 +275,16 @@ class MsaService implements MsaInterface
 
                 $googleDrive = new GoogleDriveService();
                 $fileLink = $googleDrive->store($request);
-                $msa->update(([
+                $msa = MSAs::create([
+                    'msa_ref_id' => $request->msa_ref_id,
                     'client_name' => $request->client_name,
+                    'added_by' => $user_id,
                     'region' => $request->region,
-                    'msa_doclink' => $fileLink,
                     'start_date' => $request->start_date,
                     'end_date' => $request->end_date,
+                    'msa_doclink' => $fileLink,
                     'comments' => $request->comments,
-                    'is_active' => 1
-                ]));
+                ]);
             $added_by = $user_id;
             $action = "Renewed";
             $activityLogInsertService = new ActivityLogInsertService();
@@ -308,4 +323,32 @@ class MsaService implements MsaInterface
         }
 
     }
+    public function msaPage($id)
+    {
+        try {
+            $msa_ref_id = MSAs::where('msas.id', $id)->value('msa_ref_id');
+            
+            $msa_doclinks = MSAs::where('msa_ref_id', $msa_ref_id)->pluck('msa_doclink')->toArray();
+
+            $contract_list = Contracts::join('msas', 'msas.id', '=', 'contracts.msa_id')
+                ->select('contract_ref_id', 'contracts.id', 'du', 'contract_type', 'estimated_amount', 'contract_status', 'contracts.start_date', 'contracts.end_date')
+                ->where('msas.id', $id)
+                ->get();
+    
+            $msa_data = MSAs::where('msas.id', $id)->get();
+    
+            $combinedMsaData = $msa_data->map(function ($contract) use ($contract_list) {
+                $contract['contracts'] = $contract_list->where('contracts.id', $contract['contracts.id'])->values()->all();
+                return $contract;
+            });
+            return response()->json([
+                'msa_data' => $combinedMsaData,
+                'msa_doclink' => $msa_doclinks
+            ]);
+        ;
+        } catch (Exception $e) {
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
+        }
+    }
+    
 }
