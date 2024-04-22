@@ -231,4 +231,7 @@ class MsaController extends Controller
         return $this->MsaService->msaCount($request);
 
      }
+     public function msaPage($id=null){
+        return $this->MsaService->msaPage($id);
+     }
 }

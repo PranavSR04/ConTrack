@@ -81,6 +81,25 @@ class UserService implements UserInterface
         }
     }
 
+    public function addGroup(Request $request)
+    {
+
+        try {
+            $request->validate([
+                'group_name' => 'required|unique:group',
+            ]);
+
+            $group = new Group([
+                'group_name' => $request->group_name,
+                'timestamp' => now(),
+            ]);
+            $group->save();
+
+            return response()->json(['message' => 'Group added successfully'], 201);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
+    }
     public function getUsers(Request $request)
     {
         try {

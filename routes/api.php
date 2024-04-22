@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/user/insert', [UserController::class, 'create']);
     Route::get('/users/get', [UserController::class, 'getUsers']);
     Route::post('/users/add', [UserController::class, 'addUser']);
+    Route::post('/group/add', [UserController::class, 'addGroup']);
     Route::put('/users/update/{user_id}', [UserController::class, 'updateUser']);
 
     // MSA routes
@@ -60,7 +61,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/msa/update/{id}', [MSAController::class, 'editMsa']);
     Route::post('/msa/renew/{id}', [MsaController::class, 'renewMsa']);
     Route::get('/msa/count', [MSAController::class, 'msaCount']);
-
+    Route::get('/msa/page/{id}',[MsaController::class,'msaPage']);
+    
     // Contracts routes
     Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
     Route::post('/contracts/add', [ContractController::class, 'addContract']);
@@ -123,4 +125,6 @@ Route::get('users/list', [UserController::class, 'getUsersList']);
 Route::post('groups/addUsers', [UserController::class, 'addUsersToIndividualGroup']);
 Route::put('groups/removeUser', [UserController::class, 'deleteUserFromGroup']);
 Route::delete('groups/delete', [UserController::class, 'deleteGroup']);
+
+
 
