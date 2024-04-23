@@ -55,13 +55,13 @@ Route::middleware('auth')->group(function () {
 
     // MSA routes
     Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
-    Route::get('/msa/list', [MSAController::class, 'MSAList']);
-    Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
-    Route::post('/msa/update/{id}', [MSAController::class, 'editMsa']);
-    Route::post('/msa/renew/{id}', [MsaController::class, 'renewMsa']);
+    // Route::get('/msa/list', [MSAController::class, 'MSAList']);
+    // Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
+    // Route::post('/msa/update/{id}', [MSAController::class, 'editMsa']);
+    // Route::post('/msa/renew/{id}', [MsaController::class, 'renewMsa']);
     Route::get('/msa/count', [MSAController::class, 'msaCount']);
-    Route::get('/msa/page/{id}',[MsaController::class,'msaPage']);
-    
+    // Route::get('/msa/page/{id}',[MsaController::class,'msaPage']);
+
     // Contracts routes
     Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
     Route::post('/contracts/add', [ContractController::class, 'addContract']);
@@ -115,4 +115,10 @@ Route::post("/activitylog/insert",[ActivityLogInsertController::class,'addToActi
 // Onedrive token check
 // Route::post('/onedrive', [OneDriveController::class, 'token']);
 Route::post('/onedrivefile', [OneDriveController::class, 'store']);
+
+Route::get('/msa/list', [MSAController::class, 'MSAList']);
+Route::post('/msa/add/{id}', [MSAController::class, 'addMsa']);
+Route::post('/msa/update/{id}', [MSAController::class, 'editMsa']);
+Route::post('/msa/renew/{id}', [MsaController::class, 'renewMsa']);
+Route::get('/msa/page/{id}',[MsaController::class,'msaPage']);
 
