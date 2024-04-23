@@ -330,11 +330,11 @@ class MsaService implements MsaInterface
             
             $combined_msa_doclink = [];
 
-$msa_records = MSAs::where('msa_ref_id', $msa_ref_id)->get();
+            $msa_records = MSAs::where('msa_ref_id', $msa_ref_id)->get();
 
-foreach ($msa_records as $msa_record) {
-    $combined_msa_doclink[$msa_record->start_date . '::' . $msa_record->end_date] = $msa_record->msa_doclink;
-}
+            foreach ($msa_records as $msa_record) {
+                $combined_msa_doclink[$msa_record->start_date . '::' . $msa_record->end_date] = $msa_record->msa_doclink;
+            }
 
             $contract_list = Contracts::join('msas', 'msas.id', '=', 'contracts.msa_id')
                 ->select('contract_ref_id', 'contracts.id', 'du', 'contract_type', 'estimated_amount', 'contract_status', 'contracts.start_date', 'contracts.end_date')
@@ -350,9 +350,7 @@ foreach ($msa_records as $msa_record) {
 
         $tm_contract_count = $contract_list->where('contract_type', 'TM')->count();
         $ff_contract_count = $contract_list->where('contract_type', 'FF')->count();
-        // Count of contracts with other types can be obtained similarly
 
-    
             $combinedMsaData = $msa_data->map(function ($contract) use ($contract_list) {
                 $contract['contracts'] = $contract_list->where('contracts.id', $contract['contracts.id'])->values()->all();
                 return $contract;
@@ -369,7 +367,6 @@ foreach ($msa_records as $msa_record) {
             'ff_contracts_count' => $ff_contract_count,
             'combined_msa_doclink' => $combined_msa_doclink,
             ]);
-        ;
         } catch (Exception $e) {
             return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
