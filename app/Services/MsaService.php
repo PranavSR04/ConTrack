@@ -342,7 +342,7 @@ class MsaService implements MsaInterface
                 return $contract;
             });
             return response()->json([
-                'msa_data' => $combinedMsaData,
+                'data' => $combinedMsaData,
                 'msa_doclink' => $msa_doclinks
             ]);
         ;
