@@ -30,10 +30,21 @@ class ExperionEmployeesService implements ExperionEmployeesInterface
                 'name' => 'required|string',
             ]);
 
+            // $users = ExperionEmployees::where(function ($query) use ($request) {
+            //     $query->where('first_name', 'like', $request->name . '%')
+            //         ->orWhere('middle_name', 'like', $request->name . '%')
+            //         ->orWhere('last_name', 'like', $request->name . '%');
+            // })->get();
+
+            // $users = ExperionEmployees::whereRaw("CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) LIKE ?", ["%{$request->name}%"])->get();
+
             $users = ExperionEmployees::where(function ($query) use ($request) {
-                $query->where('first_name', 'like', $request->name . '%')
-                    ->orWhere('middle_name', 'like', $request->name . '%')
-                    ->orWhere('last_name', 'like', $request->name . '%');
+                $nameParts = explode(' ', $request->name);
+                foreach ($nameParts as $part) {
+                    $query->orWhere('first_name', 'like', "%{$part}%")
+                          ->orWhere('middle_name', 'like', "%{$part}%")
+                          ->orWhere('last_name', 'like', "%{$part}%");
+                }
             })->get();
 
             if ($users->isEmpty()) {
