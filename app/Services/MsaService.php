@@ -59,7 +59,7 @@ class MsaService implements MsaInterface
             }else{
                 $msas = $msas_query
                     ->orderByDesc('updated_at')
-                    ->paginate(10);
+                    ->paginate($request->per_page);
             }
             return response()->json($msas, 200);
         } catch (QueryException $e) {
@@ -145,12 +145,12 @@ class MsaService implements MsaInterface
             // $activityLogInsertService = new ActivityLogInsertService();
             // $insertController = new ActivityLogInsertController($activityLogInsertService);
             // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
-            ActivityLogs::create([
-                'contract_id'=> null,
-                'msa_id'=> $msa->id,
-                'performed_by'=>$added_by,
-                'action'=>$action
-            ]);
+            // ActivityLogs::create([
+            //     'contract_id'=> null,
+            //     'msa_id'=> $msa->id,
+            //     'performed_by'=>$added_by,
+            //     'action'=>$action
+            // ]);
          
 
 
@@ -225,9 +225,9 @@ class MsaService implements MsaInterface
             $msa->update($validated);
 
             $action = "Edited";
-            $activityLogInsertService = new ActivityLogInsertService();
-            $insertController = new ActivityLogInsertController($activityLogInsertService);
-            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            // $activityLogInsertService = new ActivityLogInsertService();
+            // $insertController = new ActivityLogInsertController($activityLogInsertService);
+            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
          return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Validation failed'], 422);
@@ -287,9 +287,9 @@ class MsaService implements MsaInterface
                 ]);
             $added_by = $user_id;
             $action = "Renewed";
-            $activityLogInsertService = new ActivityLogInsertService();
-            $insertController = new ActivityLogInsertController($activityLogInsertService);
-            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            // $activityLogInsertService = new ActivityLogInsertService();
+            // $insertController = new ActivityLogInsertController($activityLogInsertService);
+            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
 
             return response()->json(['message' => 'MSA renewed successfully', 'msa' => $msa], 200);
 
@@ -326,9 +326,15 @@ class MsaService implements MsaInterface
     public function msaPage($id)
     {
         try {
-            $msa_ref_id = MSAs::where('msas.id', $id)->value('msa_ref_id');
+               $msa_ref_id = MSAs::where('msas.id', $id)->value('msa_ref_id');
             
-            $msa_doclinks = MSAs::where('msa_ref_id', $msa_ref_id)->pluck('msa_doclink')->toArray();
+            $combined_msa_doclink = [];
+
+            $msa_records = MSAs::where('msa_ref_id', $msa_ref_id)->get();
+
+            foreach ($msa_records as $msa_record) {
+                $combined_msa_doclink[$msa_record->start_date . '::' . $msa_record->end_date] = $msa_record->msa_doclink;
+            }
 
             $contract_list = Contracts::join('msas', 'msas.id', '=', 'contracts.msa_id')
                 ->select('contract_ref_id', 'contracts.id', 'du', 'contract_type', 'estimated_amount', 'contract_status', 'contracts.start_date', 'contracts.end_date')
@@ -336,16 +342,31 @@ class MsaService implements MsaInterface
                 ->get();
     
             $msa_data = MSAs::where('msas.id', $id)->get();
-    
+            $total_contract_count = $contract_list->count();
+        $active_contracts_count = $contract_list->where('contract_status', 'Active')->count();
+        $closed_contracts_count=$contract_list->where('contract_status', 'Closed')->count();
+        $expiring_contracts_count=$contract_list->where('contract_status', 'Expiring')->count();
+        $onprogess_contracts_count=$contract_list->where('contract_status', 'On Progess')->count();
+
+        $tm_contract_count = $contract_list->where('contract_type', 'TM')->count();
+        $ff_contract_count = $contract_list->where('contract_type', 'FF')->count();
+
             $combinedMsaData = $msa_data->map(function ($contract) use ($contract_list) {
                 $contract['contracts'] = $contract_list->where('contracts.id', $contract['contracts.id'])->values()->all();
                 return $contract;
             });
+           
             return response()->json([
-                'data' => $combinedMsaData,
-                'msa_doclink' => $msa_doclinks
+            'data' => $combinedMsaData,
+            'total_contracts_count' => $total_contract_count,
+            'active_contracts_count' => $active_contracts_count,
+            'closed_contracts_count'=>$closed_contracts_count,
+            'expiring_contracts_count'=>$expiring_contracts_count,
+            'onprogress_contracts_count'=>$onprogess_contracts_count,
+            'tm_contracts_count' => $tm_contract_count,
+            'ff_contracts_count' => $ff_contract_count,
+            'combined_msa_doclink' => $combined_msa_doclink,
             ]);
-        ;
         } catch (Exception $e) {
             return response()->json(['error' => 'An error occurred while processing the request.'], 500);
         }
