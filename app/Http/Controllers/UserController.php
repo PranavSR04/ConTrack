@@ -28,6 +28,12 @@ class UserController extends Controller
 
     }
 
+
+    public function addGroup(Request $request)
+    {
+        return $this->userService->addGroup($request);
+
+    }
     public function getUsers(Request $request)
     {
         return $this->userService->getUsers($request);
@@ -42,6 +48,42 @@ class UserController extends Controller
     public function myContracts(Request $request, $user_id)
     {
         return $this->userService->myContracts($request,$user_id);
+    }
+
+    public function getGroups()
+    {
+        return $this->userService->getGroups();
+    }
+
+    public function assignUserGroups(Request $request)
+    {
+        return $this->userService->assignUserGroups($request);
+    }
+
+    public function getGroupUsers(Request $request)
+    {
+        return $this->userService->getGroupUsers($request);
+
+    }
+
+    public function getUsersList(Request $request)
+    {
+        return $this->userService->getUsersList($request);
+    }
+
+    public function addUsersToIndividualGroup(Request $request)
+    {
+        return $this->userService->addUsersToIndividualGroup($request);
+    }
+
+    public function deleteUserFromGroup(Request $request)
+    {
+        return $this->userService->deleteUserFromGroup($request);
+    }
+    
+    public function deleteGroup(Request $request)
+    {
+        return $this->userService->deleteGroup($request);
     }
 
     public function create()
