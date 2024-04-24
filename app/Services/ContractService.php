@@ -272,14 +272,14 @@ class ContractService implements ContractInterface
 
                             // For enterting data into Associated Users table
                             $associated_users = "nil";
-                            if (!empty($request->associated_users)) {
-                                foreach ($decodedAssociatedUsers as $user) {
-                                    $userId = $user['user_id'];
+                            // if (!empty($request->associated_users)) {
+                            //     foreach ($decodedAssociatedUsers as $user) {
+                            //         $userId = $user['user_id'];
 
-                                    AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
-                                    $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
-                                }
-                            }
+                            //         AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
+                            //         $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
+                            //     }
+                            // }
 
                             // For enterting data into Fixed fee table
                             foreach ($milestonesUpdateData as $milestoneData) {
@@ -436,15 +436,15 @@ class ContractService implements ContractInterface
                         $contractResult = Contracts::where('id', $contractId)->get();
 
                         // For enterting data into Associated Users table
-                        $associated_users="nil";
-                        if (!empty ($request->associated_users)) {
-                            foreach ($decodedAssociatedUsers as $user) {
-                                $userId = $user['user_id'];
+                        // $associated_users="nil";
+                        // if (!empty ($request->associated_users)) {
+                        //     foreach ($decodedAssociatedUsers as $user) {
+                        //         $userId = $user['user_id'];
 
-                                AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
-                                $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
-                            }
-                        }
+                        //         AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
+                        //         $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
+                        //     }
+                        // }
 
                         foreach ($milestonesUpdateData as $milestoneData) {
                             $tmResult = TimeAndMaterialContracts::updateOrCreate(
@@ -473,7 +473,7 @@ class ContractService implements ContractInterface
                             "data" => [
                                 'contract_result' => $contractResult,
                                 'milestones_result' => $tmResult,
-                                'associatedusers_result' => $associated_users,
+                                // 'associatedusers_result' => $associated_users,
                             ]
                         ]);
                     } else {
@@ -495,6 +495,7 @@ class ContractService implements ContractInterface
 
     public function addContract(Request $request)
     {
+        // return response()->json([$request->all()]);
         // Validate the incoming request
         $validator = Validator::make($request->all(), [
             'msa_id' => 'required|exists:msas,id',
@@ -508,7 +509,7 @@ class ContractService implements ContractInterface
             'comments' => 'string',
             'file' => 'file|required',
             'associated_users' => ['array', 'exists:users,id'],
-            'associated_users.*.user_id' => 'required|numeric',
+            // 'associated_users.*.user_id' => 'required|numeric',
         ]);
 
         // Return validation errors if validation fails
@@ -522,8 +523,8 @@ class ContractService implements ContractInterface
             $decodedMilestones = $request->milestone;
 
             // Decode JSON milestone if needed
-            if (!is_array(($request->milestone))) {
-                $decodedMilestones = json_decode($request->milestone, true);
+            if (!is_array(($request->milestones))) {   //ch 
+                $decodedMilestones = json_decode($request->milestones, true);  //ch
             }
 
             // Handle invalid JSON format for milestones
@@ -535,15 +536,15 @@ class ContractService implements ContractInterface
             // Calculate total amount and percentage based on contract type
             if ($request->contract_type === 'FF') {
 
-                if (!empty ($request->milestone)) {
+                if (!empty ($request->milestones)) {  //ch
                     try {
-                        if (is_array($request->milestone)) {
-                            foreach ($request->milestone as $milestone) {
+                        if (is_array($request->milestones)) {
+                            foreach ($request->milestones as $milestone) {
                                 $totalPercentage += $milestone['percentage'];
                                 $totalAmount += $milestone['amount'];
                             }
                         } else {
-                            $milestones = json_decode($request->milestone, true);
+                            $milestones = json_decode($request->milestones, true);
                             if ($milestones) {
                                 foreach ($milestones as $milestone) {
                                     $totalPercentage += $milestone['percentage'];
@@ -558,13 +559,13 @@ class ContractService implements ContractInterface
                     return response()->json(['error' => 'No milestones provided for Fixed fee contract.'], 422);
                 }
             } else {
-                if (!empty ($request->milestone)) {
-                    if (is_array($request->milestone)) {
-                        foreach ($request->milestone as $milestone) {
+                if (!empty ($request->milestones)) {
+                    if (is_array($request->milestones)) {
+                        foreach ($request->milestones as $milestone) {
                             $totalAmount += $milestone['amount'];
                         }
                     } else {
-                        foreach (json_decode($request->milestone, true) as $milestone) {
+                        foreach (json_decode($request->milestones, true) as $milestone) {
                             $totalAmount += $milestone['amount'];
                         }
                     }
@@ -605,11 +606,11 @@ class ContractService implements ContractInterface
             $insertController = new ActivityLogInsertController($activityLogInsertService);
             $insertController->addToActivityLog($contractId, $request->msa_id, $request->contract_added_by, $action);
             // Associate users with the contract
-            if (!empty ($request->assoc_users)) {
-                foreach ($request->assoc_users as $users) {
+            if (!empty ($request->associated_users)) {
+                foreach ($request->associated_users as $user_id) {
                     $assoc_users_result = AssociatedUsers::create([
                         'contract_id' => $contractId,
-                        'user_id' => $users['user_id'],
+                        'user_id' => $user_id,
                     ]);
                 }
             }
@@ -617,14 +618,13 @@ class ContractService implements ContractInterface
             // Create Fixed Fee Contracts if contract type is FF
             if ($request->contract_type === 'FF') {
                 try {
-                    if (is_array($request->milestone) && !empty ($request->milestone)) {
+                    if (is_array($request->milestones) && !empty ($request->milestones)) {
                         try {
-                            foreach ($request->milestone as $milestone) {
-                                var_dump($request->milestone);
+                            foreach ($request->milestones as $milestone) {
                                 $ffresult = FixedFeeContracts::create([
                                     'contract_id' => $contractId,
-                                    'milestone_desc' => $milestone['milestones'],
-                                    'milestone_enddate' => Carbon::parse($milestone['expectedCompletionDate'])->format('Y-m-d'),
+                                    'milestone_desc' => $milestone['milestone_desc'],
+                                    'milestone_enddate' => Carbon::parse($milestone['milestone_enddate'])->format('Y-m-d'),
                                     'percentage' => $milestone['percentage'],
                                     'amount' => $milestone['amount'],
                                 ]);
@@ -645,12 +645,12 @@ class ContractService implements ContractInterface
             }
             // Create Time and Material Contracts if contract type is TM
             else if ($request->contract_type === 'TM') {
-                if (is_array($request->milestone) && !empty ($request->milestone)) {
-                    foreach ($request->milestone as $milestone) {
+                if (is_array($request->milestones) && !empty ($request->milestones)) {
+                    foreach ($request->milestones as $milestone) {
                         $tmresult = TimeAndMaterialContracts::create([
                             'contract_id' => $contractId,
-                            'milestone_desc' => $milestone['milestones'],
-                            'milestone_enddate' => Carbon::parse($milestone['expectedCompletionDate'])->format('Y-m-d'),
+                            'milestone_desc' => $milestone['milestone_desc'],
+                            'milestone_enddate' => Carbon::parse($milestone['milestone_enddate'])->format('Y-m-d'),
                             'amount' => $milestone['amount'],
                         ]);
                     }
