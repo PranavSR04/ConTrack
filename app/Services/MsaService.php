@@ -330,10 +330,14 @@ class MsaService implements MsaInterface
             
             $combined_msa_doclink = [];
 
-            $msa_records = MSAs::where('msa_ref_id', $msa_ref_id)->get();
+            $msa_records = MSAs::where('msa_ref_id', $msa_ref_id)->orderByDesc('end_date')->get();
 
             foreach ($msa_records as $msa_record) {
-                $combined_msa_doclink[$msa_record->start_date . '::' . $msa_record->end_date] = $msa_record->msa_doclink;
+                $combined_msa_doclink[] = [
+                    'msa_doclink' => $msa_record->msa_doclink,
+                    'start_date' => $msa_record->start_date,
+                    'end_date' => $msa_record->end_date
+                ];
             }
 
             $contract_list = Contracts::join('msas', 'msas.id', '=', 'contracts.msa_id')
@@ -351,21 +355,21 @@ class MsaService implements MsaInterface
         $tm_contract_count = $contract_list->where('contract_type', 'TM')->count();
         $ff_contract_count = $contract_list->where('contract_type', 'FF')->count();
 
-            $combinedMsaData = $msa_data->map(function ($contract) use ($contract_list) {
+            $combinedMsaData = $msa_data->map(function ($contract) use ($contract_list, $total_contract_count, $active_contracts_count, $closed_contracts_count, $expiring_contracts_count, $onprogess_contracts_count, $tm_contract_count, $ff_contract_count, $combined_msa_doclink) {
                 $contract['contracts'] = $contract_list->where('contracts.id', $contract['contracts.id'])->values()->all();
+                $contract['total_contracts_count'] = $total_contract_count;
+                $contract['active_contracts_count'] = $active_contracts_count;
+                $contract['closed_contracts_count'] = $closed_contracts_count;
+                $contract['expiring_contracts_count'] = $expiring_contracts_count;
+                $contract['onprogress_contracts_count'] = $onprogess_contracts_count;
+                $contract['tm_contracts_count'] = $tm_contract_count;
+                $contract['ff_contracts_count'] = $ff_contract_count;
+                $contract['combined_msa_doclink'] = $combined_msa_doclink;
                 return $contract;
             });
            
             return response()->json([
-            'data' => $combinedMsaData,
-            'total_contracts_count' => $total_contract_count,
-            'active_contracts_count' => $active_contracts_count,
-            'closed_contracts_count'=>$closed_contracts_count,
-            'expiring_contracts_count'=>$expiring_contracts_count,
-            'onprogress_contracts_count'=>$onprogess_contracts_count,
-            'tm_contracts_count' => $tm_contract_count,
-            'ff_contracts_count' => $ff_contract_count,
-            'combined_msa_doclink' => $combined_msa_doclink,
+            'data' => $combinedMsaData
             ]);
         } catch (Exception $e) {
             return response()->json(['error' => 'An error occurred while processing the request.'], 500);
