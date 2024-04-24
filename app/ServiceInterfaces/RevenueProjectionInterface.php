@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 interface RevenueProjectionInterface
 {
     // Function for calculating the revenue projection overall
-    public function revenueProjection(Request $request, $contract_id = null);
+    public function revenueProjection(Request $request, $contract_id = null, $msa_id = null);
 
     // Function for calculating yearly projection
     public function calculateYearlyProjection($Milestones, $revenueProjections, $totalAmount);
