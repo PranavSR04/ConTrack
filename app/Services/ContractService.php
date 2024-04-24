@@ -67,7 +67,7 @@ class ContractService implements ContractInterface
                     //get all associated users
                     $associatedUsers = AssociatedUsers::join('users', 'associated_users.user_id', '=', 'users.id')
                         ->where('contract_id', '=', $id)
-                        ->select('associated_users.id', 'contract_id', 'user_name', 'user_mail')
+                        ->select('associated_users.id', 'contract_id', 'user_name','users.id as user_id', 'user_mail')
                         ->get();
                     //join the data
                     $combinedData = $combinedData->map(function ($contract) use ($associatedUsers) {
@@ -183,7 +183,7 @@ class ContractService implements ContractInterface
                     'start_date' => 'required|date|before:end_date',
                     'end_date' => 'required|date|after:start_date',
                     'date_of_signature' => 'date|before:start_date',
-                    'contract_status' => 'required|string',
+                    'contract_status' => 'string',
                     'du' => 'required|string',
                     'comments' => 'string',
                     'contract_doclink' => 'string',
@@ -219,23 +219,6 @@ class ContractService implements ContractInterface
 
                 if ($request->contract_status !== "Closed" || $request->contract_status !== "closed" || $request->contract_status !== "CLOSED") {
                     // Checking only to update the data of contracts which are not having status as closed
-                    $fileLink = $googleDrive->store($request);
-                    if ($fileLink) {
-                        // If contract file is uploaded it returns a link
-                        $contractUpdateData = [
-                            'msa_id' => $validated_ff['msa_id'],
-                            'contract_added_by' => $validated_ff['contract_added_by'],
-                            'start_date' => $validated_ff['start_date'],
-                            'end_date' => $validated_ff['end_date'],
-                            'contract_ref_id' => $request->contract_ref_id,
-                            'date_of_signature' => $validated_ff['date_of_signature'],
-                            'du' => $validated_ff['du'],
-                            'contract_status' => $validated_ff['contract_status'],
-                            'comments' => $validated_ff['comments'],
-                            'contract_doclink' => $fileLink,
-                            'estimated_amount' => $validated_ff['estimated_amount'],
-                        ];
-                    } else {
                         $contractUpdateData = [
                             'msa_id' => $validated_ff['msa_id'],
                             'contract_added_by' => $validated_ff['contract_added_by'],
@@ -249,8 +232,7 @@ class ContractService implements ContractInterface
                             'contract_doclink' => $validated_ff['contract_doclink'],
                             'estimated_amount' => $validated_ff['estimated_amount'],
                         ];
-                    }
-
+                        
                     $milestonesUpdateData = [];
                     foreach ($decodedMilestones as $milestone) {
                         $milestonesUpdateData[] = [
@@ -271,15 +253,15 @@ class ContractService implements ContractInterface
                             $contractResult = Contracts::where('id', $contractId)->get();
 
                             // For enterting data into Associated Users table
-                            $associated_users = "nil";
-                            // if (!empty($request->associated_users)) {
-                            //     foreach ($decodedAssociatedUsers as $user) {
-                            //         $userId = $user['user_id'];
+                            // $associated_users = "nil";
+                            if (!empty($request->associated_users)) {
+                                foreach ($decodedAssociatedUsers as $user_id) {
+                                    $userId = $user_id;
 
-                            //         AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
-                            //         $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
-                            //     }
-                            // }
+                                    AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
+                                    $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
+                                }
+                            }
 
                             // For enterting data into Fixed fee table
                             foreach ($milestonesUpdateData as $milestoneData) {
@@ -287,8 +269,6 @@ class ContractService implements ContractInterface
                                     [
                                         'contract_id' => $contractId,
                                         'milestone_desc' => $milestoneData['milestone_desc'],
-                                    ],
-                                    [
                                         'milestone_enddate' => $milestoneData['milestone_enddate'],
                                         'percentage' => $milestoneData['percentage'],
                                         'amount' => $milestoneData['amount'],
@@ -329,8 +309,7 @@ class ContractService implements ContractInterface
 
 
             } else if ($contract_type === 'TM') {
-                // $decodedMilestones = json_decode($request->milestones, true);
-                // $decodedAssociatedUsers = json_decode($request->associated_users, true);
+
                 // Parsing string data into array   
                 $decodedMilestones = $request->milestones;
                 if (!is_array(($request->milestones))) {
@@ -352,7 +331,7 @@ class ContractService implements ContractInterface
                     'start_date' => 'required|date|before:end_date',
                     'end_date' => 'required|date|after:start_date',
                     'date_of_signature' => 'date|before:start_date',
-                    'contract_status' => 'required|string',
+                    'contract_status' => 'string',
                     'du' => 'required|string',
                     'comments' => 'string',
                     'contract_doclink' => 'string',
@@ -388,22 +367,6 @@ class ContractService implements ContractInterface
 
                 if ($validated_tm['contract_status'] !== "Closed" || $validated_tm['contract_status'] !== "closed" || $validated_tm['contract_status'] !== "CLOSED") {
                     // Checking only to update the data of contracts which are not having status as closed
-                    $fileLink = $googleDrive->store($request);
-                    if ($fileLink) {
-                        $contractUpdateData = [
-                            'msa_id' => $validated_tm['msa_id'],
-                            'contract_added_by' => $validated_tm['contract_added_by'],
-                            'start_date' => $validated_tm['start_date'],
-                            'end_date' => $validated_tm['end_date'],
-                            'contract_ref_id' => $request->contract_ref_id,
-                            'date_of_signature' => $validated_tm['date_of_signature'],
-                            'du' => $validated_tm['du'],
-                            'contract_status' => $validated_tm['contract_status'],
-                            'comments' => $validated_tm['comments'],
-                            'contract_doclink' => $fileLink,
-                            'estimated_amount' => $validated_tm['estimated_amount'],
-                        ];
-                    } else {
                         $contractUpdateData = [
                             'msa_id' => $validated_tm['msa_id'],
                             'start_date' => $validated_tm['start_date'],
@@ -417,7 +380,6 @@ class ContractService implements ContractInterface
                             'estimated_amount' => $validated_tm['estimated_amount'],
                             'contract_doclink' => $validated_tm['contract_doclink'],
                         ];
-                    }
 
                     $milestonesUpdateData = [];
                     foreach ($decodedMilestones as $milestone) {
@@ -436,15 +398,14 @@ class ContractService implements ContractInterface
                         $contractResult = Contracts::where('id', $contractId)->get();
 
                         // For enterting data into Associated Users table
-                        // $associated_users="nil";
-                        // if (!empty ($request->associated_users)) {
-                        //     foreach ($decodedAssociatedUsers as $user) {
-                        //         $userId = $user['user_id'];
+                        if (!empty ($request->associated_users)) {
+                            foreach ($decodedAssociatedUsers as $user_id) {
+                                $userId = $user_id;
 
-                        //         AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
-                        //         $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
-                        //     }
-                        // }
+                                AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
+                                $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
+                            }
+                        }
 
                         foreach ($milestonesUpdateData as $milestoneData) {
                             $tmResult = TimeAndMaterialContracts::updateOrCreate(
@@ -473,7 +434,7 @@ class ContractService implements ContractInterface
                             "data" => [
                                 'contract_result' => $contractResult,
                                 'milestones_result' => $tmResult,
-                                // 'associatedusers_result' => $associated_users,
+                                'associatedusers_result' => $associated_users,
                             ]
                         ]);
                     } else {
