@@ -13,8 +13,8 @@ class RevenueController extends Controller
         $this->revenueProjectionService = $revenueProjectionService;
     }
 
-    public function revenueProjections(Request $request, $contract_id = null){
-       return $this->revenueProjectionService->revenueProjection($request, $contract_id);
+    public function revenueProjections(Request $request, $contract_id = null, $msa_id = null){
+       return $this->revenueProjectionService->revenueProjection($request, $contract_id, $msa_id);
 
     }
 
