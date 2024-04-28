@@ -61,7 +61,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/msa/update/{id}', [MSAController::class, 'editMsa']);
     Route::post('/msa/renew/{id}', [MsaController::class, 'renewMsa']);
     Route::get('/msa/count', [MSAController::class, 'msaCount']);
-   Route::get('/msa/page/{id}',[MsaController::class,'msaPage']);
+    Route::get('/msa/page/{id}',[MsaController::class,'msaPage']);
 
     // Contracts routes
     Route::post('/contracts/insertdata', [ContractController::class, 'insertContractsData']);
@@ -74,8 +74,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/contract/count', [ContractController::class, 'getContractCount']);
 
     // Revenue routes
-    Route::get('/revenue/list/{id?}', [RevenueController::class, 'revenueProjections']);
-
+    
     // Notifications routes
     Route::put('/notification/statusupdate', [NotificationController::class, 'notificationStatusUpdate']);
     Route::get('/notification/list', [NotificationController::class, 'getUserNotification']);
@@ -110,7 +109,8 @@ Route::get('/msa/count', [MSAController::class, 'msaCount']);
 Route::get('/role/details', [RoleController::class, 'getRole']);
 Route::get('/contract/list/{id?}', [ContractController::class, 'getContractData']);
 Route::get('/contracts/myContracts/{id}', [UserController::class, 'myContracts']);
-      
+Route::get('/revenue/list/{id?}/{msa_id?}', [RevenueController::class, 'revenueProjections']);
+     
 Route::post("/activitylog/insert",[ActivityLogInsertController::class,'addToActivityLog']);
 
 // Onedrive token check
@@ -125,3 +125,6 @@ Route::get('users/list', [UserController::class, 'getUsersList']);
 Route::post('groups/addUsers', [UserController::class, 'addUsersToIndividualGroup']);
 Route::put('groups/removeUser', [UserController::class, 'deleteUserFromGroup']);
 Route::delete('groups/delete', [UserController::class, 'deleteGroup']);
+
+Route::get('/msa/page/{id}',[MsaController::class,'msaPage']);
+Route::get('/msa/list', [MSAController::class, 'MSAList']);
