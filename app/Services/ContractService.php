@@ -229,16 +229,6 @@ class ContractService implements ContractInterface
                         'estimated_amount' => $validated_ff['estimated_amount'],
                     ];
 
-                    // $milestonesUpdateData = [];
-                    // foreach ($decodedMilestones as $milestone) {
-                    //     $milestonesUpdateData[] = [
-                    //         'milestone_desc' => $milestone['milestone_desc'],
-                    //         'milestone_enddate' => $milestone['milestone_enddate'],
-                    //         'percentage' => $milestone['percentage'],
-                    //         'amount' => $milestone['amount'],
-                    //     ];
-                    // }
-
                     $sumPercentages = array_sum(array_column($decodedMilestones, 'percentage'));
                     $sumAmounts = array_sum(array_column($decodedMilestones, 'amount'));
 
@@ -259,6 +249,9 @@ class ContractService implements ContractInterface
                                 }
                             }
 
+                            // Store milestone ids related to the contract in an array
+                            $db_milestones = FixedFeeContracts::where('contract_id', $contractId)->pluck('id')->toArray();
+
                             foreach ($decodedMilestones as $milestone) {
                                 // For enterting data into Fixed fee table
                                 if (isset($milestone['id']) && $milestone['id'] !== '') {
@@ -272,6 +265,8 @@ class ContractService implements ContractInterface
                                             'percentage' => $milestone['percentage'],
                                             'amount' => $milestone['amount'],
                                         ]);
+                                        // Remove this milestone id from the $db_milestones array as it's still in use
+                                        unset($db_milestones[array_search($milestone['id'], $db_milestones)]);
                                     }
                                 } else {
                                     // If new milestone, create it.
@@ -285,6 +280,11 @@ class ContractService implements ContractInterface
                                         ]
                                     );
                                 }
+                            }
+
+                            // Delete milestones that are not in the request
+                            if (!empty($db_milestones)) {
+                                FixedFeeContracts::whereIn('id', $db_milestones)->delete();
                             }
 
                             // Insertion into addendum table and addendum uploaded to drive
@@ -405,6 +405,9 @@ class ContractService implements ContractInterface
                             }
                         }
 
+                        // Store milestone ids related to the contract in an array
+                        $db_milestones = TimeAndMaterialContracts::where('contract_id', $contractId)->pluck('id')->toArray();
+
                         foreach ($decodedMilestones as $milestone) {
                             // For enterting data into Fixed fee table
                             if (isset($milestone['id']) && $milestone['id'] !== '') {
@@ -417,6 +420,8 @@ class ContractService implements ContractInterface
                                         'milestone_enddate' => $milestone['milestone_enddate'],
                                         'amount' => $milestone['amount'],
                                     ]);
+                                    // Remove this milestone id from the $db_milestones array as it's still in use
+                                    unset($db_milestones[array_search($milestone['id'], $db_milestones)]);
                                 }
                             } else {
                                 // If new milestone, create it.
@@ -429,6 +434,11 @@ class ContractService implements ContractInterface
                                     ]
                                 );
                             }
+                        }
+
+                        // Delete milestones that are not in the request
+                        if (!empty($db_milestones)) {
+                            TimeAndMaterialContracts::whereIn('id', $db_milestones)->delete();
                         }
 
                         // Insertion into addendum table and addendum uploaded to drive
