@@ -275,6 +275,7 @@ class ContractService implements ContractInterface
                                             'percentage' => $milestone['percentage'],
                                             'amount' => $milestone['amount'],
                                         ]);
+                                        $ffResult = FixedFeeContracts::find($existingMilestone->id);
                                         // Remove this milestone id from the $db_milestones array as it's still in use
                                         unset($db_milestones[array_search($milestone['id'], $db_milestones)]);
                                     }
@@ -441,6 +442,7 @@ class ContractService implements ContractInterface
                                         'milestone_enddate' => $milestone['milestone_enddate'],
                                         'amount' => $milestone['amount'],
                                     ]);
+                                    $tmResult = TimeAndMaterialContracts::find($existingMilestone->id);
                                     // Remove this milestone id from the $db_milestones array as it's still in use
                                     unset($db_milestones[array_search($milestone['id'], $db_milestones)]);
                                 }
