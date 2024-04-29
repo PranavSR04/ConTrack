@@ -238,15 +238,25 @@ class ContractService implements ContractInterface
                             Contracts::where('id', $contractId)->update($contractUpdateData);
                             $contractResult = Contracts::where('id', $contractId)->get();
 
+                            // Store associated user IDs related to the contract in an array
+                            $db_associated_users = AssociatedUsers::where('contract_id', $contractId)->pluck('user_id')->toArray();
+
                             // For enterting data into Associated Users table
                             $associated_users = null;
                             if (!empty($request->associated_users)) {
                                 foreach ($decodedAssociatedUsers as $user_id) {
                                     $userId = $user_id;
+                                    // Remove this user ID from the $db_associated_users array as it's still in use
+                                    unset($db_associated_users[array_search($user_id, $db_associated_users)]);
 
                                     AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
                                     $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
                                 }
+                            }
+
+                            // Delete associations for users that are not in the request
+                            if (!empty($db_associated_users)) {
+                                AssociatedUsers::where('contract_id', $contractId)->whereIn('user_id', $db_associated_users)->delete();
                             }
 
                             // Store milestone ids related to the contract in an array
@@ -395,14 +405,25 @@ class ContractService implements ContractInterface
                         Contracts::where('id', $contractId)->update($contractUpdateData);
                         $contractResult = Contracts::where('id', $contractId)->get();
 
+                        // Store associated user IDs related to the contract in an array
+                        $db_associated_users = AssociatedUsers::where('contract_id', $contractId)->pluck('user_id')->toArray();
+
                         // For enterting data into Associated Users table
                         $associated_users = null;
                         if (!empty($request->associated_users)) {
                             foreach ($decodedAssociatedUsers as $user_id) {
                                 $userId = $user_id;
+                                // Remove this user ID from the $db_associated_users array as it's still in use
+                                unset($db_associated_users[array_search($user_id, $db_associated_users)]);
+
                                 AssociatedUsers::where('contract_id', $contractId)->updateOrCreate(['user_id' => $userId, 'contract_id' => $contractId]);
                                 $associated_users = AssociatedUsers::where('contract_id', $contractId)->get();
                             }
+                        }
+
+                        // Delete associations for users that are not in the request
+                        if (!empty($db_associated_users)) {
+                            AssociatedUsers::where('contract_id', $contractId)->whereIn('user_id', $db_associated_users)->delete();
                         }
 
                         // Store milestone ids related to the contract in an array
