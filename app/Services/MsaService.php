@@ -342,7 +342,7 @@ class MsaService implements MsaInterface
 
             $contract_list = Contracts::join('msas', 'msas.id', '=', 'contracts.msa_id')
                 ->select('contract_ref_id', 'contracts.id', 'du', 'contract_type', 'estimated_amount', 'contract_status', 'contracts.start_date', 'contracts.end_date')
-                ->where('msas.id', $id)
+                ->where('msas.msa_ref_id', $msa_ref_id)
                 ->get();
     
             $msa_data = MSAs::where('msas.id', $id)->get();
@@ -352,6 +352,7 @@ class MsaService implements MsaInterface
         $expiring_contracts_count=$contract_list->where('contract_status', 'Expiring')->count();
         $onprogress_contracts_count=$contract_list->where('contract_status', 'On Progress')->count();
         $expired_contracts_count=$contract_list->where('contract_status', 'Expired')->count();
+       
         $tm_contract_count = $contract_list->where('contract_type', 'TM')->count();
         $ff_contract_count = $contract_list->where('contract_type', 'FF')->count();
 
