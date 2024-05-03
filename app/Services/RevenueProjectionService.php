@@ -12,7 +12,7 @@ use App\ServiceInterfaces\RevenueProjectionInterface;
 class RevenueProjectionService implements RevenueProjectionInterface
 {
     //Function to Retrive the Revenue Projection of Contracts
-    public function revenueProjection(Request $request, $contract_id = null)
+    public function revenueProjection(Request $request, $contract_id = null, $msa_id = null, )
     {
 
         $contracts = new Collection();
@@ -37,7 +37,7 @@ class RevenueProjectionService implements RevenueProjectionInterface
 
 
         //Checks if the requested for individual contract revenue
-        if ($contract_id == null) {
+        if ($contract_id == null && $request->msa_id ==null) {
             //checks for du and contract type filters
             if ($duFilters && $ctypeFilters) {
                 foreach ($duFilters as $duFilter) {
@@ -96,7 +96,68 @@ class RevenueProjectionService implements RevenueProjectionInterface
             }
 
             return $this->getResponse($projectionType, $revenueProjections, $totalAmount, $filterEndDate, $filterStartDate);
-        } else {
+        } 
+        else if($request->msa_id !==null){
+             //Fetch all contracts that have the corresponding MSA ID
+             $contracts = Contracts::where('msa_id', $request->msa_id)->get();
+             if ($duFilters && $ctypeFilters) {
+                foreach ($duFilters as $duFilter) {
+                    foreach ($ctypeFilters as $ctypeFilter) {
+                        $filteredContracts = Contracts::where('du', $duFilter)
+                            ->where('contract_type', $ctypeFilter)
+                            ->where('msa_id', $request->msa_id)->get();
+
+                        $contracts = $contracts->merge($filteredContracts);
+                    }
+                }
+            } elseif ($duFilters) {
+                foreach ($duFilters as $duFilter) {
+                    $filteredContracts = Contracts::where('du', $duFilter)
+                    ->where('msa_id', $request->msa_id)->get();
+                    $contracts = $contracts->merge($filteredContracts);
+                }
+            } elseif ($ctypeFilters) {
+                foreach ($ctypeFilters as $ctypeFilter) {
+                    $filteredContracts = Contracts::where('contract_type', $ctypeFilter)
+                    ->where('msa_id', $request->msa_id)->get();;
+                    $contracts = $contracts->merge($filteredContracts);
+                }
+            } else {
+                $contracts = Contracts::where('msa_id', $request->msa_id)->get();
+                if ($contracts->isEmpty()) {
+                    return response()->json(['error' => 'No contracts found'], 404);
+                }
+            }
+
+            if ($contracts->isEmpty()) {
+                return response()->json(['error' => 'No contracts found for the specified DU or Type'], 404);
+            }
+            foreach ($contracts as $contract) {
+                if ($contract->contract_type === 'FF') {
+                    $Milestones = Contracts::where('msa_id', $request->msa_id)
+                        ->join("ff_contracts", "contracts.id", "=", "ff_contracts.contract_id")
+                        ->where("contracts.id", "=", $contract->id)
+                        ->select('ff_contracts.*')
+                        ->get();
+                } elseif ($contract->contract_type === 'TM') {
+                    $Milestones = Contracts::where('msa_id', $request->msa_id)
+                        ->join("tm_contracts", "contracts.id", "=", "tm_contracts.contract_id")
+                        ->where("contracts.id", "=", $contract->id)
+                        ->select('tm_contracts.*')
+                        ->get();
+                }
+
+                if ($projectionType === 'yearly') {
+                    list($revenueProjections, $totalAmount) = $this->calculateYearlyProjection($Milestones, $revenueProjections, $totalAmount);
+                } elseif ($projectionType === 'quarterly') {
+                    list($revenueProjections, $totalAmount) = $this->calculateQuarterlyProjection($Milestones, $revenueProjections, $totalAmount);
+                } else {
+                    list($revenueProjections, $totalAmount) = $this->calculateMonthlyProjection($Milestones, $revenueProjections, $totalAmount);
+                }
+            }
+            return $this->getResponse($projectionType, $revenueProjections, $totalAmount, $filterEndDate, $filterStartDate); 
+        }
+        else {
             // Code for fetching revenue projections for a specific contract
             try {
                 $contract = Contracts::findOrFail($contract_id);
