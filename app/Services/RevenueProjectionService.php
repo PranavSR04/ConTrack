@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Http\Request;
 use App\Models\Contracts;
+use App\Models\MSAs;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Collection;
@@ -98,32 +99,41 @@ class RevenueProjectionService implements RevenueProjectionInterface
             return $this->getResponse($projectionType, $revenueProjections, $totalAmount, $filterEndDate, $filterStartDate);
         } 
         else if($request->msa_id !==null){
+            //get the msa ref id
+            $msa_ref_id = MSAs::select('msa_ref_id')->where('id', $request->msa_id)->first();
              //Fetch all contracts that have the corresponding MSA ID
-             $contracts = Contracts::where('msa_id', $request->msa_id)->get();
+             $contracts = Contracts::join("msas", "msas.id", "=", "contracts.msa_id")
+             ->where("msas.msa_ref_id", "=", $msa_ref_id)
+             ->get();
              if ($duFilters && $ctypeFilters) {
                 foreach ($duFilters as $duFilter) {
                     foreach ($ctypeFilters as $ctypeFilter) {
-                        $filteredContracts = Contracts::where('du', $duFilter)
+                        $filteredContracts = Contracts::join("msas", "msas.id", "=", "contracts.msa_id")
+                        ->where('du', $duFilter)
                             ->where('contract_type', $ctypeFilter)
-                            ->where('msa_id', $request->msa_id)->get();
+                            ->where("msas.msa_ref_id", "=", $msa_ref_id)
+                        ->get();
 
                         $contracts = $contracts->merge($filteredContracts);
                     }
                 }
             } elseif ($duFilters) {
                 foreach ($duFilters as $duFilter) {
-                    $filteredContracts = Contracts::where('du', $duFilter)
-                    ->where('msa_id', $request->msa_id)->get();
+                    $filteredContracts = Contracts::join("msas", "msas.id", "=", "contracts.msa_id")
+                    ->where('du', $duFilter)
+                    ->where('msa_ref_id',$msa_ref_id )->get();
                     $contracts = $contracts->merge($filteredContracts);
                 }
             } elseif ($ctypeFilters) {
                 foreach ($ctypeFilters as $ctypeFilter) {
-                    $filteredContracts = Contracts::where('contract_type', $ctypeFilter)
-                    ->where('msa_id', $request->msa_id)->get();;
+                    $filteredContracts = Contracts::join("msas", "msas.id", "=", "contracts.msa_id")
+                    ->where('contract_type', $ctypeFilter)
+                    ->where('msa_ref_id',$msa_ref_id )->get();
                     $contracts = $contracts->merge($filteredContracts);
                 }
             } else {
-                $contracts = Contracts::where('msa_id', $request->msa_id)->get();
+                $contracts = Contracts::join("msas", "msas.id", "=", "contracts.msa_id")
+                ->where('msa_ref_id',$msa_ref_id->msa_ref_id )->get();
                 if ($contracts->isEmpty()) {
                     return response()->json(['error' => 'No contracts found'], 404);
                 }
@@ -134,14 +144,16 @@ class RevenueProjectionService implements RevenueProjectionInterface
             }
             foreach ($contracts as $contract) {
                 if ($contract->contract_type === 'FF') {
-                    $Milestones = Contracts::where('msa_id', $request->msa_id)
-                        ->join("ff_contracts", "contracts.id", "=", "ff_contracts.contract_id")
+                    $Milestones = Contracts::join("msas", "msas.id", "=", "contracts.msa_id")
+                    ->join("ff_contracts", "contracts.id", "=", "ff_contracts.contract_id")
+                    ->where("msas.msa_ref_id", "=", $msa_ref_id->msa_ref_id )
                         ->where("contracts.id", "=", $contract->id)
                         ->select('ff_contracts.*')
                         ->get();
                 } elseif ($contract->contract_type === 'TM') {
-                    $Milestones = Contracts::where('msa_id', $request->msa_id)
+                    $Milestones = Contracts::join("msas", "msas.id", "=", "contracts.msa_id")
                         ->join("tm_contracts", "contracts.id", "=", "tm_contracts.contract_id")
+                        ->where("msas.msa_ref_id", "=", $msa_ref_id->msa_ref_id )
                         ->where("contracts.id", "=", $contract->id)
                         ->select('tm_contracts.*')
                         ->get();

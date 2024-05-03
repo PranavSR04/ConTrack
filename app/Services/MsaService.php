@@ -142,15 +142,15 @@ class MsaService implements MsaInterface
 
 
             $action = "Added";
-            // $activityLogInsertService = new ActivityLogInsertService();
-            // $insertController = new ActivityLogInsertController($activityLogInsertService);
-            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
-            // ActivityLogs::create([
-            //     'contract_id'=> null,
-            //     'msa_id'=> $msa->id,
-            //     'performed_by'=>$added_by,
-            //     'action'=>$action
-            // ]);
+            $activityLogInsertService = new ActivityLogInsertService();
+            $insertController = new ActivityLogInsertController($activityLogInsertService);
+            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            ActivityLogs::create([
+                'contract_id'=> null,
+                'msa_id'=> $msa->id,
+                'performed_by'=>$added_by,
+                'action'=>$action
+            ]);
          
 
 
@@ -225,9 +225,9 @@ class MsaService implements MsaInterface
             $msa->update($validated);
 
             $action = "Edited";
-            // $activityLogInsertService = new ActivityLogInsertService();
-            // $insertController = new ActivityLogInsertController($activityLogInsertService);
-            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            $activityLogInsertService = new ActivityLogInsertService();
+            $insertController = new ActivityLogInsertController($activityLogInsertService);
+            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
          return response()->json(['message' => 'MSA updated successfully', 'msa' => $msa], 200);
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Validation failed'], 422);
@@ -287,9 +287,9 @@ class MsaService implements MsaInterface
                 ]);
             $added_by = $user_id;
             $action = "Renewed";
-            // $activityLogInsertService = new ActivityLogInsertService();
-            // $insertController = new ActivityLogInsertController($activityLogInsertService);
-            // $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
+            $activityLogInsertService = new ActivityLogInsertService();
+            $insertController = new ActivityLogInsertController($activityLogInsertService);
+            $insertController->addToActivityLog(null, $msa->id, $added_by, $action);
 
             return response()->json(['message' => 'MSA renewed successfully', 'msa' => $msa], 200);
 
@@ -350,19 +350,20 @@ class MsaService implements MsaInterface
         $active_contracts_count = $contract_list->where('contract_status', 'Active')->count();
         $closed_contracts_count=$contract_list->where('contract_status', 'Closed')->count();
         $expiring_contracts_count=$contract_list->where('contract_status', 'Expiring')->count();
-        $onprogess_contracts_count=$contract_list->where('contract_status', 'On Progress')->count();
-        $expired_contracts_count=$contract_list->where('contract_status','Expired')->count();
+        $onprogress_contracts_count=$contract_list->where('contract_status', 'On Progress')->count();
+        $expired_contracts_count=$contract_list->where('contract_status', 'Expired')->count();
+       
         $tm_contract_count = $contract_list->where('contract_type', 'TM')->count();
         $ff_contract_count = $contract_list->where('contract_type', 'FF')->count();
 
-            $combinedMsaData = $msa_data->map(function ($contract) use ($contract_list, $total_contract_count, $active_contracts_count, $closed_contracts_count, $expiring_contracts_count, $onprogess_contracts_count, $tm_contract_count, $ff_contract_count, $combined_msa_doclink,$expired_contracts_count) {
+            $combinedMsaData = $msa_data->map(function ($contract) use ($contract_list, $total_contract_count, $active_contracts_count, $closed_contracts_count, $expiring_contracts_count, $onprogress_contracts_count,$expired_contracts_count, $tm_contract_count, $ff_contract_count, $combined_msa_doclink) {
                 $contract['contracts'] = $contract_list->where('contracts.id', $contract['contracts.id'])->values()->all();
                 $contract['total_contracts_count'] = $total_contract_count;
                 $contract['active_contracts_count'] = $active_contracts_count;
                 $contract['closed_contracts_count'] = $closed_contracts_count;
                 $contract['expiring_contracts_count'] = $expiring_contracts_count;
-                $contract['onprogress_contracts_count'] = $onprogess_contracts_count;
-                $contract['expired_contracts_count']=$expired_contracts_count;
+                $contract['onprogress_contracts_count'] = $onprogress_contracts_count;
+                $contract['expired_contracts_count'] = $expired_contracts_count;
                 $contract['tm_contracts_count'] = $tm_contract_count;
                 $contract['ff_contracts_count'] = $ff_contract_count;
                 $contract['combined_msa_doclink'] = $combined_msa_doclink;
