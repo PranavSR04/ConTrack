@@ -5,6 +5,7 @@ use App\Http\Controllers\ActivityLogInsertController;
 use App\Models\ActivityLogs;
 use App\ServiceInterfaces\ContractInterface;
 use App\Models\Addendums;
+use App\Models\AssociatedGroups;
 use App\Models\AssociatedUsers;
 use App\Models\Contracts;
 use App\Models\FixedFeeContracts;
@@ -516,6 +517,7 @@ class ContractService implements ContractInterface
             'comments' => 'string',
             'file' => 'file|required',
             'associated_users' => ['array', 'exists:users,id'],
+            'associated_groups' => ['array', 'exists:group,id']
             // 'associated_users.*.user_id' => 'required|numeric',
         ]);
 
@@ -618,6 +620,15 @@ class ContractService implements ContractInterface
                     $assoc_users_result = AssociatedUsers::create([
                         'contract_id' => $contractId,
                         'user_id' => $user_id,
+                    ]);
+                }
+            }
+            //insert associated groups
+            if (!empty($request->associated_groups)) {
+                foreach ($request->associated_groups as $group_id) {
+                    $assoc_users_result = AssociatedGroups::create([
+                        'contract_id' => $contractId,
+                        'group_id' => $group_id,
                     ]);
                 }
             }
