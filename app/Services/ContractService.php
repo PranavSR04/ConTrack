@@ -460,6 +460,26 @@ class ContractService implements ContractInterface
                         if (!empty($db_associated_users)) {
                             AssociatedUsers::where('contract_id', $contractId)->whereIn('user_id', $db_associated_users)->delete();
                         }
+                         // Store associated group IDs related to the contract in an array
+                         $db_associated_groups = AssociatedGroups::where('contract_id', $contractId)->pluck('group_id')->toArray();
+
+                         // For enterting data into Associated group table
+                         $associated_groups = null;
+                         if (!empty($request->associated_groups)) {
+                             foreach ($db_associated_groups as $group_id) {
+                                 $groupId = $group_id;
+                                 // Remove this user ID from the $db_associated_groups array as it's still in use
+                                 unset($db_associated_groups[array_search($group_id, $db_associated_groups)]);
+
+                                 AssociatedGroups::where('contract_id', $contractId)->updateOrCreate(['group_id' => $groupId, 'contract_id' => $contractId]);
+                                 $associated_groups = AssociatedGroups::where('contract_id', $contractId)->get();
+                             }
+                         }
+
+                         // Delete associations for groups that are not in the request
+                         if (!empty($db_associated_groups)) {
+                             AssociatedGroups::where('contract_id', $contractId)->whereIn('group_id', $db_associated_groups)->delete();
+                         }
 
                         // Store milestone ids related to the contract in an array
                         $db_milestones = TimeAndMaterialContracts::where('contract_id', $contractId)->pluck('id')->toArray();
@@ -515,6 +535,8 @@ class ContractService implements ContractInterface
                                 'contract_result' => $contractResult,
                                 'milestones_result' => $tmResult,
                                 'associatedusers_result' => $associated_users,
+                                'associatedgroups_result' => $associated_groups,
+
                             ]
                         ]);
                     } else {
