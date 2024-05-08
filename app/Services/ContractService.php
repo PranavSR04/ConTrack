@@ -75,6 +75,17 @@ class ContractService implements ContractInterface
                         $contract['associated_users'] = $associatedUsers->where('contract_id', $contract['id'])->values()->all();
                         return $contract;
                     });
+                     //get all associated groups
+                     $associatedGroups = AssociatedGroups::
+                     join('group', 'associated_groups.group_id', '=', 'group.id')
+                     ->where('contract_id', '=', $id)
+                     ->select('associated_groups.id', 'contract_id', 'group_name')
+                     ->get();
+                 //join the data
+                 $combinedData = $combinedData->map(function ($contract) use ($associatedGroups) {
+                     $contract['associated_groups'] = $associatedGroups->where('contract_id', $contract['id'])->values()->all();
+                     return $contract;
+                 });
                     return response()->json(["data" => $combinedData], 200);
                 }
             } catch (Exception $e) {
