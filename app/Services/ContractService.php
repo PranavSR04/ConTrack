@@ -5,6 +5,7 @@ use App\Http\Controllers\ActivityLogInsertController;
 use App\Models\ActivityLogs;
 use App\ServiceInterfaces\ContractInterface;
 use App\Models\Addendums;
+use App\Models\AssociatedGroups;
 use App\Models\AssociatedUsers;
 use App\Models\Contracts;
 use App\Models\FixedFeeContracts;
@@ -74,6 +75,17 @@ class ContractService implements ContractInterface
                         $contract['associated_users'] = $associatedUsers->where('contract_id', $contract['id'])->values()->all();
                         return $contract;
                     });
+                     //get all associated groups
+                     $associatedGroups = AssociatedGroups::
+                     join('group', 'associated_groups.group_id', '=', 'group.id')
+                     ->where('contract_id', '=', $id)
+                     ->select('associated_groups.id', 'contract_id', 'group_name')
+                     ->get();
+                 //join the data
+                 $combinedData = $combinedData->map(function ($contract) use ($associatedGroups) {
+                     $contract['associated_groups'] = $associatedGroups->where('contract_id', $contract['id'])->values()->all();
+                     return $contract;
+                 });
                     return response()->json(["data" => $combinedData], 200);
                 }
             } catch (Exception $e) {
@@ -259,6 +271,27 @@ class ContractService implements ContractInterface
                                 AssociatedUsers::where('contract_id', $contractId)->whereIn('user_id', $db_associated_users)->delete();
                             }
 
+                            // Store associated group IDs related to the contract in an array
+                            $db_associated_groups = AssociatedGroups::where('contract_id', $contractId)->pluck('group_id')->toArray();
+
+                            // For enterting data into Associated group table
+                            $associated_groups = null;
+                            if (!empty($request->associated_groups)) {
+                                foreach ($db_associated_groups as $group_id) {
+                                    $groupId = $group_id;
+                                    // Remove this user ID from the $db_associated_groups array as it's still in use
+                                    unset($db_associated_groups[array_search($group_id, $db_associated_groups)]);
+
+                                    AssociatedGroups::where('contract_id', $contractId)->updateOrCreate(['group_id' => $groupId, 'contract_id' => $contractId]);
+                                    $associated_groups = AssociatedGroups::where('contract_id', $contractId)->get();
+                                }
+                            }
+
+                            // Delete associations for groups that are not in the request
+                            if (!empty($db_associated_groups)) {
+                                AssociatedGroups::where('contract_id', $contractId)->whereIn('group_id', $db_associated_groups)->delete();
+                            }
+
                             // Store milestone ids related to the contract in an array
                             $db_milestones = FixedFeeContracts::where('contract_id', $contractId)->pluck('id')->toArray();
 
@@ -316,6 +349,7 @@ class ContractService implements ContractInterface
                                     'contract_result' => $contractResult,
                                     'milestones_result' => $ffResult,
                                     'associatedusers_result' => $associated_users,
+                                    'associatedgroups_result' => $associated_groups,
                                 ]
                             ]);
                         } else {
@@ -426,6 +460,26 @@ class ContractService implements ContractInterface
                         if (!empty($db_associated_users)) {
                             AssociatedUsers::where('contract_id', $contractId)->whereIn('user_id', $db_associated_users)->delete();
                         }
+                         // Store associated group IDs related to the contract in an array
+                         $db_associated_groups = AssociatedGroups::where('contract_id', $contractId)->pluck('group_id')->toArray();
+
+                         // For enterting data into Associated group table
+                         $associated_groups = null;
+                         if (!empty($request->associated_groups)) {
+                             foreach ($db_associated_groups as $group_id) {
+                                 $groupId = $group_id;
+                                 // Remove this user ID from the $db_associated_groups array as it's still in use
+                                 unset($db_associated_groups[array_search($group_id, $db_associated_groups)]);
+
+                                 AssociatedGroups::where('contract_id', $contractId)->updateOrCreate(['group_id' => $groupId, 'contract_id' => $contractId]);
+                                 $associated_groups = AssociatedGroups::where('contract_id', $contractId)->get();
+                             }
+                         }
+
+                         // Delete associations for groups that are not in the request
+                         if (!empty($db_associated_groups)) {
+                             AssociatedGroups::where('contract_id', $contractId)->whereIn('group_id', $db_associated_groups)->delete();
+                         }
 
                         // Store milestone ids related to the contract in an array
                         $db_milestones = TimeAndMaterialContracts::where('contract_id', $contractId)->pluck('id')->toArray();
@@ -481,6 +535,8 @@ class ContractService implements ContractInterface
                                 'contract_result' => $contractResult,
                                 'milestones_result' => $tmResult,
                                 'associatedusers_result' => $associated_users,
+                                'associatedgroups_result' => $associated_groups,
+
                             ]
                         ]);
                     } else {
@@ -516,6 +572,7 @@ class ContractService implements ContractInterface
             'comments' => 'string',
             'file' => 'file|required',
             'associated_users' => ['array', 'exists:users,id'],
+            'associated_groups' => ['array', 'exists:group,id']
             // 'associated_users.*.user_id' => 'required|numeric',
         ]);
 
@@ -618,6 +675,15 @@ class ContractService implements ContractInterface
                     $assoc_users_result = AssociatedUsers::create([
                         'contract_id' => $contractId,
                         'user_id' => $user_id,
+                    ]);
+                }
+            }
+            //insert associated groups
+            if (!empty($request->associated_groups)) {
+                foreach ($request->associated_groups as $group_id) {
+                    $assoc_users_result = AssociatedGroups::create([
+                        'contract_id' => $contractId,
+                        'group_id' => $group_id,
                     ]);
                 }
             }
