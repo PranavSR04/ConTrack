@@ -79,7 +79,7 @@ class ContractService implements ContractInterface
                      $associatedGroups = AssociatedGroups::
                      join('group', 'associated_groups.group_id', '=', 'group.id')
                      ->where('contract_id', '=', $id)
-                     ->select('associated_groups.id', 'contract_id', 'group_name')
+                     ->select('associated_groups.id', 'contract_id','group.id as group_id', 'group_name')
                      ->get();
                  //join the data
                  $combinedData = $combinedData->map(function ($contract) use ($associatedGroups) {
@@ -183,6 +183,11 @@ class ContractService implements ContractInterface
                     $decodedAssociatedUsers = json_decode($request->associated_users, true);
                 }
 
+                $decodedAssociatedGroups = $request->associated_groups;
+                if (!is_array(($request->associated_groups))) {
+                    $decodedAssociatedGroups = json_decode($request->associated_groups, true);
+                }
+
                 // Validate the incoming request data
                 $validator_ff = Validator::make(['milestones' => $decodedMilestones] + $request->all(), [
                     // $validator_ff = Validator::make(['milestones' => $decodedMilestones] + ['associated_users' => $decodedAssociatedUsers] + $request->all(), [
@@ -277,7 +282,7 @@ class ContractService implements ContractInterface
                             // For enterting data into Associated group table
                             $associated_groups = null;
                             if (!empty($request->associated_groups)) {
-                                foreach ($db_associated_groups as $group_id) {
+                                foreach ($decodedAssociatedGroups as $group_id) {
                                     $groupId = $group_id;
                                     // Remove this user ID from the $db_associated_groups array as it's still in use
                                     unset($db_associated_groups[array_search($group_id, $db_associated_groups)]);
