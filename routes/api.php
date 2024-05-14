@@ -53,6 +53,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/users/add', [UserController::class, 'addUser']);
     Route::post('/group/add', [UserController::class, 'addGroup']);
     Route::put('/users/update/{user_id}', [UserController::class, 'updateUser']);
+    Route::get('groups/list', [UserController::class, 'getGroups']);
+    Route::post('groups/assign', [UserController::class, 'assignUserGroups']);
+    Route::get('groups/list/users', [UserController::class, 'getGroupUsers']);
+    Route::get('users/list', [UserController::class, 'getUsersList']);
+    Route::post('groups/addUsers', [UserController::class, 'addUsersToIndividualGroup']);
+    Route::put('groups/removeUser', [UserController::class, 'deleteUserFromGroup']);
+    Route::delete('groups/delete', [UserController::class, 'deleteGroup']);
+
 
     // MSA routes
     Route::post('/msa/insertData', [MsaController::class, 'insertValues']);
@@ -117,14 +125,6 @@ Route::post("/activitylog/insert",[ActivityLogInsertController::class,'addToActi
 // Route::post('/onedrive', [OneDriveController::class, 'token']);
 Route::post('/onedrivefile', [OneDriveController::class, 'store']);
 
-Route::get('groups/list', [UserController::class, 'getGroups']);
-Route::post('groups/assign', [UserController::class, 'assignUserGroups']);
-Route::get('groups/list/users', [UserController::class, 'getGroupUsers']);
-Route::get('users/list', [UserController::class, 'getUsersList']);
-
-Route::post('groups/addUsers', [UserController::class, 'addUsersToIndividualGroup']);
-Route::put('groups/removeUser', [UserController::class, 'deleteUserFromGroup']);
-Route::delete('groups/delete', [UserController::class, 'deleteGroup']);
 
 
 

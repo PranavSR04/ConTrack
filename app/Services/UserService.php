@@ -274,7 +274,8 @@ class UserService implements UserInterface
         return response()->json($groupNames);
     }
 
-    public function assignUserGroups(Request $request) {
+    public function assignUserGroups(Request $request) 
+    {
         // $experion_id = $request->experion_id;
         // $groupIds = $request->group_ids; // expecting this to be an array
 
@@ -482,7 +483,7 @@ class UserService implements UserInterface
     Group::where('id', $selectedIndividualGroup)->delete();
 
     return response()->json(['message' => 'Group and mappings deleted successfully']);
-}
+    }
 
 
 
