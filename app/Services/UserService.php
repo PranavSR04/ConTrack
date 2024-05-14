@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Contracts;
 use App\Models\Group;
 use App\Models\UserGroupMap;
 use App\ServiceInterfaces\UserInterface;
@@ -12,6 +13,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Validator;
 use Illuminate\Support\Facades\DB;
 
@@ -202,6 +205,26 @@ class UserService implements UserInterface
 
             $requestData = $request->all();
 
+            //get groups associated with user
+            $myGroups=UserGroupMap::select('group_id')
+            ->where("user_id",$user_id)
+            ->get();
+
+            $myGroupedContracts = new Collection(); //declare empty
+            if( $myGroups->count() != 0){
+                $groupIds = $myGroups->pluck('group_id')->toArray(); //get group ids in an array
+                //get the contracts related to that group
+                $myGroupedContracts = Contracts::whereIn('contracts.id', function ($query) use ($groupIds) {
+                    $query->select('contract_id')
+                        ->from('associated_groups')
+                        ->whereIn('group_id', $groupIds);
+                })
+                ->leftJoin('msas', 'msas.id', '=', 'contracts.msa_id')
+                ->select('contracts.id', 'contracts.contract_ref_id', 'msas.client_name', 'contracts.start_date', 'contracts.end_date', 'contracts.contract_type', 'contracts.contract_status', 'contracts.du')
+                ->get(); 
+                // return response()->json(['success' =>$myGroupedContracts ], 200);
+            }
+
             $myContracts = User::where('users.id', $user_id)
             ->leftJoin('associated_users', 'users.id', '=', 'associated_users.user_id')
             ->leftJoin('contracts', function ($join) use ($requestData) {
@@ -220,9 +243,34 @@ class UserService implements UserInterface
             ->leftJoin('msas', 'msas.id', '=', 'contracts.msa_id')
             ->select('contracts.id', 'contracts.contract_ref_id', 'msas.client_name', 'contracts.start_date', 'contracts.end_date', 'contracts.contract_type', 'contracts.contract_status', 'contracts.du')
             ->where('users.id', $user_id)
-            ->orderBy('contracts.updated_at', 'desc'); // Sort by updated_at column in descending order
+            ->orderBy('contracts.updated_at', 'desc') // Sort by updated_at column in descending order
 
-            $myContracts->distinct('contracts.id');
+            ->distinct('contracts.id');
+            
+            if (!isset($requestData['added_by_me'])) {
+                // Both 'added_by_me' and 'associated_by_me' are not set
+        
+                if( $myGroupedContracts->count() != 0){
+                     $myContractsQuery = $myContracts->get();
+                
+                    $allContractsRelatedToUser = $myGroupedContracts->merge($myContractsQuery);
+    
+                    // If you want to ensure uniqueness of contracts, you can use unique method
+                    $uniqueContractsRelatedToUser = $allContractsRelatedToUser->unique('id');
+    
+                    // If you want to sort the contracts by a specific attribute, for example, start_date
+                    $sortedContractsRelatedToUser = $uniqueContractsRelatedToUser->sortByDesc('updated_at')->values();
+                    //paginate
+                    $paginator = new LengthAwarePaginator(
+                        $sortedContractsRelatedToUser->forPage(1, 10),
+                        $sortedContractsRelatedToUser->count(),
+                        10,
+                        1
+                    );
+                    return $paginator;
+                }
+            
+            }       
 
             if (empty($requestData)) {
                 return $myContracts->paginate(10);
