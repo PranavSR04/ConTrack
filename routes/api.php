@@ -43,6 +43,7 @@ Route::group([
 });
 
 Route::middleware('auth')->group(function () {
+
     // Roles routes
     Route::post('/role/insertrole', [RoleController::class, 'insertRole']);
     Route::get('/role/details', [RoleController::class, 'getRole']);
@@ -89,7 +90,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
     // Routes accessible only to super admins
-
+    
 
 });
 Route::middleware(['auth', 'role:super_admin-admin'])->group(function () {
