@@ -243,7 +243,7 @@ class UserService implements UserInterface
             ->leftJoin('msas', 'msas.id', '=', 'contracts.msa_id')
             ->select('contracts.id', 'contracts.contract_ref_id', 'msas.client_name', 'contracts.start_date', 'contracts.end_date', 'contracts.contract_type', 'contracts.contract_status', 'contracts.du')
             ->where('users.id', $user_id)
-            ->orderBy('contracts.updated_at', 'desc') // Sort by updated_at column in descending order
+            //->orderBy('contracts.updated_at', 'desc') // Sort by updated_at column in descending order
 
             ->distinct('contracts.id');
             
@@ -267,13 +267,16 @@ class UserService implements UserInterface
                         10,
                         1
                     );
-                    return $paginator;
+                    if (empty($requestData)) {
+                        return $paginator;
+                    } 
                 }
             
             }       
 
             if (empty($requestData)) {
-                return $myContracts->paginate(10);
+                return $myContracts->orderBy('contracts.updated_at', 'desc') // Sort by updated_at column in descending order
+                ->paginate(10);
             } else {
                 //add search conditions
                 foreach ($requestData as $key => $value) {
