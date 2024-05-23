@@ -32,7 +32,7 @@ class ContractService implements ContractInterface
                     $singleContract = Contracts::join('msas', 'contracts.msa_id', '=', 'msas.id')
                         ->join('users', 'contracts.contract_added_by', '=', 'users.id')
                         ->where('contracts.id', '=', $id)
-                        ->select('contracts.*', 'msas.client_name', 'users.user_name', 'msas.region')->get();
+                        ->select('contracts.*','msas.msa_ref_id', 'msas.client_name', 'users.user_name', 'msas.region')->get();
                     //get milestone based on contract type  
                     if ($contractType == 'TM') {
                         $milestones = TimeAndMaterialContracts::where('tm_contracts.contract_id', '=', $id)
