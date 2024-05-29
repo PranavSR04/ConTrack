@@ -41,7 +41,8 @@ return [
             'provider' => 'users',
         ],
         'api'=>[
-            'driver'=> 'jwt',
+            // 'driver'=> 'jwt',
+            'driver'=> 'custom-jwt',
             'provider'=> 'users',
             'hash'=>false,
         ]
