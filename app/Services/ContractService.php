@@ -241,7 +241,7 @@ class ContractService implements ContractInterface
                         'date_of_signature' => $validated_ff['date_of_signature'],
                         'du' => $validated_ff['du'],
                         'contract_status' => $validated_ff['contract_status'],
-                        'comments' => $validated_ff['comments'],
+                        'comments' => $validated_ff['comments'] ?? $contract->comments,
                         'contract_doclink' => $validated_ff['contract_doclink'],
                         'estimated_amount' => $validated_ff['estimated_amount'],
                     ];
@@ -434,7 +434,7 @@ class ContractService implements ContractInterface
                         'date_of_signature' => $validated_tm['date_of_signature'],
                         'du' => $validated_tm['du'],
                         'contract_status' => $validated_tm['contract_status'],
-                        'comments' => $validated_tm['comments'],
+                        'comments' => $validated_tm['comments'] ?? $contract->comments,
                         'estimated_amount' => $validated_tm['estimated_amount'],
                         'contract_doclink' => $validated_tm['contract_doclink'],
                     ];
