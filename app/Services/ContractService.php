@@ -282,7 +282,7 @@ class ContractService implements ContractInterface
                             // For enterting data into Associated group table
                             $associated_groups = null;
                             if (!empty($request->associated_groups)) {
-                                foreach ($decodedAssociatedGroups as $group_id) {
+                                foreach ($request->associated_groups as $group_id) {
                                     $groupId = $group_id;
                                     // Remove this user ID from the $db_associated_groups array as it's still in use
                                     unset($db_associated_groups[array_search($group_id, $db_associated_groups)]);
@@ -471,7 +471,7 @@ class ContractService implements ContractInterface
                          // For enterting data into Associated group table
                          $associated_groups = null;
                          if (!empty($request->associated_groups)) {
-                             foreach ($db_associated_groups as $group_id) {
+                             foreach ($request->associated_groups as $group_id) {
                                  $groupId = $group_id;
                                  // Remove this user ID from the $db_associated_groups array as it's still in use
                                  unset($db_associated_groups[array_search($group_id, $db_associated_groups)]);
