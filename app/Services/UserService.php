@@ -220,7 +220,7 @@ class UserService implements UserInterface
                         ->whereIn('group_id', $groupIds);
                 })
                 ->leftJoin('msas', 'msas.id', '=', 'contracts.msa_id')
-                ->select('contracts.id', 'contracts.contract_ref_id', 'msas.client_name', 'contracts.start_date', 'contracts.end_date', 'contracts.contract_type', 'contracts.contract_status', 'contracts.du')
+                ->select('contracts.id', 'contracts.contract_ref_id', 'msas.client_name', 'contracts.start_date', 'contracts.end_date', 'contracts.contract_type', 'contracts.contract_status', 'contracts.du', 'contracts.updated_at')
                 ->get(); 
                 // return response()->json(['success' =>$myGroupedContracts ], 200);
             }
